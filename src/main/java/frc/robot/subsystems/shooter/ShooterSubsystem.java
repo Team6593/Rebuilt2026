@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.shooter;
 
+import edu.wpi.first.wpilibj.Preferences;
+
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
@@ -34,32 +36,76 @@ public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new Shooter. */
   public ShooterSubsystem() {
     
+    // configs
     shooterLimitConfigs.StatorCurrentLimit = 80;
     shooterLimitConfigs.StatorCurrentLimitEnable = true;
     indexerLimitConfigs.SupplyCurrentLimit = 60;
     indexerLimitConfigs.SupplyCurrentLimitEnable = true;
 
-    shootConfigurator.apply(shooterLimitConfigs);
-    indexerConfigurator.apply(indexerLimitConfigs);
-
     shooterConfigs.kP = ShooterInputs.kP;
     shooterConfigs.kV = ShooterInputs.kV;
     shooterConfigs.kA = ShooterInputs.kA; 
+
+    shootConfigurator.apply(shooterLimitConfigs);
+    indexerConfigurator.apply(indexerLimitConfigs);
+
+    // preferences
+    Preferences.initDouble(ShooterInputs.kPKey, ShooterInputs.kP);
+    Preferences.initDouble(ShooterInputs.kVKey, ShooterInputs.kV);
+    Preferences.initDouble(ShooterInputs.kAKey, ShooterInputs.kA);
+    Preferences.initDouble(ShooterInputs.kShooterFeedForwardKey, ShooterInputs.kShooterFeedForward);
 
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    
+    loadPreferences();
+    smartdashboardLogging();
 
+  }
+
+  // Data Logging
+
+  public void smartdashboardLogging() {
+    SmartDashboard.putNumber("Shooter Duty Cycle", shooterMotor.getDutyCycle().getValueAsDouble());
+    SmartDashboard.putNumber("Indexer Duty Cycle", indexerMotor.getDutyCycle().getValueAsDouble());
     SmartDashboard.putNumber("Shooter Applied Output V", shooterMotor.getMotorVoltage().getValueAsDouble());
     SmartDashboard.putNumber("Indexer Applied Output V", indexerMotor.getMotorVoltage().getValueAsDouble());
     SmartDashboard.putNumber("Shooter RPS", shooterMotor.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber("Indexer RPS", indexerMotor.getVelocity().getValueAsDouble());
-
+    SmartDashboard.putNumber("Shooter RPM", shooterMotor.getVelocity().getValueAsDouble() * 60);
+    SmartDashboard.putNumber("Indexer RPM", indexerMotor.getVelocity().getValueAsDouble() * 60);
+    SmartDashboard.putNumber("Shooter Temp (F)", ((shooterMotor.getDeviceTemp().getValueAsDouble()) * 1.8) + 32);
+    SmartDashboard.putNumber("Indexer Temp (F)", ((indexerMotor.getDeviceTemp().getValueAsDouble()) * 1.8) + 32);
   }
 
-  // Methods
+  public void loadPreferences() {
+    if (ShooterInputs.kP != Preferences.getDouble(ShooterInputs.kPKey, ShooterInputs.kP)) {
+      System.out.println("Old kP: " + ShooterInputs.kP);
+      ShooterInputs.kP = Preferences.getDouble(ShooterInputs.kPKey, ShooterInputs.kP);
+      shooterConfigs.kP = ShooterInputs.kP;
+      System.out.println("New kP: " + ShooterInputs.kP);
+    }
+    if (ShooterInputs.kV != Preferences.getDouble(ShooterInputs.kVKey, ShooterInputs.kV)) {
+      System.out.println("Old kV: " + ShooterInputs.kV);
+      ShooterInputs.kV = Preferences.getDouble(ShooterInputs.kVKey, ShooterInputs.kV);
+      shooterConfigs.kV = ShooterInputs.kV;
+      System.out.println("New kV: " + ShooterInputs.kV);
+    }
+    if (ShooterInputs.kA != Preferences.getDouble(ShooterInputs.kAKey, ShooterInputs.kA)) {
+      System.out.println("Old kA: " + ShooterInputs.kA);
+      ShooterInputs.kA = Preferences.getDouble(ShooterInputs.kAKey, ShooterInputs.kA);
+      shooterConfigs.kA = ShooterInputs.kA;
+      System.out.println("New kA: " + ShooterInputs.kA);
+    }
+    if (ShooterInputs.kShooterFeedForward != Preferences.getDouble(ShooterInputs.kShooterFeedForwardKey, ShooterInputs.kShooterFeedForward)) {
+      System.out.println("Old kShooterFeedForward: " + ShooterInputs.kShooterFeedForward);
+      ShooterInputs.kShooterFeedForward = Preferences.getDouble(ShooterInputs.kShooterFeedForwardKey, ShooterInputs.kShooterFeedForward);
+      System.out.println("New kShooterFeedForward: " + ShooterInputs.kShooterFeedForward);
+    }
+  }
 
   /**
    * just the shoot (top/main/flywheel)
