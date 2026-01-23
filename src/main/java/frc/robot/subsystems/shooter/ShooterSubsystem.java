@@ -179,7 +179,7 @@ public class ShooterSubsystem extends SubsystemBase {
    * @return command
    */
   public Command stopCommand() {
-    return this.run(
+    return this.runOnce(
       () -> stop());
   }
 
