@@ -68,6 +68,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
   // Data Logging
 
+  /**
+   * Values from the Shooter being published to SD.
+   */
   public void smartdashboardLogging() {
     SmartDashboard.putNumber("Shooter Duty Cycle", shooterMotor.getDutyCycle().getValueAsDouble());
     SmartDashboard.putNumber("Indexer Duty Cycle", indexerMotor.getDutyCycle().getValueAsDouble());
@@ -81,6 +84,9 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Indexer Temp (F)", ((indexerMotor.getDeviceTemp().getValueAsDouble()) * 1.8) + 32);
   }
 
+  /**
+   * Logic for loading preference keys when they're changed, for the shooter.
+   */
   public void loadPreferences() {
     if (ShooterInputs.kP != Preferences.getDouble(ShooterInputs.kPKey, ShooterInputs.kP)) {
       System.out.println("Old kP: " + ShooterInputs.kP);
