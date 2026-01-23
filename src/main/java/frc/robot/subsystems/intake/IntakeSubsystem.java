@@ -4,21 +4,46 @@
 
 package frc.robot.subsystems.intake;
 
+import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class IntakeSubsystem extends SubsystemBase implements IntakeConstants{
+public class IntakeSubsystem extends SubsystemBase implements IntakeConstants {
 
+  // Devices
   private SparkMax intakeMotor = new SparkMax(intakeMotorID, MotorType.kBrushless);
+  private SparkMax pivotMotor = new SparkMax(pivotMotorID, MotorType.kBrushless);
+  private AbsoluteEncoder pivotEncoder = pivotMotor.getAbsoluteEncoder();
+
+  // Configs
+  private SparkMaxConfig pivotConfig = new SparkMaxConfig();
+
+  // Controllers
+  private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
+    pivotConfig.idleMode(IdleMode.kBrake);
+    pivotConfig.closedLoop
+      .p(IntakeInputs.kPivotP)
+      .i(0)
+      .d(0);
+    pivotMotor.configure(pivotConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
     Preferences.initDouble(IntakeInputs.kIntakeSpeedKey, IntakeInputs.kIntakeSpeed);
+    Preferences.initDouble(IntakeInputs.kPivotPKey, IntakeInputs.kPivotP);
+    Preferences.initDouble(IntakeInputs.kPivotPositionKey, IntakeInputs.kPivotPosition);
   }
 
   @Override
@@ -30,17 +55,38 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants{
 
   // Methods
 
+  /**
+   * Logs relevant information to SD.
+   */
   public void smartdashboardlogging() {
     SmartDashboard.putNumber("Intake Duty Cycle", intakeMotor.getAppliedOutput());
     SmartDashboard.putNumber("Intake Applied Output A", intakeMotor.getOutputCurrent());
     SmartDashboard.putNumber("Intake Temp (F)", ((intakeMotor.getMotorTemperature()) * 1.8) + 32);
+    SmartDashboard.putNumber("Pivot Duty Cycle", pivotMotor.getAppliedOutput());
+    SmartDashboard.putNumber("Pivot Applied Output A", pivotMotor.getOutputCurrent());
+    SmartDashboard.putNumber("Pivot Temp (F)", ((pivotMotor.getMotorTemperature()) * 1.8) + 32);
+    SmartDashboard.putNumber("Pivot Position", pivotEncoder.getPosition());
   }
 
+  /**
+   * Loads the preference keys for tuning.
+   */
   public void loadPreferences() {
     if (IntakeInputs.kIntakeSpeed != Preferences.getDouble(IntakeInputs.kIntakeSpeedKey, IntakeInputs.kIntakeSpeed)) {
       System.out.println("Old kIntakeSpeed: " + IntakeInputs.kIntakeSpeed);
       IntakeInputs.kIntakeSpeed = Preferences.getDouble(IntakeInputs.kIntakeSpeedKey, IntakeInputs.kIntakeSpeed);
       System.out.println("New kIntakeSpeed: " + IntakeInputs.kIntakeSpeed);
+    }
+    if (IntakeInputs.kPivotP != Preferences.getDouble(IntakeInputs.kPivotPKey, IntakeInputs.kPivotP)) {
+      System.out.println("Old kPivotP: " + IntakeInputs.kPivotP);
+      IntakeInputs.kPivotP = Preferences.getDouble(IntakeInputs.kPivotPKey, IntakeInputs.kPivotP);
+      pivotConfig.closedLoop.p(IntakeInputs.kPivotP);
+      System.out.println("New kPivotP: " + IntakeInputs.kPivotP);
+    }
+    if (IntakeInputs.kPivotPosition != Preferences.getDouble(IntakeInputs.kPivotPositionKey, IntakeInputs.kPivotPosition)) {
+      System.out.println("Old kIntakeSpeed: " + IntakeInputs.kPivotPosition);
+      IntakeInputs.kPivotPosition = Preferences.getDouble(IntakeInputs.kPivotPositionKey, IntakeInputs.kPivotPosition);
+      System.out.println("New kPivotPosition: " + IntakeInputs.kPivotPosition);
     }
   }
 
@@ -61,6 +107,30 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants{
   }
 
   /**
+   * Pivots the intake to a setpoint.
+   * @param setpoint - Defaults to value in IntakeInputs.java
+   */
+  public void pivotToSetpoint(double setpoint) {
+    pivotController.setSetpoint(setpoint, ControlType.kPosition);
+  }
+
+  /**
+   * Pivots the intake to a setpoint.
+   * @param setpoint - Defaults to value in IntakeInputs.java
+   */
+  public void pivotToSetpoint() {
+    pivotController.setSetpoint(IntakeInputs.kPivotPosition, ControlType.kPosition);
+  }
+
+  /**
+   * Returns if the pivot is at the setpoint.
+   * @return boolean True if at setpoint, False if otherwise.
+   */
+  public boolean atSetpoint() {
+    return pivotController.isAtSetpoint();
+  }
+
+  /**
    * Stops the intake.
    */
   public void stop() {
@@ -76,7 +146,8 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants{
    */
   public Command runIntakeCommand(double speed) {
     return this.run(
-      () -> runIntake(speed)).andThen(stopIntakeCommand());
+      () -> runIntake(speed))
+      .andThen(stopIntakeCommand());
   }
 
   /**
@@ -86,7 +157,8 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants{
    */
   public Command runIntakeCommand() {
     return this.run(
-      () -> runIntake()).andThen(stopIntakeCommand());
+      () -> runIntake())
+      .andThen(stopIntakeCommand());
   }
 
   /**
@@ -96,7 +168,8 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants{
    */
   public Command reverseIntakeCommand(double speed) {
     return this.run(
-      () -> runIntake(-speed)).andThen(stopIntakeCommand());
+      () -> runIntake(-speed))
+      .andThen(stopIntakeCommand());
   }
 
   /**
@@ -106,7 +179,30 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants{
    */
   public Command reverseIntakeCommand() {
     return this.run(
-      () -> runIntake()).andThen(stopIntakeCommand());
+      () -> runIntake())
+      .andThen(stopIntakeCommand());
+  }
+
+  /**
+   * Command that pivots the pivot to the setpoint.
+   * @param setpoint - Defaults to value in IntakeInputs.java
+   * @return
+   */
+  public Command pivotToSetpointCommand(double setpoint) {
+    return this.run(
+      () -> pivotToSetpoint(setpoint))
+      .andThen(stopIntakeCommand());
+  }
+
+  /**
+   * Command that pivots the pivot to the setpoint.
+   * @param setpoint - Defaults to value in IntakeInputs.java
+   * @return
+   */
+  public Command pivotToSetpointCommand() {
+    return this.run(
+      () -> pivotToSetpoint())
+      .andThen(stopIntakeCommand());
   }
 
   /**
