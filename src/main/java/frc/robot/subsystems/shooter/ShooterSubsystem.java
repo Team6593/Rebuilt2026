@@ -16,11 +16,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class ShooterSubsystem extends SubsystemBase {
+public class ShooterSubsystem extends SubsystemBase implements ShooterConstants{
 
   // motors
-  private TalonFX shooterMotor = new TalonFX(ShooterConstants.shooterID);
-  private TalonFX indexerMotor = new TalonFX(ShooterConstants.indexerID);
+  private TalonFX shooterMotor = new TalonFX(shooterID);
+  private TalonFX indexerMotor = new TalonFX(indexerID);
 
   // configurators
   private TalonFXConfigurator shootConfigurator = shooterMotor.getConfigurator();

@@ -2,14 +2,10 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.shooter;
-
-import org.littletonrobotics.junction.AutoLog;
+package frc.robot.subsystems.throughput;
 
 /** Add your docs here. */
-@AutoLog
-public interface ShooterConstants {
-    // IDs
-    int shooterID = 30;
-    int indexerID = 31;
+public class FeederInputs {
+    public static final String kFeederSpeedKey = "kThroughputSpeedKey";
+    public static double kFeederSpeed = 1;
 }
