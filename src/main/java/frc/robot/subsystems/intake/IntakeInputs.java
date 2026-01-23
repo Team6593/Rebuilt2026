@@ -8,4 +8,10 @@ package frc.robot.subsystems.intake;
 public class IntakeInputs {
     public static final String kIntakeSpeedKey = "kIntakeSpeed";
     public static double kIntakeSpeed = .75;
+    
+    // PID
+    public static final String kPivotPKey = "kPivotPKey";
+    public static final String kPivotPositionKey = "kPivotPositionKey";
+    public static double kPivotP = .5;
+    public static double kPivotPosition = 10; //TODO: GET ACTUAL POSITION
 }
