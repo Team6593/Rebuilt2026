@@ -606,6 +606,19 @@ public class LimelightHelpers {
                     Units.degreesToRadians(inData[5])));
     }
 
+    public double aim(double kP, double maxAngularRate) {
+        double targetingAngularVelocity = LimelightHelpers.getTX("limelight") * kP;
+        targetingAngularVelocity *= maxAngularRate;
+        return targetingAngularVelocity;
+    }
+
+    public static double estimateDistance(double mountAngleDegrees, double lensHeightInches, double goalheightInches, double verticalOffset) {
+        double angleToGoalDegrees = mountAngleDegrees + verticalOffset;
+        double angleToGoalRadians = angleToGoalDegrees * (Math.PI / 180);// was 3.14159
+        double distance = Math.abs((goalheightInches - lensHeightInches) / Math.tan(angleToGoalRadians));
+        return distance; 
+    }
+
     /**
      * Takes a 6-length array of pose data and converts it to a Pose2d object.
      * Uses only x, y, and yaw components, ignoring z, roll, and pitch.
