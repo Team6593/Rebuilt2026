@@ -4,6 +4,11 @@
 
 package frc.robot.subsystems.intake;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
@@ -23,23 +28,29 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants {
 
   // Devices
   private SparkMax intakeMotor = new SparkMax(intakeMotorID, MotorType.kBrushless);
-  private SparkMax pivotMotor = new SparkMax(pivotMotorID, MotorType.kBrushless);
-  private AbsoluteEncoder pivotEncoder = pivotMotor.getAbsoluteEncoder();
+  private TalonFX pivotMotor = new TalonFX(pivotMotorID);
 
-  // Configs
-  private SparkMaxConfig pivotConfig = new SparkMaxConfig();
+  // configurators
+  private TalonFXConfigurator pivotConfigurator = pivotMotor.getConfigurator();
 
-  // Controllers
-  private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
+  // current limits configs
+  private CurrentLimitsConfigs pivotLimitConfigs = new CurrentLimitsConfigs();
+
+  // control configs
+  private Slot0Configs pivotConfigs = new Slot0Configs();
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
-    pivotConfig.idleMode(IdleMode.kBrake);
-    pivotConfig.closedLoop
-      .p(IntakeInputs.kPivotP)
-      .i(0)
-      .d(0);
-    pivotMotor.configure(pivotConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+    pivotLimitConfigs.StatorCurrentLimit = 20;
+    pivotLimitConfigs.StatorCurrentLimitEnable = true;
+    pivotLimitConfigs.SupplyCurrentLimit = 20;
+    pivotLimitConfigs.SupplyCurrentLimitEnable = true;
+
+    pivotConfigs.kP = IntakeInputs.kPivotP;
+
+    pivotConfigurator.apply(pivotLimitConfigs);
+    pivotConfigurator.apply(pivotConfigs);
 
     Preferences.initDouble(IntakeInputs.kIntakeSpeedKey, IntakeInputs.kIntakeSpeed);
     Preferences.initDouble(IntakeInputs.kPivotPKey, IntakeInputs.kPivotP);
@@ -62,10 +73,10 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants {
     SmartDashboard.putNumber("Intake Duty Cycle", intakeMotor.getAppliedOutput());
     SmartDashboard.putNumber("Intake Applied Output A", intakeMotor.getOutputCurrent());
     SmartDashboard.putNumber("Intake Temp (F)", ((intakeMotor.getMotorTemperature()) * 1.8) + 32);
-    SmartDashboard.putNumber("Pivot Duty Cycle", pivotMotor.getAppliedOutput());
-    SmartDashboard.putNumber("Pivot Applied Output A", pivotMotor.getOutputCurrent());
-    SmartDashboard.putNumber("Pivot Temp (F)", ((pivotMotor.getMotorTemperature()) * 1.8) + 32);
-    SmartDashboard.putNumber("Pivot Position", pivotEncoder.getPosition());
+    SmartDashboard.putNumber("Pivot Duty Cycle", pivotMotor.getDutyCycle().getValueAsDouble());
+    SmartDashboard.putNumber("Pivot Applied Output V", pivotMotor.getMotorVoltage().getValueAsDouble());
+    SmartDashboard.putNumber("Pivot Temp (F)", ((pivotMotor.getDeviceTemp().getValueAsDouble()) * 1.8) + 32);
+    SmartDashboard.putNumber("Pivot Position", pivotMotor.getPosition().getValueAsDouble());
   }
 
   /**
@@ -80,7 +91,7 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants {
     if (IntakeInputs.kPivotP != Preferences.getDouble(IntakeInputs.kPivotPKey, IntakeInputs.kPivotP)) {
       System.out.println("Old kPivotP: " + IntakeInputs.kPivotP);
       IntakeInputs.kPivotP = Preferences.getDouble(IntakeInputs.kPivotPKey, IntakeInputs.kPivotP);
-      pivotConfig.closedLoop.p(IntakeInputs.kPivotP);
+      pivotConfigs.kP = IntakeInputs.kPivotP;
       System.out.println("New kPivotP: " + IntakeInputs.kPivotP);
     }
     if (IntakeInputs.kPivotPosition != Preferences.getDouble(IntakeInputs.kPivotPositionKey, IntakeInputs.kPivotPosition)) {
@@ -111,7 +122,8 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants {
    * @param setpoint - Defaults to value in IntakeInputs.java
    */
   public void pivotToSetpoint(double setpoint) {
-    pivotController.setSetpoint(setpoint, ControlType.kPosition);
+    final PositionVoltage m_request = new PositionVoltage(0).withSlot(0);
+    pivotMotor.setControl(m_request.withPosition(setpoint));
   }
 
   /**
@@ -119,7 +131,8 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants {
    * @param setpoint - Defaults to value in IntakeInputs.java
    */
   public void pivotToSetpoint() {
-    pivotController.setSetpoint(IntakeInputs.kPivotPosition, ControlType.kPosition);
+    final PositionVoltage m_request = new PositionVoltage(0).withSlot(0);
+    pivotMotor.setControl(m_request.withPosition(IntakeInputs.kPivotPosition));
   }
 
   /**
@@ -127,7 +140,7 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants {
    * @return boolean True if at setpoint, False if otherwise.
    */
   public boolean atSetpoint() {
-    return pivotController.isAtSetpoint();
+    return pivotMotor.getMotionMagicAtTarget().getValue();
   }
 
   /**
