@@ -6,6 +6,9 @@ package frc.robot.subsystems.shooter;
 
 import edu.wpi.first.wpilibj.Preferences;
 
+import java.util.Map.Entry;
+import java.util.TreeMap;
+
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
@@ -15,6 +18,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utils.ShooterParams;
 
 public class ShooterSubsystem extends SubsystemBase {
 
@@ -32,6 +36,19 @@ public class ShooterSubsystem extends SubsystemBase {
   
   // control configs
   private Slot0Configs shooterConfigs = new Slot0Configs();
+
+  // Interpolating double tree map
+  // TODO: replace with real values
+  // Use this to calculate on-the-fly shoot
+  public static final TreeMap<Double, ShooterParams> SHOOTER_MAP = new TreeMap<>();
+  static {
+    SHOOTER_MAP.put(1.0, new ShooterParams(1000, .5));
+    SHOOTER_MAP.put(2.0, new ShooterParams(1200, .6));
+    SHOOTER_MAP.put(3.0, new ShooterParams(1400, .7));
+    SHOOTER_MAP.put(4.0, new ShooterParams(1600, .8));
+    SHOOTER_MAP.put(5.0, new ShooterParams(2000, 1.0));
+    SHOOTER_MAP.put(6.0, new ShooterParams(2100, 1.4));
+  }
 
   /** Creates a new Shooter. */
   public ShooterSubsystem() {
@@ -61,6 +78,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     
+    System.out.println("RPM " + lerpGet(SHOOTER_MAP, 1.5).rpm);
     loadPreferences();
     smartdashboardLogging();
 
@@ -111,6 +129,72 @@ public class ShooterSubsystem extends SubsystemBase {
       ShooterInputs.kShooterFeedForward = Preferences.getDouble(ShooterInputs.kShooterFeedForwardKey, ShooterInputs.kShooterFeedForward);
       System.out.println("New kShooterFeedForward: " + ShooterInputs.kShooterFeedForward);
     }
+  }
+
+  public static ShooterParams lerpGet(TreeMap<Double, ShooterParams> map, double key) {
+  if (map.containsKey(key)) {
+      // Exact key found, return directly
+      return map.get(key);
+  }
+
+  Double lowerKey = map.floorKey(key);
+  Double upperKey = map.ceilingKey(key);
+
+  if (lowerKey == null) {
+      // key is below the smallest key
+      return map.get(upperKey);
+  }
+
+  if (upperKey == null) {
+      // key is above the largest key
+      return map.get(lowerKey);
+  }
+
+  ShooterParams lowerParams = map.get(lowerKey);
+  ShooterParams upperParams = map.get(upperKey);
+
+  double ratio = (key - lowerKey) / (upperKey - lowerKey);
+
+  // Linear interpolation for rpm and tof
+  double rpm = interpolate(lowerParams.rpm, upperParams.rpm, ratio);
+  double tof = interpolate(lowerParams.tof, upperParams.tof, ratio);
+
+  return new ShooterParams(rpm, tof);
+  }
+
+  private static double interpolate(double start, double end, double ratio) {
+      return start + (end - start) * ratio;
+  }
+
+    /**
+   * Gets the horizontal velocity needed at the current distance.
+   * @param distance
+   * @return rpm
+   */
+  public double getHorizontalVelocity(double distance) {
+    ShooterParams params = SHOOTER_MAP.get(distance);
+    return distance / params.tof;
+  }
+
+  /**
+   * Method that goes from velocity to the distance by doing a binary search
+   * through the tree map.
+   * @param velocity
+   * @return distance
+   */
+  public double velocityToEffectiveDistance(double velocity) {
+    for (Entry<Double, ShooterParams> entry : SHOOTER_MAP.entrySet()) {
+      double dist = entry.getKey();
+      double vel = dist / entry.getValue().tof;
+      if (vel >= velocity) {
+        return dist;
+      }
+    } return SHOOTER_MAP.lastKey();
+  }
+
+  public double calculatedAdjustedRpm(double requiredVelocity) {
+    double effectiveDistance = velocityToEffectiveDistance(requiredVelocity);
+    return SHOOTER_MAP.get(effectiveDistance).rpm;
   }
 
   /**
