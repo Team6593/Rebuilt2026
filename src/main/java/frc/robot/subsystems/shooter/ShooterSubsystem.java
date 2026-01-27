@@ -71,6 +71,8 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants{
     Preferences.initDouble(ShooterInputs.kVKey, ShooterInputs.kV);
     Preferences.initDouble(ShooterInputs.kAKey, ShooterInputs.kA);
     Preferences.initDouble(ShooterInputs.kShooterFeedForwardKey, ShooterInputs.kShooterFeedForward);
+    Preferences.initDouble(ShooterInputs.kShooterSpeedKey, ShooterInputs.kShooterSpeed);
+    Preferences.initDouble(ShooterInputs.kIndexerSpeedKey, ShooterInputs.kIndexerSpeed);
 
   }
 
@@ -128,6 +130,16 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants{
       System.out.println("Old kShooterFeedForward: " + ShooterInputs.kShooterFeedForward);
       ShooterInputs.kShooterFeedForward = Preferences.getDouble(ShooterInputs.kShooterFeedForwardKey, ShooterInputs.kShooterFeedForward);
       System.out.println("New kShooterFeedForward: " + ShooterInputs.kShooterFeedForward);
+    }
+    if (ShooterInputs.kShooterSpeed != Preferences.getDouble(ShooterInputs.kShooterSpeedKey, ShooterInputs.kShooterSpeed)) {
+      System.out.println("Old kShooterSpeed: " + ShooterInputs.kShooterSpeed);
+      ShooterInputs.kShooterSpeed = Preferences.getDouble(ShooterInputs.kShooterSpeedKey, ShooterInputs.kShooterSpeed);
+      System.out.println("New kShooterSpeed: " + ShooterInputs.kShooterSpeed);
+    }
+    if (ShooterInputs.kIndexerSpeed != Preferences.getDouble(ShooterInputs.kIndexerSpeedKey, ShooterInputs.kIndexerSpeed)) {
+      System.out.println("Old kIndexerSpeed: " + ShooterInputs.kIndexerSpeed);
+      ShooterInputs.kIndexerSpeed = Preferences.getDouble(ShooterInputs.kIndexerSpeedKey, ShooterInputs.kIndexerSpeed);
+      System.out.println("New kIndexerSpeed: " + ShooterInputs.kIndexerSpeed);
     }
   }
 
@@ -199,10 +211,18 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants{
 
   /**
    * just the shoot (top/main/flywheel)
-   * @param speed to move the shoot motor at
+   * @param speed to move the shoot motor at - Defaults to value in ShooterInputs.java
    */
   public void shoot(double speed) {
     shooterMotor.set(speed);
+  }
+
+    /**
+   * just the shoot (top/main/flywheel)
+   * @param speed to move the shoot motor at - Defaults to value in ShooterInputs.java
+   */
+  public void shoot() {
+    shooterMotor.set(ShooterInputs.kShooterSpeed);
   }
 
   /**
@@ -211,6 +231,14 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants{
    */
   public void index(double speed) {
     indexerMotor.set(speed);
+  }
+
+    /**
+   * just the throughput (bottom/secondary/torque)
+   * @param speed to move the shoot motor at
+   */
+  public void index() {
+    indexerMotor.set(ShooterInputs.kIndexerSpeed);
   }
 
   public void indexAndShoot(double shooterSpeed, double indexerSpeed) {
