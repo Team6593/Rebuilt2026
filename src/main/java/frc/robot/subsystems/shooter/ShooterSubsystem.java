@@ -4,9 +4,21 @@
 
 package frc.robot.subsystems.shooter;
 
+import edu.wpi.first.units.measure.MutAngle;
+import edu.wpi.first.units.measure.MutAngularVelocity;
+import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.RobotController;
 
 import java.util.Map.Entry;
+
+import static edu.wpi.first.units.Units.Radian;
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
 import java.util.TreeMap;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -16,8 +28,10 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.utils.ShooterParams;
 
 public class ShooterSubsystem extends SubsystemBase implements ShooterConstants{
@@ -33,9 +47,29 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants{
   // current limit configs
   private CurrentLimitsConfigs shooterLimitConfigs = new CurrentLimitsConfigs();
   private CurrentLimitsConfigs indexerLimitConfigs = new CurrentLimitsConfigs();
+
+  // sysID values
+  private final MutVoltage kAppliedVoltage = Volts.mutable(0);
+  private final MutAngle kAngle = Radians.mutable(0);
+  private final MutAngularVelocity kVelocity = RadiansPerSecond.mutable(0);
   
   // control configs
   private Slot0Configs shooterConfigs = new Slot0Configs();
+
+  // SysID
+  private final SysIdRoutine routine = new SysIdRoutine(
+    new SysIdRoutine.Config(), 
+    new SysIdRoutine.Mechanism(
+      shooterMotor::setVoltage, 
+      log -> {
+        log.motor("shooter-wheel")
+          .voltage(
+            kAppliedVoltage.mut_replace(
+              shooterMotor.get() * RobotController.getBatteryVoltage(), Volts))
+          .angularPosition(kAngle.mut_replace(shooterMotor.getRotorPosition().getValueAsDouble(), Rotations))
+          .angularVelocity(kVelocity.mut_replace(shooterMotor.getRotorVelocity().getValueAsDouble(), RotationsPerSecond));
+      },
+      this));
 
   // Interpolating double tree map
   // TODO: replace with real values
