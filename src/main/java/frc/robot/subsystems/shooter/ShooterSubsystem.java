@@ -19,8 +19,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.ShooterParams;
+import frc.robot.utils.SubsystemInterface;
 
-public class ShooterSubsystem extends SubsystemBase implements ShooterConstants{
+public class ShooterSubsystem extends SubsystemBase implements ShooterConstants, SubsystemInterface{
 
   // motors
   private TalonFX shooterMotor = new TalonFX(shooterID);
@@ -91,6 +92,7 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants{
   /**
    * Values from the Shooter being published to SD.
    */
+  @Override
   public void smartdashboardLogging() {
     SmartDashboard.putNumber("Shooter Duty Cycle", shooterMotor.getDutyCycle().getValueAsDouble());
     SmartDashboard.putNumber("Indexer Duty Cycle", indexerMotor.getDutyCycle().getValueAsDouble());
@@ -107,6 +109,7 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants{
   /**
    * Logic for loading preference keys when they're changed, for the shooter.
    */
+  @Override
   public void loadPreferences() {
     if (ShooterInputs.kP != Preferences.getDouble(ShooterInputs.kPKey, ShooterInputs.kP)) {
       System.out.println("Old kP: " + ShooterInputs.kP);
@@ -249,6 +252,7 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants{
   /**
    * Stops all motors (shooter, indexer) in the shooter subsystem.
    */
+  @Override
   public void stop() {
     shooterMotor.stopMotor();
     indexerMotor.stopMotor();
