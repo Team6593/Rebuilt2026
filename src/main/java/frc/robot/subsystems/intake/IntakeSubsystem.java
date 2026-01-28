@@ -23,8 +23,9 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utils.SubsystemInterface;
 
-public class IntakeSubsystem extends SubsystemBase implements IntakeConstants {
+public class IntakeSubsystem extends SubsystemBase implements IntakeConstants, SubsystemInterface {
 
   // Devices
   private SparkMax intakeMotor = new SparkMax(intakeMotorID, MotorType.kBrushless);
@@ -50,7 +51,7 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    smartdashboardlogging();
+    smartdashboardLogging();
     loadPreferences();
   }
 
@@ -59,7 +60,8 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants {
   /**
    * Logs relevant information to SD.
    */
-  public void smartdashboardlogging() {
+  @Override
+  public void smartdashboardLogging() {
     SmartDashboard.putNumber("Intake Duty Cycle", intakeMotor.getAppliedOutput());
     SmartDashboard.putNumber("Intake Applied Output A", intakeMotor.getOutputCurrent());
     SmartDashboard.putNumber("Intake Temp (F)", ((intakeMotor.getMotorTemperature()) * 1.8) + 32);
@@ -72,6 +74,7 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants {
   /**
    * Loads the preference keys for tuning.
    */
+  @Override
   public void loadPreferences() {
     if (IntakeInputs.kIntakeSpeed != Preferences.getDouble(IntakeInputs.kIntakeSpeedKey, IntakeInputs.kIntakeSpeed)) {
       System.out.println("Old kIntakeSpeed: " + IntakeInputs.kIntakeSpeed);
@@ -134,6 +137,7 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants {
   /**
    * Stops the intake.
    */
+  @Override
   public void stop() {
     intakeMotor.stopMotor();
   }

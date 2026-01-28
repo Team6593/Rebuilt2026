@@ -12,8 +12,9 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utils.SubsystemInterface;
 
-public class FeederSubsystem extends SubsystemBase implements FeederConstants{
+public class FeederSubsystem extends SubsystemBase implements FeederConstants, SubsystemInterface{
 
   // devices
   private TalonFX feederMotor = new TalonFX(feederMotorID);
@@ -46,6 +47,10 @@ public class FeederSubsystem extends SubsystemBase implements FeederConstants{
 
   // Methods
 
+  /**
+   * Logs relevant information to SD.
+   */
+  @Override
   public void smartdashboardLogging() {
     SmartDashboard.putNumber("Feeder Motor Duty Cycle", feederMotor.getDutyCycle().getValueAsDouble());
     SmartDashboard.putNumber("Feeder Motor Applied Output V", feederMotor.getMotorVoltage().getValueAsDouble());
@@ -56,6 +61,7 @@ public class FeederSubsystem extends SubsystemBase implements FeederConstants{
   /**
    * Loads the new preferences after changing them (ascope tuning).
    */
+  @Override
   public void loadPreferences() {
     if (FeederInputs.kFeederSpeed != Preferences.getDouble(FeederInputs.kFeederSpeedKey, FeederInputs.kFeederSpeed)) {
       System.out.println("Old kFeederSpeed: " + FeederInputs.kFeederSpeed);
@@ -80,6 +86,10 @@ public class FeederSubsystem extends SubsystemBase implements FeederConstants{
     feederMotor.set(FeederInputs.kFeederSpeed);
   }
 
+  /**
+   * Stops the feeder.
+   */
+  @Override
   public void stop() {
     feederMotor.stopMotor();
   }
