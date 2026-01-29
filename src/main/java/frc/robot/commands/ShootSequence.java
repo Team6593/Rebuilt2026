@@ -43,6 +43,7 @@ public class ShootSequence extends Command {
       feederSubsystem.feed(.5);
       intakeSubsystem.runIntake(.45);
     }
+    
   }
 
   // Called once the command ends or is interrupted.
