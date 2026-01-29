@@ -19,7 +19,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-
+import frc.robot.commands.ShootSequence;
+import frc.robot.commands.StopAll;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.feeder.FeederSubsystem;
@@ -45,9 +46,9 @@ public class RobotContainer {
 
     // Subsystems
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-    // public final ShooterSubsystem shooter = new ShooterSubsystem();
-    // public final IntakeSubsystem intake = new IntakeSubsystem();
-    // public final FeederSubsystem feeder = new FeederSubsystem();
+    public final ShooterSubsystem shooter = new ShooterSubsystem();
+    public final IntakeSubsystem intake = new IntakeSubsystem();
+    public final FeederSubsystem feeder = new FeederSubsystem();
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
@@ -99,6 +100,10 @@ public class RobotContainer {
         joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+
+        joystick.a().whileTrue(intake.runIntakeCommand(.45).andThen(intake.stopIntakeCommand()));
+        joystick.x().onTrue(new StopAll(feeder, intake, shooter));
+        joystick.b().whileTrue(new ShootSequence(shooter, intake, feeder));
 
         // Reset the field-centric heading on left bumper press.
         joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));

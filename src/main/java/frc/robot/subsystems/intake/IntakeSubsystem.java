@@ -101,7 +101,7 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants, S
    * Runs the intake.
    * @param speed - Defaults to value in IntakeInputs.java
    */
-  public void runIntake() {
+  public void intake() {
     intakeMotor.set(IntakeInputs.kIntakeSpeed);
   }
 
@@ -157,7 +157,7 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants, S
    */
   public Command runIntakeCommand() {
     return this.run(
-      () -> runIntake())
+      () -> intake())
       .andThen(stopIntakeCommand());
   }
 
@@ -179,7 +179,7 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants, S
    */
   public Command reverseIntakeCommand() {
     return this.run(
-      () -> runIntake())
+      () -> intake())
       .andThen(stopIntakeCommand());
   }
 

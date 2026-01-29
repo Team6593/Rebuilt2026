@@ -11,6 +11,7 @@ import java.util.TreeMap;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -80,8 +81,6 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants,
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    
-    System.out.println("RPM " + lerpGet(SHOOTER_MAP, 1.5).rpm);
     loadPreferences();
     smartdashboardLogging();
 
@@ -100,8 +99,8 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants,
     SmartDashboard.putNumber("Indexer Applied Output V", indexerMotor.getMotorVoltage().getValueAsDouble());
     SmartDashboard.putNumber("Shooter RPS", shooterMotor.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber("Indexer RPS", indexerMotor.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Shooter RPM", shooterMotor.getVelocity().getValueAsDouble() * 60);
-    SmartDashboard.putNumber("Indexer RPM", indexerMotor.getVelocity().getValueAsDouble() * 60);
+    SmartDashboard.putNumber("Shooter RPM", shooterMotor.getRotorVelocity().getValueAsDouble() * 60);
+    SmartDashboard.putNumber("Indexer RPM", indexerMotor.getRotorVelocity().getValueAsDouble() * 60);
     SmartDashboard.putNumber("Shooter Temp (F)", ((shooterMotor.getDeviceTemp().getValueAsDouble()) * 1.8) + 32);
     SmartDashboard.putNumber("Indexer Temp (F)", ((indexerMotor.getDeviceTemp().getValueAsDouble()) * 1.8) + 32);
   }
@@ -258,6 +257,14 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants,
     indexerMotor.stopMotor();
   }
 
+  public void stopIndexer() {
+    indexerMotor.stopMotor();
+  }
+
+  public void stopShooter() {
+    shooterMotor.stopMotor();
+  }
+
   /**
    * Method that sets the RPM.
    * @param RPM - Desired RPM (Do not put RPS, method divides by 60) (default in ShooterConstants.java)
@@ -268,14 +275,23 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants,
     shooterMotor.setControl(m_request.withVelocity(RPM / 60).withFeedForward(feedForward));
   }
 
+  public double getRPM() {
+    return shooterMotor.getRotorVelocity().getValueAsDouble() * 60;
+  }
+
+  public double getDutyCycle() {
+    return shooterMotor.getDutyCycle().getValueAsDouble();
+  }
+
+
   /**
    * Method that sets the RPM.
    * @param RPM - Desired RPM (Do not put RPS, method divides by 60) (default in ShooterConstants.java)
    * @param feedForward - Desired feedforward (V to overcome gravity) (default in ShooterConstants.java)
    */
-  public void setRPM(double RPM) {
+  public void setShooterRPM(double RPM) {
     final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
-    shooterMotor.setControl(m_request.withVelocity(RPM / 60).withFeedForward(.5));
+    shooterMotor.setControl(m_request.withVelocity(RPM / 60).withFeedForward(0.1));
   }
 
   /**
@@ -283,9 +299,19 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants,
    * @param RPM - Desired RPM (Do not put RPS, method divides by 60) (default in ShooterConstants.java)
    * @param feedForward - Desired feedforward (V to overcome gravity) (default in ShooterConstants.java)
    */
-  public void setRPM() {
+  public void setShooterRPM() {
     final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
     shooterMotor.setControl(m_request.withVelocity(ShooterInputs.kShooterGoalRPS).withFeedForward(ShooterInputs.kShooterFeedForward));
+  }
+
+  public void setIndexerRPM(double RPM) {
+    final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
+    indexerMotor.setControl(m_request.withVelocity(RPM).withFeedForward(ShooterInputs.kShooterFeedForward));
+  }
+
+  public void setIndexerRPM() {
+    final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
+    indexerMotor.setControl(m_request.withVelocity(ShooterInputs.kShooterGoalRPS).withFeedForward(ShooterInputs.kShooterFeedForward));
   }
 
   // Commands
@@ -308,6 +334,54 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants,
   public Command shootCommand(double shooterSpeed, double indexerSpeed) {
     return this.run(
       () -> indexAndShoot(shooterSpeed, indexerSpeed)).andThen(stopCommand());
+  }
+
+  /**
+   * Just runs the shooter.
+   * @param shooterSpeed - Defaults in ShooterInputs.java
+   * @return
+   */
+  public Command justShootCommand(double shooterSpeed) {
+    return this.runEnd(
+      () -> shoot(shooterSpeed),
+      () -> stop()
+    );
+  }
+
+    /**
+   * Just runs the shooter.
+   * @param shooterSpeed - Defaults in ShooterInputs.java
+   * @return
+   */
+  public Command justShootCommand() {
+    return this.runEnd(
+      () -> shoot(),
+      () -> stop()
+    );
+  }
+
+  /**
+   * Just runs the indexer.
+   * @param indexSpeed - Defaults in ShooterInputs.java
+   * @return
+   */
+  public Command justIndexCommand(double indexSpeed) {
+    return this.runEnd(
+      () -> index(indexSpeed), 
+      () -> stop()
+    );
+  }
+
+    /**
+   * Just runs the indexer.
+   * @param indexSpeed - Defaults in ShooterInputs.java
+   * @return
+   */
+  public Command justIndexCommand() {
+    return this.runEnd(
+      () -> index(), 
+      () -> stop()
+    );
   }
 
   /**
@@ -351,7 +425,7 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants,
    */
   public Command setRPMCommand(double RPM) {
     return this.run(
-      () -> setRPM(RPM)).andThen(stopCommand());
+      () -> setShooterRPM(RPM)).andThen(stopCommand());
   }
 
   /**
@@ -362,7 +436,7 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants,
    */
   public Command setRPMCommand() {
     return this.run(
-      () -> setRPM()).andThen(stopCommand());
+      () -> setShooterRPM()).andThen(stopCommand());
   }
 
 }
