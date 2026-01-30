@@ -6,6 +6,7 @@ package frc.robot.simulation.shooter;
 
 import static edu.wpi.first.units.Units.Volts;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -27,6 +28,7 @@ public class ShooterSimulation extends SubsystemBase implements ShooterSimulatio
       DCMotor.getKrakenX60(shooterID), 0.06, shooterRatio),
     DCMotor.getKrakenX60(shooterID));
   private TalonFXConfiguration shooterConfigs = new TalonFXConfiguration();
+  private CurrentLimitsConfigs shooterLimitsConfigs = new CurrentLimitsConfigs();
 
   /** Creates a new ShooterSimulation. */
   public ShooterSimulation() {
@@ -37,6 +39,11 @@ public class ShooterSimulation extends SubsystemBase implements ShooterSimulatio
     shooterConfigs.Slot0.kV = ShooterSimulationInputs.shooterKV.get();
     shooterConfigs.Slot0.kA = ShooterSimulationInputs.shooterKA.get();
     shooterConfigs.Slot0.kS = ShooterSimulationInputs.shooterKS.get();
+    shooterLimitsConfigs.StatorCurrentLimit = 80;
+    shooterLimitsConfigs.SupplyCurrentLimit = 80;
+    shooterLimitsConfigs.StatorCurrentLimitEnable = true;
+    shooterLimitsConfigs.SupplyCurrentLimitEnable = true;
+    shooter.getConfigurator().apply(shooterLimitsConfigs);
     shooter.getConfigurator().apply(shooterConfigs);
   }
 
