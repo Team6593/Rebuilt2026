@@ -19,6 +19,8 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import frc.robot.simulation.utils.FieldSimulation;
+
 public class ShooterSimulation extends SubsystemBase implements ShooterSimulationConstants{
 
   private TalonFX shooter = new TalonFX(shooterID);
@@ -45,6 +47,7 @@ public class ShooterSimulation extends SubsystemBase implements ShooterSimulatio
     shooterLimitsConfigs.SupplyCurrentLimitEnable = true;
     shooter.getConfigurator().apply(shooterLimitsConfigs);
     shooter.getConfigurator().apply(shooterConfigs);
+    SmartDashboard.putData(FieldSimulation.fieldSim);
   }
 
   @Override
@@ -85,6 +88,10 @@ public class ShooterSimulation extends SubsystemBase implements ShooterSimulatio
 
   public void shoot(double speed) {
     shooter.set(speed);
+  }
+
+  public double getRotorVelocity() {
+    return shooter.getRotorVelocity().getValueAsDouble();
   }
 
   public void stop() {

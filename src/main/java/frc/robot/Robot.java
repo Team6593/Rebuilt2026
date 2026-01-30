@@ -24,7 +24,7 @@ import frc.robot.simulation.shooter.ShooterSimulation;
 public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
 
-    private Field2d field = new Field2d();
+    public Field2d field = new Field2d();
 
     private final RobotContainer m_robotContainer;
 
