@@ -109,7 +109,8 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants, S
    * @param setpoint - Defaults to value in IntakeInputs.java
    */
   public void pivotToSetpoint(double setpoint) {
-    pivotController.setSetpoint(setpoint, ControlType.kPosition);
+    // pivotController.setSetpoint(setpoint, ControlType.kPosition);
+    pivotController.setReference(setpoint, ControlType.kPosition);
   }
 
   /**
