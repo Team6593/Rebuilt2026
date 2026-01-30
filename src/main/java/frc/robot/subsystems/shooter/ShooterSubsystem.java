@@ -63,7 +63,9 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants,
     shooterConfigs.kP = ShooterInputs.kP;
     shooterConfigs.kV = ShooterInputs.kV;
     shooterConfigs.kA = ShooterInputs.kA; 
+    shooterConfigs.kS = ShooterInputs.kS;
 
+    shootConfigurator.apply(shooterConfigs);
     shootConfigurator.apply(shooterLimitConfigs);
     indexerConfigurator.apply(indexerLimitConfigs);
 
@@ -71,7 +73,7 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants,
     Preferences.initDouble(ShooterInputs.kPKey, ShooterInputs.kP);
     Preferences.initDouble(ShooterInputs.kVKey, ShooterInputs.kV);
     Preferences.initDouble(ShooterInputs.kAKey, ShooterInputs.kA);
-    Preferences.initDouble(ShooterInputs.kShooterFeedForwardKey, ShooterInputs.kShooterFeedForward);
+    Preferences.initDouble(ShooterInputs.kShooterFeedForwardKey, ShooterInputs.kS);
     Preferences.initDouble(ShooterInputs.kShooterSpeedKey, ShooterInputs.kShooterSpeed);
     Preferences.initDouble(ShooterInputs.kIndexerSpeedKey, ShooterInputs.kIndexerSpeed);
 
@@ -127,10 +129,10 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants,
       shooterConfigs.kA = ShooterInputs.kA;
       System.out.println("New kA: " + ShooterInputs.kA);
     }
-    if (ShooterInputs.kShooterFeedForward != Preferences.getDouble(ShooterInputs.kShooterFeedForwardKey, ShooterInputs.kShooterFeedForward)) {
-      System.out.println("Old kShooterFeedForward: " + ShooterInputs.kShooterFeedForward);
-      ShooterInputs.kShooterFeedForward = Preferences.getDouble(ShooterInputs.kShooterFeedForwardKey, ShooterInputs.kShooterFeedForward);
-      System.out.println("New kShooterFeedForward: " + ShooterInputs.kShooterFeedForward);
+    if (ShooterInputs.kS != Preferences.getDouble(ShooterInputs.kShooterFeedForwardKey, ShooterInputs.kS)) {
+      System.out.println("Old kShooterFeedForward: " + ShooterInputs.kS);
+      ShooterInputs.kS = Preferences.getDouble(ShooterInputs.kShooterFeedForwardKey, ShooterInputs.kS);
+      System.out.println("New kShooterFeedForward: " + ShooterInputs.kS);
     }
     if (ShooterInputs.kShooterSpeed != Preferences.getDouble(ShooterInputs.kShooterSpeedKey, ShooterInputs.kShooterSpeed)) {
       System.out.println("Old kShooterSpeed: " + ShooterInputs.kShooterSpeed);
@@ -269,9 +271,9 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants,
    * @param RPM - Desired RPM (Do not put RPS, method divides by 60) (default in ShooterConstants.java)
    * @param feedForward - Desired feedforward (V to overcome gravity) (default in ShooterConstants.java)
    */
-  public void setRPM(double RPM, double feedForward) {
+  public void setRPM(double RPM) {
     final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
-    shooterMotor.setControl(m_request.withVelocity(RPM / 60).withFeedForward(feedForward));
+    shooterMotor.setControl(m_request.withVelocity(RPM / 60));
   }
 
   public double getRPM() {
@@ -290,7 +292,7 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants,
    */
   public void setShooterRPM(double RPM) {
     final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
-    shooterMotor.setControl(m_request.withVelocity(RPM / 60).withFeedForward(0.1));
+    shooterMotor.setControl(m_request.withVelocity(RPM / 60));
   }
 
   /**
@@ -300,17 +302,17 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants,
    */
   public void setShooterRPM() {
     final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
-    shooterMotor.setControl(m_request.withVelocity(ShooterInputs.kShooterGoalRPS).withFeedForward(ShooterInputs.kShooterFeedForward));
+    shooterMotor.setControl(m_request.withVelocity(ShooterInputs.kShooterGoalRPS));
   }
 
   public void setIndexerRPM(double RPM) {
     final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
-    indexerMotor.setControl(m_request.withVelocity(RPM).withFeedForward(ShooterInputs.kShooterFeedForward));
+    indexerMotor.setControl(m_request.withVelocity(RPM));
   }
 
   public void setIndexerRPM() {
     final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
-    indexerMotor.setControl(m_request.withVelocity(ShooterInputs.kShooterGoalRPS).withFeedForward(ShooterInputs.kShooterFeedForward));
+    indexerMotor.setControl(m_request.withVelocity(ShooterInputs.kShooterGoalRPS));
   }
 
   // Commands
@@ -411,20 +413,9 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants,
    * @param feedForward - Desired feedforward (V to overcome gravity) (default in ShooterConstants.java)
    * @return command
    */
-  public Command setRPMCommand(double RPM, double feedForward) {
-    return this.run(
-      () -> setRPM(RPM, feedForward)).andThen(stopCommand());
-  }
-
-  /**
-   * Comamnd that sets the RPM.
-   * @param RPM - Desired RPM (Do not put RPS, method divides by 60) (default in ShooterConstants.java)
-   * @param feedForward - Desired feedforward (V to overcome gravity) (default in ShooterConstants.java)
-   * @return command
-   */
   public Command setRPMCommand(double RPM) {
     return this.run(
-      () -> setShooterRPM(RPM)).andThen(stopCommand());
+      () -> setRPM(RPM)).andThen(stopCommand());
   }
 
   /**

@@ -8,7 +8,6 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -24,7 +23,7 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants, S
 
   // Devices
   private SparkMax intakeMotor = new SparkMax(intakeMotorID, MotorType.kBrushless);
-  private SparkFlex pivotMotor = new SparkFlex(pivotMotorID, MotorType.kBrushless);
+  private SparkMax pivotMotor = new SparkMax(pivotMotorID, MotorType.kBrushless);
 
   private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
   private SparkFlexConfig pivotConfig = new SparkFlexConfig();

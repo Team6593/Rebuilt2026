@@ -4,8 +4,6 @@
 
 package frc.robot.commands;
 
-import com.ctre.phoenix6.controls.ControlRequest;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.feeder.FeederSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
@@ -31,19 +29,18 @@ public class ShootSequence extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+    shooterSubsystem.setShooterRPM(-2200);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterSubsystem.shoot(-.36);
     shooterSubsystem.index(1);
     if (shooterSubsystem.getRPM() < -2000) {
       feederSubsystem.feed(.5);
       intakeSubsystem.runIntake(.45);
     }
-    
+
   }
 
   // Called once the command ends or is interrupted.
