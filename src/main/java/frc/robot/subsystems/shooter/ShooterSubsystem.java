@@ -289,6 +289,10 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants,
     shooterMasterMotor.setControl(m_request.withVelocity(RPM / 60));
   }
 
+  public void changeRPM(double rpm) {
+    
+  }
+
   public double getRPM() {
     return shooterMasterMotor.getRotorVelocity().getValueAsDouble() * 60;
   }
