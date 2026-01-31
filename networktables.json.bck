@@ -62,5 +62,21 @@
     "properties": {
       "persistent": true
     }
+  },
+  {
+    "name": "/Preferences/kShooterSpeedKey",
+    "type": "double",
+    "value": 1.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/kIndexerSpeedKey",
+    "type": "double",
+    "value": 1.0,
+    "properties": {
+      "persistent": true
+    }
   }
 ]

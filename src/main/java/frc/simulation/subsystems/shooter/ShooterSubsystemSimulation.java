@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.simulation.shooter;
+package frc.simulation.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.Volts;
 
@@ -15,11 +15,12 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class ShooterSimulation extends SubsystemBase implements ShooterSimulationConstants{
+public class ShooterSubsystemSimulation extends SubsystemBase implements ShooterConstantsSimulation{
 
   private TalonFX shooter = new TalonFX(shooterID);
   private TalonFXSimState shooterSim = shooter.getSimState();
@@ -31,14 +32,15 @@ public class ShooterSimulation extends SubsystemBase implements ShooterSimulatio
   private CurrentLimitsConfigs shooterLimitsConfigs = new CurrentLimitsConfigs();
 
   /** Creates a new ShooterSimulation. */
-  public ShooterSimulation() {
+  public ShooterSubsystemSimulation() {
+    Preferences.initDouble(ShooterInputsSimulation.goalRPMKey, ShooterInputsSimulation.goalRPM);
     shooterSim.Orientation = ChassisReference.Clockwise_Positive;
     shooterSim.setMotorType(TalonFXSimState.MotorType.KrakenX60);
     shooterConfigs.MotionMagic.MotionMagicCruiseVelocity = 6000;
-    shooterConfigs.Slot0.kP = ShooterSimulationInputs.shooterKP.get();
-    shooterConfigs.Slot0.kV = ShooterSimulationInputs.shooterKV.get();
-    shooterConfigs.Slot0.kA = ShooterSimulationInputs.shooterKA.get();
-    shooterConfigs.Slot0.kS = ShooterSimulationInputs.shooterKS.get();
+    shooterConfigs.Slot0.kP = ShooterInputsSimulation.shooterKP.get();
+    shooterConfigs.Slot0.kV = ShooterInputsSimulation.shooterKV.get();
+    shooterConfigs.Slot0.kA = ShooterInputsSimulation.shooterKA.get();
+    shooterConfigs.Slot0.kS = ShooterInputsSimulation.shooterKS.get();
     shooterLimitsConfigs.StatorCurrentLimit = 80;
     shooterLimitsConfigs.SupplyCurrentLimit = 80;
     shooterLimitsConfigs.StatorCurrentLimitEnable = true;
@@ -57,6 +59,7 @@ public class ShooterSimulation extends SubsystemBase implements ShooterSimulatio
     shooterSim.setRawRotorPosition(m_motorSimModel.getAngularPosition().times(shooterRatio));
     shooterSim.setRotorVelocity(m_motorSimModel.getAngularVelocity().times(shooterRatio));
     smartdashboardLogging();
+    loadPreferences();
   }
 
   // Methods
@@ -80,7 +83,12 @@ public class ShooterSimulation extends SubsystemBase implements ShooterSimulatio
    */
   public void setRPM() {
     final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
-    shooter.setControl(m_request.withVelocity(ShooterSimulationInputs.shooterRPM.get() / 60));
+    shooter.setControl(m_request.withVelocity(ShooterInputsSimulation.shooterRPM.get() / 60));
+  }
+
+  public void changingRPM() {
+    final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
+    shooter.setControl(m_request.withVelocity(Preferences.getDouble(ShooterInputsSimulation.goalRPMKey, 0) / 60));    
   }
 
   public void shoot(double speed) {
@@ -89,6 +97,14 @@ public class ShooterSimulation extends SubsystemBase implements ShooterSimulatio
 
   public void stop() {
     shooter.stopMotor();
+  }
+
+  public void loadPreferences() {
+    if (ShooterInputsSimulation.goalRPM != Preferences.getDouble(ShooterInputsSimulation.goalRPMKey, ShooterInputsSimulation.goalRPM)) {
+      System.out.println("Old goalRPM: " + ShooterInputsSimulation.goalRPM);
+      ShooterInputsSimulation.goalRPM = Preferences.getDouble(ShooterInputsSimulation.goalRPMKey, ShooterInputsSimulation.goalRPM);
+      System.out.println("New goalRPM: " + ShooterInputsSimulation.goalRPM);
+    }
   }
   
 }

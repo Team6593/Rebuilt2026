@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
+
 import com.ctre.phoenix6.HootAutoReplay;
 
 import edu.wpi.first.math.util.Units;
@@ -17,9 +19,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.simulation.commands.ShooterSimulationRPMCommand;
-import frc.robot.simulation.commands.ShooterSimulationShoot;
-import frc.robot.simulation.shooter.ShooterSimulation;
+import frc.simulation.commands.intake.PivotToHomeSimulationCommand;
+import frc.simulation.commands.intake.PivotToSetpointSimulationCommand;
+import frc.simulation.commands.shooter.ShooterSOTFSimulationCommand;
+import frc.simulation.commands.shooter.ShooterSimulationRPMCommand;
+import frc.simulation.commands.shooter.ShooterSimulationShoot;
+import frc.simulation.subsystems.intake.IntakeSubsystemSimulation;
+import frc.simulation.subsystems.shooter.ShooterInputsSimulation;
+import frc.simulation.subsystems.shooter.ShooterSubsystemSimulation;
 
 public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
@@ -28,7 +35,8 @@ public class Robot extends TimedRobot {
 
     private final RobotContainer m_robotContainer;
 
-    private ShooterSimulation shooterSimulation = new ShooterSimulation();
+    private ShooterSubsystemSimulation shooterSimulation = new ShooterSubsystemSimulation();
+    private IntakeSubsystemSimulation intakeSimulation = new IntakeSubsystemSimulation();
 
     private CommandXboxController simJoystick = new CommandXboxController(3);
 
@@ -124,7 +132,9 @@ public class Robot extends TimedRobot {
     public void simulationPeriodic() {
 
         simJoystick.x().whileTrue(new ShooterSimulationRPMCommand(shooterSimulation));
-        simJoystick.a().whileTrue(new ShooterSimulationShoot(shooterSimulation));
+        simJoystick.a().whileTrue(new ShooterSOTFSimulationCommand(shooterSimulation));
+        simJoystick.b().onTrue(new PivotToSetpointSimulationCommand(intakeSimulation));
+        simJoystick.y().onTrue(new PivotToHomeSimulationCommand(intakeSimulation));
 
     }
 }
