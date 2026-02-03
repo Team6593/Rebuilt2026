@@ -39,6 +39,7 @@ public class ShootSequence extends Command {
       shooterSubsystem.index(1);
       feederSubsystem.feed(.5);
       intakeSubsystem.runIntake(.45);
+      shooterSubsystem.setMasterRPM(0);
     }
 
   }

@@ -23,12 +23,17 @@ public class ShooterSimulationRPMCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSimulation.setRPM(2000);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    shooterSimulation.setRPM(-1950);
+    if (shooterSimulation.getRPM() < -1900) {
+      shooterSimulation.setRPM(shooterSimulation.getRPM() + 50);
+    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
