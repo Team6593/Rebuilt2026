@@ -110,7 +110,7 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants, S
    */
   public void pivotToSetpoint(double setpoint) {
     // pivotController.setSetpoint(setpoint, ControlType.kPosition);
-    pivotController.setReference(setpoint, ControlType.kPosition);
+    pivotController.setSetpoint(setpoint, ControlType.kPosition);
   }
 
   /**
@@ -129,12 +129,17 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants, S
     return pivotController.isAtSetpoint();
   }
 
+  public void pivot(double speed) {
+    pivotMotor.set(speed);
+  }
+
   /**
    * Stops the intake.
    */
   @Override
   public void stop() {
     intakeMotor.stopMotor();
+    pivotMotor.stopMotor();
   }
 
   // Commands

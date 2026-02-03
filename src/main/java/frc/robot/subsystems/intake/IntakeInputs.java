@@ -12,6 +12,6 @@ public class IntakeInputs {
     // PID
     public static final String kPivotPKey = "kPivotPKey";
     public static final String kPivotPositionKey = "kPivotPositionKey";
-    public static double kPivotP = 30;
+    public static double kPivotP = 50;
     public static double kPivotPosition = .3;
 }
