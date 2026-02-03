@@ -83,6 +83,10 @@ public class ShooterSimulation extends SubsystemBase implements ShooterSimulatio
     shooter.setControl(m_request.withVelocity(ShooterSimulationInputs.shooterRPM.get() / 60));
   }
 
+  public double getRPM() {
+    return shooter.getVelocity().getValueAsDouble() * 60;
+  }
+
   public void shoot(double speed) {
     shooter.set(speed);
   }

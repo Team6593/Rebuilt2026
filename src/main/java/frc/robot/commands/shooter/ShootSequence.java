@@ -36,9 +36,10 @@ public class ShootSequence extends Command {
   @Override
   public void execute() {
     shooterSubsystem.index(1);
-    if (shooterSubsystem.getRPM() < -1850) {
+    if (shooterSubsystem.getRPM() < -1900) {
       feederSubsystem.feed(.5);
       intakeSubsystem.runIntake(.45);
+      shooterSubsystem.setMasterRPM(0);
     }
 
   }
