@@ -1,6 +1,6 @@
 package frc.robot.utils;
 
-public class RevControllerButtons {
+public class RevControllerConstants {
 
     // Main buttons
     /**
