@@ -26,8 +26,9 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.feeder.FeederSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.utils.RevControllerConstants;
-import frc.robot.subsystems.intake.IntakeSubsystem; 
-
+import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.limelight.Limelight;
+import frc.robot.subsystems.limelight.LimelightConstants;
 import frc.robot.commands.intake.PivotToSetpointCommand;
 import frc.robot.commands.intake.pivotCommand;
 import frc.robot.commands.intake.IntakeCommand;
@@ -55,6 +56,7 @@ public class RobotContainer {
     public final ShooterSubsystem shooter = new ShooterSubsystem();
     public final IntakeSubsystem intake = new IntakeSubsystem();
     public final FeederSubsystem feeder = new FeederSubsystem();
+    public final Limelight limelight = new Limelight();
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
@@ -120,6 +122,15 @@ public class RobotContainer {
         joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
         drivetrain.registerTelemetry(logger::telemeterize);
+    }
+    
+    // Methods
+    public double limelightAimProportional() {
+        double targetingAngularVelocity = LimelightHelpers.getTX("limelight") * LimelightConstants.kAimP;
+        targetingAngularVelocity *= MaxSpeed;
+        // invert if tx is positive when the target is to the right of the crosshair
+        targetingAngularVelocity *= -1.0;
+        return targetingAngularVelocity;
     }
 
     public Command getAutonomousCommand() {

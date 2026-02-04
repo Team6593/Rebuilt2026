@@ -1,4 +1,4 @@
-package frc.robot.simulation.shooter;
+package frc.simulation.shooter;
 
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 

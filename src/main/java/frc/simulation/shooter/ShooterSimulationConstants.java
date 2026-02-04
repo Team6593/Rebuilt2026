@@ -1,4 +1,4 @@
-package frc.robot.simulation.shooter;
+package frc.simulation.shooter;
 
 public interface ShooterSimulationConstants {
     int shooterID = 32;
