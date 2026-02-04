@@ -63,6 +63,7 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants, S
     SmartDashboard.putNumber("Pivot Applied Output A", pivotMotor.getOutputCurrent());
     SmartDashboard.putNumber("Pivot Temp (F)", ((pivotMotor.getMotorTemperature()) * 1.8) + 32);
     SmartDashboard.putNumber("Pivot Position", pivotEncoder.getPosition());
+    SmartDashboard.putNumber("Pivot Voltage", pivotMotor.getBusVoltage());
   }
 
   /**
