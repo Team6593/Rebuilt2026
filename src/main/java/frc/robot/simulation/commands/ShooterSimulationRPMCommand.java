@@ -31,6 +31,7 @@ public class ShooterSimulationRPMCommand extends Command {
   public void execute() {
     shooterSimulation.setRPM(-1950);
     if (shooterSimulation.getRPM() < -1900) {
+      // insert feeder logic here and such
       shooterSimulation.setRPM(shooterSimulation.getRPM() + 50);
     }
   }
