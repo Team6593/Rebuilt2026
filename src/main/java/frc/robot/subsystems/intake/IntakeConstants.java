@@ -11,4 +11,5 @@ import org.littletonrobotics.junction.AutoLog;
 public interface IntakeConstants {
     int intakeMotorID = 20;
     int pivotMotorID = 21;
+    int pivotMotor2ID = 22;
 }

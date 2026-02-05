@@ -114,8 +114,8 @@ public class RobotContainer {
         joystick.button(RevControllerConstants.m_square).onTrue(new StopAll(feeder, intake, shooter));
         // joystick.y().onTrue(new PivotToHomeCommand(intake));
         // joystick.b().onTrue(new PivotToSetpointCommand(intake));
-        joystick.button(RevControllerConstants.m_share).whileTrue(new pivotCommand(intake, 1));
-        joystick.button(RevControllerConstants.m_options).whileTrue(new pivotCommand(intake, -1));
+        joystick.button(RevControllerConstants.m_share).onTrue(new PivotToHomeCommand(intake));
+        joystick.button(RevControllerConstants.m_options).onTrue(new PivotToSetpointCommand(intake));
         joystick.button(RevControllerConstants.m_M1).whileTrue(new IntakeCommand(intake));
 
         // Reset the field-centric heading on left bumper press.

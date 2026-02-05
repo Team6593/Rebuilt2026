@@ -9,10 +9,17 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkRelativeEncoder;
+import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -24,22 +31,29 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants, S
   // Devices
   private SparkMax intakeMotor = new SparkMax(intakeMotorID, MotorType.kBrushless);
   private SparkMax pivotMotor = new SparkMax(pivotMotorID, MotorType.kBrushless);
+  private SparkMax pivot2Motor = new SparkMax(pivotMotor2ID, MotorType.kBrushless);
 
   private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
-  private SparkFlexConfig pivotConfig = new SparkFlexConfig();
-  private RelativeEncoder pivotEncoder = pivotMotor.getEncoder();
+  private SparkMaxConfig pivotConfig = new SparkMaxConfig();
+  private SparkAbsoluteEncoder pivotEncoder = pivotMotor.getAbsoluteEncoder();
+
+  private ProfiledPIDController pidController = new ProfiledPIDController(IntakeInputs.kPivotP, 0, 0, new TrapezoidProfile.Constraints(10, 10));
+  private ArmFeedforward armFeedforward = new ArmFeedforward(.5, 12, 12.5);
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
-
     pivotConfig
       .closedLoop
-        .p(IntakeInputs.kPivotP);
+        .p(IntakeInputs.kPivotP)
+        .i(0)
+          .feedForward
+            .kV(.126);
+    pivotConfig.encoder.positionConversionFactor(360.0);
+    pivotConfig.absoluteEncoder.positionConversionFactor(360.0);
     pivotMotor.configure(pivotConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    pivot2Motor.configure(pivotConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
     Preferences.initDouble(IntakeInputs.kIntakeSpeedKey, IntakeInputs.kIntakeSpeed);
-    Preferences.initDouble(IntakeInputs.kPivotPKey, IntakeInputs.kPivotP);
-    Preferences.initDouble(IntakeInputs.kPivotPositionKey, IntakeInputs.kPivotPosition);
   }
 
   @Override
@@ -76,17 +90,6 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants, S
       IntakeInputs.kIntakeSpeed = Preferences.getDouble(IntakeInputs.kIntakeSpeedKey, IntakeInputs.kIntakeSpeed);
       System.out.println("New kIntakeSpeed: " + IntakeInputs.kIntakeSpeed);
     }
-    if (IntakeInputs.kPivotP != Preferences.getDouble(IntakeInputs.kPivotPKey, IntakeInputs.kPivotP)) {
-      System.out.println("Old kPivotP: " + IntakeInputs.kPivotP);
-      IntakeInputs.kPivotP = Preferences.getDouble(IntakeInputs.kPivotPKey, IntakeInputs.kPivotP);
-      pivotConfig.closedLoop.p(IntakeInputs.kPivotP);
-      System.out.println("New kPivotP: " + IntakeInputs.kPivotP);
-    }
-    if (IntakeInputs.kPivotPosition != Preferences.getDouble(IntakeInputs.kPivotPositionKey, IntakeInputs.kPivotPosition)) {
-      System.out.println("Old kIntakeSpeed: " + IntakeInputs.kPivotPosition);
-      IntakeInputs.kPivotPosition = Preferences.getDouble(IntakeInputs.kPivotPositionKey, IntakeInputs.kPivotPosition);
-      System.out.println("New kPivotPosition: " + IntakeInputs.kPivotPosition);
-    }
   }
 
   /**
@@ -105,29 +108,63 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants, S
     intakeMotor.set(IntakeInputs.kIntakeSpeed);
   }
 
-  /**
-   * Pivots the intake to a setpoint.
-   * @param setpoint - Defaults to value in IntakeInputs.java
-   */
-  public void pivotToSetpoint(double setpoint) {
-    // pivotController.setSetpoint(setpoint, ControlType.kPosition);
-    pivotController.setSetpoint(setpoint, ControlType.kPosition);
+  public void pidToSetpoint(double setpoint, double p) {
+    pidController.setP(p);
+    pidController.setGoal(setpoint);
+    var pidOutput = 
+      pidController.calculate(
+        pivotEncoder.getPosition(), Units.degreesToRadians(setpoint));
+    var feedForwardOutput =
+      armFeedforward.calculate(setpoint, pidController.getSetpoint().velocity);
+    pivotMotor.setVoltage(pidOutput);
+  }
+
+  public boolean pidAtSetpoint() {
+    return pidController.atSetpoint();
+  }
+
+  public boolean atGoal() {
+    pidController.setTolerance(5);
+    return pidController.atSetpoint();
   }
 
   /**
    * Pivots the intake to a setpoint.
    * @param setpoint - Defaults to value in IntakeInputs.java
+   * @param p
    */
-  public void pivotToSetpoint() {
-    pivotController.setSetpoint(IntakeInputs.kPivotPosition, ControlType.kPosition);
+  public void pivotToSetpoint(double setpoint, double p) {
+    // pivotController.setSetpoint(setpoint, ControlType.kPosition);
+    pivotConfig.closedLoop.p(p);
+    pivot2Motor.configure(pivotConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    pivotMotor.configure(pivotConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    pivotController.setSetpoint(setpoint, ControlType.kPosition);
+  }
+
+  public boolean ihatemylife(double setpoint) {
+    double tolerance = 5;
+    double error = Math.abs(pivotEncoder.getPosition() - setpoint);
+    if (error < tolerance) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   /**
    * Returns if the pivot is at the setpoint.
+   * @param setpoint
    * @return boolean True if at setpoint, False if otherwise.
    */
-  public boolean atSetpoint() {
-    return pivotController.isAtSetpoint();
+  public boolean atSetpoint(double setpoint) {
+    // return pivotController.isAtSetpoint();
+    double tolerance = 3;
+    double error = Math.abs(pivotEncoder.getPosition() - setpoint);
+    if (error < tolerance) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   public void pivot(double speed) {
@@ -186,28 +223,6 @@ public class IntakeSubsystem extends SubsystemBase implements IntakeConstants, S
   public Command reverseIntakeCommand() {
     return this.run(
       () -> intake())
-      .andThen(stopIntakeCommand());
-  }
-
-  /**
-   * Command that pivots the pivot to the setpoint.
-   * @param setpoint - Defaults to value in IntakeInputs.java
-   * @return
-   */
-  public Command pivotToSetpointCommand(double setpoint) {
-    return this.run(
-      () -> pivotToSetpoint(setpoint))
-      .andThen(stopIntakeCommand());
-  }
-
-  /**
-   * Command that pivots the pivot to the setpoint.
-   * @param setpoint - Defaults to value in IntakeInputs.java
-   * @return
-   */
-  public Command pivotToSetpointCommand() {
-    return this.run(
-      () -> pivotToSetpoint())
       .andThen(stopIntakeCommand());
   }
 
