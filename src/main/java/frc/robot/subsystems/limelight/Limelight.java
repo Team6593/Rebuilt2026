@@ -7,17 +7,25 @@ package frc.robot.subsystems.limelight;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 
 public class Limelight extends SubsystemBase {
 
   /** Creates a new Limelight. */
-  public Limelight() {}
+  public Limelight() {
+    LimelightHelpers.setPipelineIndex("base", 0);
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    sdLogging();
+  }
+
+  public void sdLogging() {
+    SmartDashboard.putNumber("Distance (in.)", estimateDistance());
   }
 
   public double estimateDistance() {

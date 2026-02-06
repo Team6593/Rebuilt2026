@@ -73,6 +73,7 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants,
     shooterMasterConfigurator.apply(shooterLimitConfigs);
     shooterSecondaryConfigurator.apply(shooterConfigs);
     shooterSecondaryConfigurator.apply(shooterLimitConfigs);
+    indexerConfigurator.apply(shooterConfigs);
     indexerConfigurator.apply(indexerLimitConfigs);
 
     shooterSecondaryMotor.setControl(new Follower(shooterMasterID, MotorAlignmentValue.Opposed));
@@ -92,7 +93,6 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants,
     // This method will be called once per scheduler run
     loadPreferences();
     smartdashboardLogging();
-
   }
 
   // Data Logging
@@ -207,7 +207,7 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants,
   /**
    * Method that goes from velocity to the distance by doing a binary search
    * through the tree map.
-   * @param velocity
+   * @param velocity - RPM
    * @return distance
    */
   public double velocityToEffectiveDistance(double velocity) {
@@ -289,12 +289,17 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants,
     shooterMasterMotor.setControl(m_request.withVelocity(RPM / 60));
   }
 
-  public void changeRPM(double rpm) {
-    
+  public void setIndexerRPM(double RPM) {
+    final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
+    indexerMotor.setControl(m_request.withVelocity(RPM / 60));
   }
 
-  public double getRPM() {
+  public double getShooterRPM() {
     return shooterMasterMotor.getRotorVelocity().getValueAsDouble() * 60;
+  }
+
+  public double getIndexerRPM() {
+    return indexerMotor.getRotorVelocity().getValueAsDouble() * 60;
   }
 
   public double getDutyCycle() {
@@ -320,11 +325,6 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants,
   public void setShooterRPM() {
     final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
     shooterMasterMotor.setControl(m_request.withVelocity(ShooterInputs.kShooterGoalRPS));
-  }
-
-  public void setIndexerRPM(double RPM) {
-    final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
-    indexerMotor.setControl(m_request.withVelocity(RPM));
   }
 
   public void setIndexerRPM() {
