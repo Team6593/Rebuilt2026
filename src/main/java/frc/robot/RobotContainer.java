@@ -12,6 +12,8 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.FollowPathCommand;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -37,6 +39,10 @@ import frc.robot.commands.intake.PivotToHomeCommand;
 public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+
+    private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
+    private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
+    private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -131,6 +137,26 @@ public class RobotContainer {
         // invert if tx is positive when the target is to the right of the crosshair
         targetingAngularVelocity *= -1.0;
         return targetingAngularVelocity;
+    }
+
+    public double limelightRangeProportional() {
+        double kP = .1;
+        double targetingForwardSpeed = LimelightHelpers.getTY("limelight") * kP;
+        targetingForwardSpeed *= MaxSpeed;
+        targetingForwardSpeed *= -1;
+        return targetingForwardSpeed;
+    }
+
+    public void drive() {
+        var xSpeed = 
+            -m_xspeedLimiter.calculate(MathUtil.applyDeadband(joystick.getLeftY(), 0.02))
+                * MaxSpeed;
+        var ySpeed = 
+            -m_yspeedLimiter.calculate(MathUtil.applyDeadband(joystick.getLeftX(), .02))
+                * MaxSpeed;
+        var rot = 
+            -m_rotLimiter.calculate(MathUtil.applyDeadband(joystick.getRightX(), 0.02))
+                * MaxSpeed;
     }
 
     public Command getAutonomousCommand() {
