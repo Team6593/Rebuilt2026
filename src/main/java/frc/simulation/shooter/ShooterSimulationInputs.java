@@ -7,6 +7,7 @@ public class ShooterSimulationInputs {
     public static LoggedNetworkNumber shooterFeedForward = new LoggedNetworkNumber("/Tuning/shooterFeedForward", .5);
     public static LoggedNetworkNumber shooterKP = new LoggedNetworkNumber("/Tuning/shooterKP", .49);
     public static LoggedNetworkNumber shooterKV = new LoggedNetworkNumber("/Tuning/shooterKV", .12);
-    public static LoggedNetworkNumber shooterKS = new LoggedNetworkNumber("/Tuning/shooterKA", .06);
-    public static LoggedNetworkNumber shooterKA = new LoggedNetworkNumber("/Tuning/shooterKS", .5);
+    public static LoggedNetworkNumber shooterKA = new LoggedNetworkNumber("/Tuning/shooterKA", .06);
+    public static LoggedNetworkNumber shooterKS = new LoggedNetworkNumber("/Tuning/shooterKS", .5);
+    public static LoggedNetworkNumber kPosition = new LoggedNetworkNumber("/Tuning/kPosition", 1.5);
 }

@@ -6,6 +6,8 @@ package frc.simulation.shooter;
 
 import static edu.wpi.first.units.Units.Volts;
 
+import java.util.TreeMap;
+
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -17,9 +19,11 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utils.ShooterParams;
 
-public class ShooterSimulation extends SubsystemBase implements ShooterSimulationConstants{
+public class ShooterSimulation extends SubsystemBase implements ShooterSimulationConstants  {
 
   private TalonFX shooter = new TalonFX(shooterID);
   private TalonFXSimState shooterSim = shooter.getSimState();
@@ -29,9 +33,19 @@ public class ShooterSimulation extends SubsystemBase implements ShooterSimulatio
     DCMotor.getKrakenX60(shooterID));
   private TalonFXConfiguration shooterConfigs = new TalonFXConfiguration();
   private CurrentLimitsConfigs shooterLimitsConfigs = new CurrentLimitsConfigs();
+  private static final TreeMap<Double, ShooterParams> shooterMap = new TreeMap<>();
+  static {
+    shooterMap.put(1.0, new ShooterParams(1000, .5));
+    shooterMap.put(2.0, new ShooterParams(1200, .6));
+    shooterMap.put(3.0, new ShooterParams(1400, .7));
+    shooterMap.put(4.0, new ShooterParams(1600, .8));
+    shooterMap.put(5.0, new ShooterParams(2000, 1.0));
+    shooterMap.put(6.0, new ShooterParams(2100, 1.4));    
+  }
 
   /** Creates a new ShooterSimulation. */
   public ShooterSimulation() {
+    System.out.println("Initializing Tunables: " + ShooterSimulationInputs.kPosition.get());
     shooterSim.Orientation = ChassisReference.Clockwise_Positive;
     shooterSim.setMotorType(TalonFXSimState.MotorType.KrakenX60);
     shooterConfigs.MotionMagic.MotionMagicCruiseVelocity = 6000;
@@ -66,6 +80,43 @@ public class ShooterSimulation extends SubsystemBase implements ShooterSimulatio
   }
 
   /**
+   * Gets interpolated RPM.
+   * @param key - current distance
+   * @return
+   */
+  public ShooterParams getInterpolatedRPM(double key) {
+    if (shooterMap.containsKey(key)) {
+      return shooterMap.get(key);
+    }
+    Double lowerKey = shooterMap.floorKey(key);
+    Double upperKey = shooterMap.ceilingKey(key);
+    if (lowerKey == null) {
+      return shooterMap.get(upperKey);
+    }
+    if (upperKey == null) {
+      return shooterMap.get(lowerKey);
+    }
+    ShooterParams lowerParams = shooterMap.get(lowerKey);
+    ShooterParams upperParams = shooterMap.get(upperKey);
+    double ratio = (key - lowerKey) / (upperKey - lowerKey);
+    double rpm = interpolate(lowerParams.rpm, upperParams.rpm, ratio);
+    double tof = interpolate(lowerParams.tof, upperParams.tof, ratio);
+
+    return new ShooterParams(rpm, tof);
+  }
+
+  /**
+   * Interpolation method for the tree map.
+   * @param start - lower params
+   * @param end - upper params
+   * @param ratio - ratio
+   * @return
+   */
+  private static double interpolate(double start, double end, double ratio) {
+    return start + (end - start) * ratio;
+  }
+
+  /**
    * Sets simulated shooter to specified speed.
    * @param speed - Defaults to value in ShooterSimulationInputs.java
    */
@@ -93,6 +144,33 @@ public class ShooterSimulation extends SubsystemBase implements ShooterSimulatio
 
   public void stop() {
     shooter.stopMotor();
+  }
+
+  // Commands
+  /**
+   * Command that sets the rpm.
+   * @param RPM
+   * @return - command
+   */
+  public Command setRPMCommand(double RPM) {
+    return this.runEnd(
+      () -> setRPM(RPM),
+      () -> stop());
+  }
+
+  /**
+   * Command that sets the rpm.
+   * @return - command
+   */
+  public Command setRPMCommand() {
+    return this.runEnd(
+      () -> setRPM(),
+      () -> stop());
+  }
+
+  public Command stopRPMCommand() {
+    return this.runOnce(
+      () -> stop());
   }
   
 }
