@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.utils.RevControllerConstants;
+import frc.simulation.commands.ShooterSimDistanceSetter;
 import frc.simulation.commands.ShooterSimulationRPMCommand;
 import frc.simulation.commands.ShooterSimulationShoot;
 import frc.simulation.shooter.ShooterSimulation;
@@ -122,9 +124,11 @@ public class Robot extends TimedRobot {
 
     @Override
     public void simulationPeriodic() {
-
-        simJoystick.x().whileTrue(new ShooterSimulationRPMCommand(shooterSimulation));
-        simJoystick.a().whileTrue(new ShooterSimulationShoot(shooterSimulation));
-
+        simJoystick.povLeft().whileTrue(new ShooterSimulationRPMCommand(shooterSimulation));
+        simJoystick.povRight().onTrue(shooterSimulation.stopShooterSimCommand());
+        simJoystick.x().onTrue(new ShooterSimDistanceSetter(shooterSimulation, 1));
+        simJoystick.y().onTrue(new ShooterSimDistanceSetter(shooterSimulation, 2));
+        simJoystick.a().onTrue(new ShooterSimDistanceSetter(shooterSimulation, 2.5));
+        simJoystick.b().onTrue(new ShooterSimDistanceSetter(shooterSimulation, 3.1));
     }
 }

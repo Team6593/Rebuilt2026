@@ -17,7 +17,9 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utils.ShotCalculator;
 
 public class ShooterSimulation extends SubsystemBase implements ShooterSimulationConstants{
 
@@ -29,6 +31,7 @@ public class ShooterSimulation extends SubsystemBase implements ShooterSimulatio
     DCMotor.getKrakenX60(shooterID));
   private TalonFXConfiguration shooterConfigs = new TalonFXConfiguration();
   private CurrentLimitsConfigs shooterLimitsConfigs = new CurrentLimitsConfigs();
+  private double distanceSim = 0;
 
   /** Creates a new ShooterSimulation. */
   public ShooterSimulation() {
@@ -50,19 +53,19 @@ public class ShooterSimulation extends SubsystemBase implements ShooterSimulatio
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
     var motorVoltage = shooterSim.getMotorVoltageMeasure();
     m_motorSimModel.setInputVoltage(motorVoltage.in(Volts));
     m_motorSimModel.update(0.020);
     shooterSim.setRawRotorPosition(m_motorSimModel.getAngularPosition().times(shooterRatio));
     shooterSim.setRotorVelocity(m_motorSimModel.getAngularVelocity().times(shooterRatio));
-    smartdashboardLogging();
+    sdLogging();
   }
 
   // Methods
 
-  public void smartdashboardLogging() {
+  public void sdLogging() {
     SmartDashboard.putNumber("ShooterSim RPM", shooter.getRotorVelocity().getValueAsDouble() * 60);
+    SmartDashboard.putNumber("ShooterSim Distance", distanceSim);
   }
 
   /**
@@ -91,8 +94,21 @@ public class ShooterSimulation extends SubsystemBase implements ShooterSimulatio
     shooter.set(speed);
   }
 
+  public double getDistance() {
+    return distanceSim;
+  }
+
+  public void setDistance(double distance) {
+    distanceSim = distance;
+  }
+
   public void stop() {
     shooter.stopMotor();
+  }
+
+  public Command stopShooterSimCommand() {
+    return this.runOnce(
+      () -> stop());
   }
   
 }
