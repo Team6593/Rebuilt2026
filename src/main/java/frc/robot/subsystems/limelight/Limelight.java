@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.limelight;
 
+import static edu.wpi.first.units.Units.*;
+
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -11,6 +13,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
+import frc.robot.generated.TunerConstants;
 
 public class Limelight extends SubsystemBase {
 
@@ -28,10 +31,19 @@ public class Limelight extends SubsystemBase {
     sdLogging();
   }
 
+  // Methods
+
+  /**
+   * Logs values onto SD.
+   */
   public void sdLogging() {
     SmartDashboard.putNumber("Distance (in.)", estimateDistance());
   }
 
+  /**
+   * Gets distance from tag to inches using 3d apriltags (dont think it works?)
+   * @return distance (inches)
+   */
   public static double getDistanceToTagInches() {
     double[] botpose = table
       .getEntry("botpose_targetspace")
@@ -43,10 +55,22 @@ public class Limelight extends SubsystemBase {
     return Units.metersToInches(distanceMeters);
   }
 
+  /**
+   * Just steals from limelighthelpers lol
+   * @return distance (inches)
+   */
   public double estimateDistance() {
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     NetworkTableEntry ty = table.getEntry("ty");
     return LimelightHelpers.estimateDistance(LimelightConstants.limelightMountAngleDegrees, LimelightConstants.limelightLensHeightInches, LimelightConstants.goalHeightInches, ty.getDouble(0));
+  }
+
+  public double limelightAimProportional() {
+    double kP = LimelightConstants.kAimP;
+    double targetingAngularVelocity = LimelightHelpers.getTX("limelight") * kP;
+    targetingAngularVelocity *= 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+    targetingAngularVelocity *= -1.0;
+    return targetingAngularVelocity;
   }
 
 }

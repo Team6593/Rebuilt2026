@@ -129,35 +129,6 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
-    
-    // Methods
-    public double limelightAimProportional() {
-        double targetingAngularVelocity = LimelightHelpers.getTX("limelight") * LimelightConstants.kAimP;
-        targetingAngularVelocity *= MaxSpeed;
-        // invert if tx is positive when the target is to the right of the crosshair
-        targetingAngularVelocity *= -1.0;
-        return targetingAngularVelocity;
-    }
-
-    public double limelightRangeProportional() {
-        double kP = .1;
-        double targetingForwardSpeed = LimelightHelpers.getTY("limelight") * kP;
-        targetingForwardSpeed *= MaxSpeed;
-        targetingForwardSpeed *= -1;
-        return targetingForwardSpeed;
-    }
-
-    public void drive() {
-        var xSpeed = 
-            -m_xspeedLimiter.calculate(MathUtil.applyDeadband(joystick.getLeftY(), 0.02))
-                * MaxSpeed;
-        var ySpeed = 
-            -m_yspeedLimiter.calculate(MathUtil.applyDeadband(joystick.getLeftX(), .02))
-                * MaxSpeed;
-        var rot = 
-            -m_rotLimiter.calculate(MathUtil.applyDeadband(joystick.getRightX(), 0.02))
-                * MaxSpeed;
-    }
 
     public Command getAutonomousCommand() {
         /* Run the path selected from the auto chooser */
