@@ -8,9 +8,9 @@ import org.littletonrobotics.junction.AutoLog;
 
 /** Add your docs here. */
 @AutoLog
-public interface ShooterConstants {
+public class ShooterConstants {
     // IDs
-    int shooterMasterID = 30;
-    int indexerID = 31;
-    int shooterSecondaryID = 32;
+    public static final int shooterMasterID = 30;
+    public static final int indexerID = 31;
+    public static final int shooterSecondaryID = 32;
 }

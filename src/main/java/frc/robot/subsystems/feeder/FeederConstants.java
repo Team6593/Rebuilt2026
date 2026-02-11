@@ -8,6 +8,6 @@ import org.littletonrobotics.junction.AutoLog;
 
 /** Add your docs here. */
 @AutoLog
-public interface FeederConstants {
-    int feederMotorID = 40;
+public class FeederConstants {
+    public static final int feederMotorID = 40;
 }

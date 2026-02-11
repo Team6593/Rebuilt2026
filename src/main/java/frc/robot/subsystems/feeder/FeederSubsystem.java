@@ -14,10 +14,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.SubsystemInterface;
 
-public class FeederSubsystem extends SubsystemBase implements FeederConstants, SubsystemInterface{
+public class FeederSubsystem extends SubsystemBase implements SubsystemInterface{
 
   // devices
-  private TalonFX feederMotor = new TalonFX(feederMotorID);
+  private TalonFX feederMotor = new TalonFX(FeederConstants.feederMotorID);
 
   // current limit configs
   private CurrentLimitsConfigs feederCurrentLimitsConfigs = new CurrentLimitsConfigs();

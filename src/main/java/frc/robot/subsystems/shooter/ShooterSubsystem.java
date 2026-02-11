@@ -23,12 +23,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.ShooterParams;
 import frc.robot.utils.SubsystemInterface;
 
-public class ShooterSubsystem extends SubsystemBase implements ShooterConstants, SubsystemInterface{
+public class ShooterSubsystem extends SubsystemBase implements SubsystemInterface{
 
   // motors
-  private TalonFX shooterMasterMotor = new TalonFX(shooterMasterID);
-  private TalonFX shooterSecondaryMotor = new TalonFX(shooterSecondaryID);
-  private TalonFX indexerMotor = new TalonFX(indexerID);
+  private TalonFX shooterMasterMotor = new TalonFX(ShooterConstants.shooterMasterID);
+  private TalonFX shooterSecondaryMotor = new TalonFX(ShooterConstants.indexerID);
+  private TalonFX indexerMotor = new TalonFX(ShooterConstants.indexerID);
 
   // configurators
   private TalonFXConfigurator shooterMasterConfigurator = shooterMasterMotor.getConfigurator();
@@ -76,7 +76,7 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants,
     indexerConfigurator.apply(shooterConfigs);
     indexerConfigurator.apply(indexerLimitConfigs);
 
-    shooterSecondaryMotor.setControl(new Follower(shooterMasterID, MotorAlignmentValue.Opposed));
+    shooterSecondaryMotor.setControl(new Follower(ShooterConstants.shooterMasterID, MotorAlignmentValue.Opposed));
 
     // preferences
     Preferences.initDouble(ShooterInputs.kPKey, ShooterInputs.kP);

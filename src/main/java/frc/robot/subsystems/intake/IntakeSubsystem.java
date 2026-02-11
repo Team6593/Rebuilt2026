@@ -26,12 +26,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.SubsystemInterface;
 
-public class IntakeSubsystem extends SubsystemBase implements IntakeConstants, SubsystemInterface {
+public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface {
 
   // Devices
-  private SparkMax intakeMotor = new SparkMax(intakeMotorID, MotorType.kBrushless);
-  private SparkMax pivotMotor = new SparkMax(pivotMotorID, MotorType.kBrushless);
-  private SparkMax pivot2Motor = new SparkMax(pivotMotor2ID, MotorType.kBrushless);
+  private SparkMax intakeMotor = new SparkMax(IntakeConstants.intakeMotorID, MotorType.kBrushless);
+  private SparkMax pivotMotor = new SparkMax(IntakeConstants.pivotMotorID, MotorType.kBrushless);
+  private SparkMax pivot2Motor = new SparkMax(IntakeConstants.pivotMotor2ID, MotorType.kBrushless);
 
   private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
   private SparkMaxConfig pivotConfig = new SparkMaxConfig();
