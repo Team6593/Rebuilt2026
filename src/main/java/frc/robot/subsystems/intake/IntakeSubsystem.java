@@ -5,18 +5,15 @@
 package frc.robot.subsystems.intake;
 
 import com.revrobotics.PersistMode;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkRelativeEncoder;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -114,6 +111,7 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
     var pidOutput = 
       pidController.calculate(
         pivotEncoder.getPosition(), Units.degreesToRadians(setpoint));
+    @SuppressWarnings("unused")
     var feedForwardOutput =
       armFeedforward.calculate(setpoint, pidController.getSetpoint().velocity);
     pivotMotor.setVoltage(pidOutput);

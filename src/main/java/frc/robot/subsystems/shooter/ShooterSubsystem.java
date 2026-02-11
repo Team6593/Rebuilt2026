@@ -6,9 +6,6 @@ package frc.robot.subsystems.shooter;
 
 import edu.wpi.first.wpilibj.Preferences;
 
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
@@ -20,7 +17,6 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.utils.ShooterParams;
 import frc.robot.utils.SubsystemInterface;
 
 public class ShooterSubsystem extends SubsystemBase implements SubsystemInterface{
@@ -41,19 +37,6 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
   
   // control configs
   private Slot0Configs shooterConfigs = new Slot0Configs();
-
-  // Interpolating double tree map
-  // TODO: replace with real values
-  // Use this to calculate on-the-fly shoot
-  public static final TreeMap<Double, ShooterParams> SHOOTER_MAP = new TreeMap<>();
-  static {
-    SHOOTER_MAP.put(1.0, new ShooterParams(1000, .5));
-    SHOOTER_MAP.put(2.0, new ShooterParams(1200, .6));
-    SHOOTER_MAP.put(3.0, new ShooterParams(1400, .7));
-    SHOOTER_MAP.put(4.0, new ShooterParams(1600, .8));
-    SHOOTER_MAP.put(5.0, new ShooterParams(2000, 1.0));
-    SHOOTER_MAP.put(6.0, new ShooterParams(2100, 1.4));
-  }
 
   /** Creates a new Shooter. */
   public ShooterSubsystem() {
