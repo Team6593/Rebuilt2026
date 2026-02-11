@@ -1,4 +1,6 @@
 package frc.robot.subsystems.limelight;
+import static edu.wpi.first.units.Units.*;
+import frc.robot.generated.TunerConstants;
 
 public class LimelightConstants {
 
@@ -8,5 +10,12 @@ public class LimelightConstants {
     public static double limelightMountAngleDegrees = -19;
     public static double limelightLensHeightInches = 15;
     public static double goalHeightInches = 46.25;
+
+    // drive speeds
+    public static double drivetrainMaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    public static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+    
+    // get actual value later; https://youtu.be/QXU7Co__Xdc ~13:00
+    public static double desiredValue = 0.05;
 
 }
