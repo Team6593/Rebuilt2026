@@ -56,7 +56,7 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    smartdashboardLogging();
+    sdLogging();
     loadPreferences();
   }
 
@@ -66,7 +66,7 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
    * Logs relevant information to SD.
    */
   @Override
-  public void smartdashboardLogging() {
+  public void sdLogging() {
     SmartDashboard.putNumber("Intake Duty Cycle", intakeMotor.getAppliedOutput());
     SmartDashboard.putNumber("Intake Applied Output A", intakeMotor.getOutputCurrent());
     SmartDashboard.putNumber("Intake Temp (F)", ((intakeMotor.getMotorTemperature()) * 1.8) + 32);

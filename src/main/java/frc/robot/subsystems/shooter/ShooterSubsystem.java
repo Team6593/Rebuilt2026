@@ -75,7 +75,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
   public void periodic() {
     // This method will be called once per scheduler run
     loadPreferences();
-    smartdashboardLogging();
+    sdLogging();
   }
 
   // Data Logging
@@ -84,7 +84,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
    * Values from the Shooter being published to SD.
    */
   @Override
-  public void smartdashboardLogging() {
+  public void sdLogging() {
     SmartDashboard.putNumber("ShooterM Duty Cycle", shooterMasterMotor.getDutyCycle().getValueAsDouble());
     SmartDashboard.putNumber("ShooterS Duty Cycle", shooterSecondaryMotor.getDutyCycle().getValueAsDouble());
     SmartDashboard.putNumber("Indexer Duty Cycle", indexerMotor.getDutyCycle().getValueAsDouble());

@@ -40,7 +40,7 @@ public class FeederSubsystem extends SubsystemBase implements SubsystemInterface
   public void periodic() {
     // This method will be called once per scheduler run
     
-    smartdashboardLogging();
+    sdLogging();
     loadPreferences();
   }
 
@@ -51,7 +51,7 @@ public class FeederSubsystem extends SubsystemBase implements SubsystemInterface
    * Logs relevant information to SD.
    */
   @Override
-  public void smartdashboardLogging() {
+  public void sdLogging() {
     SmartDashboard.putNumber("Feeder Motor Duty Cycle", feederMotor.getDutyCycle().getValueAsDouble());
     SmartDashboard.putNumber("Feeder Motor Applied Output V", feederMotor.getMotorVoltage().getValueAsDouble());
     SmartDashboard.putNumber("Feeder Motor RPM", feederMotor.getVelocity().getValueAsDouble() * 60);
