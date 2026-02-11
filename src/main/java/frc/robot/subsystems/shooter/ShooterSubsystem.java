@@ -67,7 +67,7 @@ public class ShooterSubsystem extends SubsystemBase implements ShooterConstants,
     shooterConfigs.kP = ShooterInputs.kP;
     shooterConfigs.kV = ShooterInputs.kV;
     shooterConfigs.kA = ShooterInputs.kA; 
-    shooterConfigs.kS = ShooterInputs.kS;
+    // shooterConfigs.kS = ShooterInputs.kS;
 
     shooterMasterConfigurator.apply(shooterConfigs);
     shooterMasterConfigurator.apply(shooterLimitConfigs);
