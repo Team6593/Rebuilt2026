@@ -20,14 +20,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class ShooterSimulation extends SubsystemBase implements ShooterSimulationConstants{
+public class ShooterSimulation extends SubsystemBase {
 
-  private TalonFX shooter = new TalonFX(shooterID);
+  private TalonFX shooter = new TalonFX(ShooterSimulationConstants.shooterID);
   private TalonFXSimState shooterSim = shooter.getSimState();
   private final DCMotorSim m_motorSimModel = new DCMotorSim(
     LinearSystemId.createDCMotorSystem(
-      DCMotor.getKrakenX60(shooterID), 0.06, shooterRatio),
-    DCMotor.getKrakenX60(shooterID));
+      DCMotor.getKrakenX60(ShooterSimulationConstants.shooterID), 0.06, ShooterSimulationConstants.shooterRatio),
+    DCMotor.getKrakenX60(ShooterSimulationConstants.shooterID));
   private TalonFXConfiguration shooterConfigs = new TalonFXConfiguration();
   private CurrentLimitsConfigs shooterLimitsConfigs = new CurrentLimitsConfigs();
   private double distanceSim = 0;
@@ -55,8 +55,8 @@ public class ShooterSimulation extends SubsystemBase implements ShooterSimulatio
     var motorVoltage = shooterSim.getMotorVoltageMeasure();
     m_motorSimModel.setInputVoltage(motorVoltage.in(Volts));
     m_motorSimModel.update(0.020);
-    shooterSim.setRawRotorPosition(m_motorSimModel.getAngularPosition().times(shooterRatio));
-    shooterSim.setRotorVelocity(m_motorSimModel.getAngularVelocity().times(shooterRatio));
+    shooterSim.setRawRotorPosition(m_motorSimModel.getAngularPosition().times(ShooterSimulationConstants.shooterRatio));
+    shooterSim.setRotorVelocity(m_motorSimModel.getAngularVelocity().times(ShooterSimulationConstants.shooterRatio));
     sdLogging();
   }
 
