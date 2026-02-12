@@ -72,7 +72,7 @@ public class FeederSubsystem extends SubsystemBase implements SubsystemInterface
 
   /**
    * Runs the feeder motor to feed fuel to the robot.
-   * @param speed - Defaults to value in FeederInputs.java
+   * @param speed - Defaults to value in {@link FeederInputs}
    */
   public void feed(double speed) {
     feederMotor.set(speed);
@@ -80,7 +80,7 @@ public class FeederSubsystem extends SubsystemBase implements SubsystemInterface
 
   /**
    * Runs the feeder motor to feed fuel to the robot.
-   * @param speed - Defaults to value in FeederInputs.java
+   * @param speed - Defaults to value in {@link FeederInputs}
    */
   public void feed() {
     feederMotor.set(FeederInputs.kFeederSpeed);
@@ -98,7 +98,7 @@ public class FeederSubsystem extends SubsystemBase implements SubsystemInterface
   
   /**
    * Command that runs the feeder.
-   * @param speed - Defaults to value in FeederInputs.java
+   * @param speed - Defaults to value in {@link FeederInputs}
    * @return command
    */
   public Command feedCommand(double speed) {
@@ -108,7 +108,7 @@ public class FeederSubsystem extends SubsystemBase implements SubsystemInterface
   }
   /**
    * Command that runs the feeder.
-   * @param speed - Defaults to value in FeederInputs.java
+   * @param speed - Defaults to value in {@link FeederInputs}
    * @return command
    */
   public Command feedCommand() {

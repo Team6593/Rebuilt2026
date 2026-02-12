@@ -91,7 +91,7 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
 
   /**
    * Runs the intake.
-   * @param speed - Defaults to value in IntakeInputs.java
+   * @param speed - Defaults to value in {@link IntakeInputs}
    */
   public void runIntake(double speed) {
     intakeMotor.set(speed);
@@ -99,7 +99,7 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
 
   /**
    * Runs the intake.
-   * @param speed - Defaults to value in IntakeInputs.java
+   * @param speed - Defaults to value in {@link IntakeInputs}
    */
   public void intake() {
     intakeMotor.set(IntakeInputs.kIntakeSpeed);
@@ -128,8 +128,8 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
 
   /**
    * Pivots the intake to a setpoint.
-   * @param setpoint - Defaults to value in IntakeInputs.java
-   * @param p
+   * @param setpoint - Defaults to value in {@link IntakeInputs}
+   * @param p - kP
    */
   public void pivotToSetpoint(double setpoint, double p) {
     // pivotController.setSetpoint(setpoint, ControlType.kPosition);
@@ -139,7 +139,7 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
     pivotController.setSetpoint(setpoint, ControlType.kPosition);
   }
 
-  public boolean ihatemylife(double setpoint) {
+  public boolean positionCheck(double setpoint) {
     double tolerance = 5;
     double error = Math.abs(pivotEncoder.getPosition() - setpoint);
     if (error < tolerance) {
@@ -182,7 +182,7 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
 
   /**
    * Command that runs the intake.
-   * @param speed - Defaults to value in IntakeInputs.java
+   * @param speed - Defaults to value in {@link IntakeInputs.java}
    * @return command
    */
   public Command runIntakeCommand(double speed) {
@@ -193,7 +193,7 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
 
   /**
    * Command that runs the intake.
-   * @param speed - Defaults to value in IntakeInputs.java
+   * @param speed - Defaults to value in {@link IntakeInputs.java}
    * @return command
    */
   public Command runIntakeCommand() {
@@ -204,7 +204,7 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
 
   /**
    * Command that reverses the intake.
-   * @param speed - Defaults to value in IntakeInputs.java
+   * @param speed - Defaults to value in {@link IntakeInputs.java}
    * @return command
    */
   public Command reverseIntakeCommand(double speed) {
@@ -215,7 +215,7 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
 
   /**
    * Command that reverses the intake.
-   * @param speed - Defaults to value in IntakeInputs.java
+   * @param speed - Defaults to value in {@link IntakeInputs.java}
    * @return command
    */
   public Command reverseIntakeCommand() {

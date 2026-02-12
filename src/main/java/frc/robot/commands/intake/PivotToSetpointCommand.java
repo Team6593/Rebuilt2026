@@ -29,19 +29,19 @@ public class PivotToSetpointCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("Intake at setpoint: " + intake.ihatemylife(233));
+    System.out.println("Intake at setpoint: " + intake.positionCheck(233));
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("Intake at setpoint: " + intake.ihatemylife(233));
+    System.out.println("Intake at setpoint: " + intake.positionCheck(233));
     intake.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return intake.ihatemylife(233);
+    return intake.positionCheck(233);
   }
 }

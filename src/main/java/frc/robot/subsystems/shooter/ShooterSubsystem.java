@@ -144,7 +144,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
 
   /**
    * just the shoot (top/main/flywheel)
-   * @param speed to move the shoot motor at - Defaults to value in ShooterInputs.java
+   * @param speed to move the shoot motor at - Defaults to value in {@link ShooterInputs}
    */
   public void shoot(double speed) {
     shooterMasterMotor.set(speed);
@@ -152,7 +152,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
 
     /**
    * just the shoot (top/main/flywheel)
-   * @param speed to move the shoot motor at - Defaults to value in ShooterInputs.java
+   * @param speed to move the shoot motor at - Defaults to value in {@link ShooterInputs}
    */
   public void shoot() {
     shooterMasterMotor.set(ShooterInputs.kShooterSpeed);
@@ -160,7 +160,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
 
   /**
    * just the throughput (bottom/secondary/torque)
-   * @param speed to move the shoot motor at
+   * @param speed to move the shoot motor at - Defaults to value in {@link ShooterInputs}
    */
   public void index(double speed) {
     indexerMotor.set(speed);
@@ -168,7 +168,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
 
     /**
    * just the throughput (bottom/secondary/torque)
-   * @param speed to move the shoot motor at
+   * @param speed to move the shoot motor at - Defaults to value in {@link ShooterInputs}
    */
   public void index() {
     indexerMotor.set(ShooterInputs.kIndexerSpeed);
@@ -198,8 +198,8 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
 
   /**
    * Method that sets the RPM.
-   * @param RPM - Desired RPM (Do not put RPS, method divides by 60) (default in ShooterConstants.java)
-   * @param feedForward - Desired feedforward (V to overcome gravity) (default in ShooterConstants.java)
+   * @param RPM - Desired RPM (Do not put RPS, method divides by 60) (default in {@link ShooterConstants})
+   * @param feedForward - Desired feedforward (V to overcome gravity) (default in {@link ShooterConstants})
    */
   public void setMasterRPM(double RPM) {
     final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
@@ -226,8 +226,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
 
   /**
    * Method that sets the RPM.
-   * @param RPM - Desired RPM (Do not put RPS, method divides by 60) (default in ShooterConstants.java)
-   * @param feedForward - Desired feedforward (V to overcome gravity) (default in ShooterConstants.java)
+   * @param RPM - Desired RPM (Do not put RPS, method divides by 60) (default in {@link ShooterConstants}
    */
   public void setShooterRPM(double RPM) {
     final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
@@ -236,8 +235,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
 
   /**
    * Method that sets the RPM.
-   * @param RPM - Desired RPM (Do not put RPS, method divides by 60) (default in ShooterConstants.java)
-   * @param feedForward - Desired feedforward (V to overcome gravity) (default in ShooterConstants.java)
+   * @param RPM - Desired RPM (Do not put RPS, method divides by 60) (default in {@link ShooterConstants}
    */
   public void setShooterRPM() {
     final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
@@ -262,8 +260,8 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
 
   /**
    * Command that runs the shooter and indexer.
-   * @param shooterSpeed - Desired duty cycle (default in ShooterConstants.java)
-   * @param indexerSpeed - Desired duty cycle (default in ShooterConstants.java)
+   * @param shooterSpeed - Desired duty cycle (default in {@link ShooterInputs})
+   * @param indexerSpeed - Desired duty cycle (default in {@link ShooterInputs})
    * @return command
    */
   public Command shootCommand(double shooterSpeed, double indexerSpeed) {
@@ -273,7 +271,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
 
   /**
    * Just runs the shooter.
-   * @param shooterSpeed - Defaults in ShooterInputs.java
+   * @param shooterSpeed - Defaults in {@link ShooterInputs}
    * @return
    */
   public Command justShootCommand(double shooterSpeed) {
@@ -283,9 +281,9 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
     );
   }
 
-    /**
+  /**
    * Just runs the shooter.
-   * @param shooterSpeed - Defaults in ShooterInputs.java
+   * @param shooterSpeed - Defaults in {@link ShooterInputs}
    * @return
    */
   public Command justShootCommand() {
@@ -297,7 +295,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
 
   /**
    * Just runs the indexer.
-   * @param indexSpeed - Defaults in ShooterInputs.java
+   * @param indexSpeed - Defaults in {@link ShooterInputs}
    * @return
    */
   public Command justIndexCommand(double indexSpeed) {
@@ -307,9 +305,9 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
     );
   }
 
-    /**
+  /**
    * Just runs the indexer.
-   * @param indexSpeed - Defaults in ShooterInputs.java
+   * @param indexSpeed - Defaults in {@link ShooterInputs}
    * @return
    */
   public Command justIndexCommand() {
@@ -321,8 +319,8 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
 
   /**
    * Command that runs the shooter and indexer.
-   * @param shooterSpeed - Desired duty cycle (default in ShooterConstants.java)
-   * @param indexerSpeed - Desired duty cycle (default in ShooterConstants.java)
+   * @param shooterSpeed - Desired duty cycle (default in {@link ShooterConstants})
+   * @param indexerSpeed - Desired duty cycle (default in {@link ShooterConstants})
    * @return command
    */
   public Command shootCommand(double shooterSpeed) {
@@ -332,8 +330,8 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
 
   /**
    * Command that runs the shooter and indexer.
-   * @param shooterSpeed - Desired duty cycle (default in ShooterConstants.java)
-   * @param indexerSpeed - Desired duty cycle (default in ShooterConstants.java)
+   * @param shooterSpeed - Desired duty cycle (default in {@link ShooterConstants})
+   * @param indexerSpeed - Desired duty cycle (default in {@link ShooterConstants})
    * @return command
    */
   public Command shootCommand() {
@@ -343,8 +341,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
   
   /**
    * Comamnd that sets the RPM.
-   * @param RPM - Desired RPM (Do not put RPS, method divides by 60) (default in ShooterConstants.java)
-   * @param feedForward - Desired feedforward (V to overcome gravity) (default in ShooterConstants.java)
+   * @param RPM - Desired RPM (Do not put RPS, method divides by 60) (default in {@link ShooterConstants.java})
    * @return command
    */
   public Command setRPMCommand(double RPM) {
@@ -354,8 +351,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
 
   /**
    * Comamnd that sets the RPM.
-   * @param RPM - Desired RPM (Do not put RPS, method divides by 60) (default in ShooterConstants.java)
-   * @param feedForward - Desired feedforward (V to overcome gravity) (default in ShooterConstants.java)
+   * @param RPM - Desired RPM (Do not put RPS, method divides by 60) (default in {@link ShooterConstants.java})
    * @return command
    */
   public Command setRPMCommand() {

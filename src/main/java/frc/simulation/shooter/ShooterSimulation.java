@@ -69,7 +69,7 @@ public class ShooterSimulation extends SubsystemBase implements ShooterSimulatio
 
   /**
    * Sets simulated shooter to specified speed.
-   * @param speed - Defaults to value in ShooterSimulationInputs.java
+   * @param RPM - Defaults to value in {@link ShooterSimulationInputs}
    */
   public void setRPM(double RPM) {
     final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
@@ -78,7 +78,7 @@ public class ShooterSimulation extends SubsystemBase implements ShooterSimulatio
 
   /**
    * Sets simulated shooter to specified speed.
-   * @param speed - Defaults to value in ShooterSimulationInputs.java
+   * @param RPM - Defaults to value in {@link ShooterSimulationInputs}
    */
   public void setRPM() {
     final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
