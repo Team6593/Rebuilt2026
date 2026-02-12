@@ -119,11 +119,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void simulationPeriodic() {
-        simJoystick.povLeft().whileTrue(new ShooterSimulationRPMCommand(shooterSimulation));
-        simJoystick.povRight().onTrue(shooterSimulation.stopShooterSimCommand());
-        simJoystick.x().onTrue(new ShooterSimDistanceSetter(shooterSimulation, 1));
-        simJoystick.y().onTrue(new ShooterSimDistanceSetter(shooterSimulation, 2));
-        simJoystick.a().onTrue(new ShooterSimDistanceSetter(shooterSimulation, 2.5));
-        simJoystick.b().onTrue(new ShooterSimDistanceSetter(shooterSimulation, 3.1));
+        simJoystick.a().whileTrue(shooterSimulation.runShooterRPM(1000));
     }
 }
