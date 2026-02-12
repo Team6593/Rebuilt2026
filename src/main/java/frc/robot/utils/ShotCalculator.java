@@ -68,7 +68,7 @@ public class ShotCalculator {
      * @param distance
      * @return rpm
      */
-    public double getHorizontalVelocity(double distance) {
+    public static double getHorizontalVelocity(double distance) {
         ShooterParams params = m_shooterMap.get(distance);
         return distance / params.tof;
     }
@@ -79,7 +79,7 @@ public class ShotCalculator {
      * @param velocity - RPM
      * @return distance
      */
-    public double velocityToEffectiveDistance(double velocity) {
+    public static double velocityToEffectiveDistance(double velocity) {
         for (Entry<Double, ShooterParams> entry : m_shooterMap.entrySet()) {
         double dist = entry.getKey();
         double vel = dist / entry.getValue().tof;
@@ -89,7 +89,7 @@ public class ShotCalculator {
         } return m_shooterMap.lastKey();
     }
 
-    public double calculatedAdjustedRpm(double requiredVelocity) {
+    public static double calculatedAdjustedRpm(double requiredVelocity) {
         double effectiveDistance = velocityToEffectiveDistance(requiredVelocity);
         return m_shooterMap.get(effectiveDistance).rpm;
     }
