@@ -31,7 +31,6 @@ public class ShooterSimulation extends SubsystemBase{
       DCMotor.getKrakenX60(1), 0.06, ShooterSimulationConstants.shooter1Ratio),
     DCMotor.getKrakenX60(1));
   private TalonFXConfiguration shooter1Configs = new TalonFXConfiguration();
-  private CurrentLimitsConfigs shooter1LimitConfigs = new CurrentLimitsConfigs();
 
   private TalonFX shooter2 = new TalonFX(ShooterSimulationConstants.shooter2ID);
   private TalonFXSimState shooter2Sim = shooter2.getSimState();
@@ -40,7 +39,6 @@ public class ShooterSimulation extends SubsystemBase{
       DCMotor.getKrakenX60(1), 0.06, ShooterSimulationConstants.shooter2Ratio),
     DCMotor.getKrakenX60(1));
   private TalonFXConfiguration shooter2Configs = new TalonFXConfiguration();
-  private CurrentLimitsConfigs shooter2LimitConfigs = new CurrentLimitsConfigs();
 
   private double distanceSim = 0;
 
@@ -48,33 +46,29 @@ public class ShooterSimulation extends SubsystemBase{
   public ShooterSimulation() {
     shooter1Sim.Orientation = ChassisReference.Clockwise_Positive;
     shooter1Sim.setMotorType(TalonFXSimState.MotorType.KrakenX60);
-    shooter1Configs.MotionMagic.MotionMagicCruiseVelocity = 6000;
     shooter1Configs.Slot0.kP = ShooterSimulationInputs.shooterKP.get();
     shooter1Configs.Slot0.kV = ShooterSimulationInputs.shooterKV.get();
     shooter1Configs.Slot0.kA = ShooterSimulationInputs.shooterKA.get();
     shooter1Configs.Slot0.kS = ShooterSimulationInputs.shooterKS.get();
-    shooter1LimitConfigs.StatorCurrentLimit = 80;
-    shooter1LimitConfigs.SupplyCurrentLimit = 80;
-    shooter1LimitConfigs.StatorCurrentLimitEnable = true;
-    shooter1LimitConfigs.SupplyCurrentLimitEnable = true;
-    shooter1.getConfigurator().apply(shooter1LimitConfigs);
+    shooter1Configs.CurrentLimits.StatorCurrentLimit = 80;
+    shooter1Configs.CurrentLimits.StatorCurrentLimitEnable = true;
+    shooter1Configs.CurrentLimits.SupplyCurrentLimit = 80;
+    shooter1Configs.CurrentLimits.SupplyCurrentLimitEnable = true;
     shooter1.getConfigurator().apply(shooter1Configs);
     
     shooter2Sim.Orientation = ChassisReference.Clockwise_Positive;
     shooter2Sim.setMotorType(TalonFXSimState.MotorType.KrakenX60);
-    shooter2Configs.MotionMagic.MotionMagicCruiseVelocity = 6000;
     shooter2Configs.Slot0.kP = ShooterSimulationInputs.shooterKP.get();
     shooter2Configs.Slot0.kV = ShooterSimulationInputs.shooterKV.get();
     shooter2Configs.Slot0.kA = ShooterSimulationInputs.shooterKA.get();
     shooter2Configs.Slot0.kS = ShooterSimulationInputs.shooterKS.get();
-    shooter2LimitConfigs.StatorCurrentLimit = 80;
-    shooter2LimitConfigs.SupplyCurrentLimit = 80;
-    shooter2LimitConfigs.StatorCurrentLimitEnable = true;
-    shooter2LimitConfigs.SupplyCurrentLimitEnable = true;
-    shooter2.getConfigurator().apply(shooter2LimitConfigs);
+    shooter2Configs.CurrentLimits.StatorCurrentLimit = 80;
+    shooter2Configs.CurrentLimits.StatorCurrentLimitEnable = true;
+    shooter2Configs.CurrentLimits.SupplyCurrentLimit = 80;
+    shooter2Configs.CurrentLimits.SupplyCurrentLimitEnable = true;
     shooter2.getConfigurator().apply(shooter2Configs);
 
-    shooter2.setControl(new Follower(ShooterSimulationConstants.shooter1ID, MotorAlignmentValue.Aligned));
+    // shooter2.setControl(new Follower(ShooterSimulationConstants.shooter1ID, MotorAlignmentValue.Aligned));
   }
 
   @Override
@@ -112,15 +106,8 @@ public class ShooterSimulation extends SubsystemBase{
   public void setRPM(double RPM) {
     final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
     shooter1.setControl(m_request.withVelocity(RPM / 60));
-  }
-
-  /**
-   * Sets simulated shooter to specified speed.
-   * @param RPM - Defaults to value in {@link ShooterSimulationInputs}
-   */
-  public void setRPM() {
-    final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
-    shooter1.setControl(m_request.withVelocity(ShooterSimulationInputs.shooterRPM.get() / 60));
+    final VelocityVoltage m_request2 = new VelocityVoltage(0).withSlot(0);
+    shooter2.setControl(m_request2.withVelocity((RPM + 1000)/ 60));
   }
 
   public double getRPM() {
@@ -141,6 +128,7 @@ public class ShooterSimulation extends SubsystemBase{
 
   public void stop() {
     shooter1.stopMotor();
+    shooter2.stopMotor();
   }
 
   public Command runShooterRPM(double rpm) {
