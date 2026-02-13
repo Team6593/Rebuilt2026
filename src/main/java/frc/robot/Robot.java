@@ -119,6 +119,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void simulationPeriodic() {
-        simJoystick.a().whileTrue(shooterSimulation.runShooterRPM(1000));
+        simJoystick.a().whileTrue(shooterSimulation.runShooterRPM(1000, 2000));
     }
 }

@@ -101,13 +101,14 @@ public class ShooterSimulation extends SubsystemBase{
 
   /**
    * Sets simulated shooter to specified speed.
-   * @param RPM - Defaults to value in {@link ShooterSimulationInputs}
+   * @param RPM1 - RPM to run shooter1 at
+   * @param RPM2 - RPM to run shooter2 at
    */
-  public void setRPM(double RPM) {
+  public void setRPM(double RPM1, double RPM2) {
     final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
-    shooter1.setControl(m_request.withVelocity(RPM / 60));
+    shooter1.setControl(m_request.withVelocity(RPM1 / 60));
     final VelocityVoltage m_request2 = new VelocityVoltage(0).withSlot(0);
-    shooter2.setControl(m_request2.withVelocity((RPM + 1000)/ 60));
+    shooter2.setControl(m_request2.withVelocity(RPM2 / 60));
   }
 
   public double getRPM() {
@@ -131,9 +132,9 @@ public class ShooterSimulation extends SubsystemBase{
     shooter2.stopMotor();
   }
 
-  public Command runShooterRPM(double rpm) {
+  public Command runShooterRPM(double rpm1, double rpm2) {
     return this.runEnd(
-      () -> setRPM(rpm), 
+      () -> setRPM(rpm1, rpm2), 
       () -> stop());
   }
 
