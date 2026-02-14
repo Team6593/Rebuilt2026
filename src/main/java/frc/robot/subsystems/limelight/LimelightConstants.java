@@ -7,9 +7,9 @@ public class LimelightConstants {
     public static double kAimP = .035;
 
     // estimate variables
-    public static double limelightMountAngleDegrees = -19;
-    public static double limelightLensHeightInches = 15;
-    public static double goalHeightInches = 46.25;
+    public static double limelightMountAngleDegrees = 0;
+    public static double limelightLensHeightInches = 19;
+    public static double goalHeightInches = 44.25;
 
     // drive speeds
     public static double drivetrainMaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed

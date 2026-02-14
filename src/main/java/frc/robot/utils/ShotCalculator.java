@@ -12,8 +12,8 @@ public class ShotCalculator {
         m_shooterMap.put(2.0, new ShooterParams(2000, 0));
         m_shooterMap.put(3.0, new ShooterParams(3000, 0));
         m_shooterMap.put(4.0, new ShooterParams(4000, 0));
-        m_shooterMap.put(5.0, new ShooterParams(5120, 0));
-        m_shooterMap.put(6.0, new ShooterParams(6172, 0));
+        m_shooterMap.put(70.0, new ShooterParams(1900, 0));
+        m_shooterMap.put(80.0, new ShooterParams(2000, 0));
     }
 
     /**
