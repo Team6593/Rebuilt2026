@@ -24,7 +24,7 @@ public class ShootOnTheMoveSequenceCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.setMasterRPM(ShotCalculator.lerpGet(0).rpm); // replace 0 with distance estimate from LL
+    // shooterSubsystem.setMasterRPM(ShotCalculator.lerpGet(0).rpm); // replace 0 with distance estimate from LL
   }
 
   // Called every time the scheduler runs while the command is scheduled.

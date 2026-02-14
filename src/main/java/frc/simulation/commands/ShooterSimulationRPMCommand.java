@@ -31,6 +31,7 @@ public class ShooterSimulationRPMCommand extends Command {
   @Override
   public void execute() {
     shooterSimulation.setRPM(
+      ShotCalculator.lerpGet(shooterSimulation.getDistance()).rpm,
       ShotCalculator.lerpGet(shooterSimulation.getDistance()).rpm);
     // shooterSimulation.setRPM(2000);
   }

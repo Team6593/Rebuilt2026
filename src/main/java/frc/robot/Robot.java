@@ -25,7 +25,7 @@ public class Robot extends TimedRobot {
 
     private final RobotContainer m_robotContainer;
 
-    private ShooterSimulation shooterSimulation = new ShooterSimulation();
+    // private ShooterSimulation shooterSimulation = new ShooterSimulation();
 
     private CommandXboxController simJoystick = new CommandXboxController(3);
 
@@ -119,11 +119,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void simulationPeriodic() {
-        simJoystick.povLeft().whileTrue(new ShooterSimulationRPMCommand(shooterSimulation));
-        simJoystick.povRight().onTrue(shooterSimulation.stopShooterSimCommand());
-        simJoystick.x().onTrue(new ShooterSimDistanceSetter(shooterSimulation, 1));
-        simJoystick.y().onTrue(new ShooterSimDistanceSetter(shooterSimulation, 2));
-        simJoystick.a().onTrue(new ShooterSimDistanceSetter(shooterSimulation, 2.5));
-        simJoystick.b().onTrue(new ShooterSimDistanceSetter(shooterSimulation, 3.1));
+        // simJoystick.a().whileTrue(shootrSimulation.runShooterRPM(1000, 2000));
     }
 }
