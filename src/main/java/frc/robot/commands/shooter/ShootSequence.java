@@ -39,10 +39,10 @@ public class ShootSequence extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterSubsystem.setMasterRPM(-1850, 1850);
+    shooterSubsystem.setMasterRPM(-2150, 2150);
     // shooterSubsystem.setIndexerRPM(-3000);
 
-    if (shooterSubsystem.getShooterRPM() < -1800) {
+    if (shooterSubsystem.getShooterRPM() < -2050) {
         shooterSubsystem.setIndexerRPM(-3000);
         feederSubsystem.feed(.5);
         // intakeSubsystem.runIntake(.45);

@@ -8,12 +8,15 @@ public class ShotCalculator {
     // TODO: replace with real values
     public static final TreeMap<Double, ShooterParams> m_shooterMap = new TreeMap<>();
     static {
-        m_shooterMap.put(1.0, new ShooterParams(1000, 0));
-        m_shooterMap.put(2.0, new ShooterParams(2000, 0));
-        m_shooterMap.put(3.0, new ShooterParams(3000, 0));
-        m_shooterMap.put(4.0, new ShooterParams(4000, 0));
+        m_shooterMap.put(58.6, new ShooterParams(1750, 0));
+        m_shooterMap.put(65.0, new ShooterParams(1850, 0));
         m_shooterMap.put(70.0, new ShooterParams(1900, 0));
         m_shooterMap.put(80.0, new ShooterParams(2000, 0));
+        m_shooterMap.put(90.0, new ShooterParams(2000, 0));
+        m_shooterMap.put(95.6, new ShooterParams(2050, 0));
+        m_shooterMap.put(100.2, new ShooterParams(2100, 0));
+        m_shooterMap.put(105.0, new ShooterParams(2100, 0));
+        m_shooterMap.put(100.2, new ShooterParams(2100, 0));
     }
 
     /**
