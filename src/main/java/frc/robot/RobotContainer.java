@@ -31,6 +31,7 @@ import frc.robot.utils.RevControllerConstants;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.limelight.LimelightConstants;
+import frc.robot.subsystems.rollers.RollersSubsystem;
 import frc.robot.commands.intake.PivotToSetpointCommand;
 import frc.robot.commands.intake.pivotCommand;
 import frc.robot.commands.intake.IntakeCommand;
@@ -62,6 +63,7 @@ public class RobotContainer {
     public final ShooterSubsystem shooter = new ShooterSubsystem();
     public final IntakeSubsystem intake = new IntakeSubsystem();
     public final FeederSubsystem feeder = new FeederSubsystem();
+    public final RollersSubsystem rollersSubsystem = new RollersSubsystem();
     public final Limelight limelight = new Limelight();
 
     /* Path follower */
@@ -116,13 +118,19 @@ public class RobotContainer {
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        joystick.button(RevControllerConstants.m_M2).whileTrue(new ShootSequence(shooter, intake, feeder));
-        joystick.button(RevControllerConstants.m_square).onTrue(new StopAll(feeder, intake, shooter));
+        // joystick.button(RevControllerConstants.m_M2).whileTrue(new ShootSequence(shooter, intake, feeder));
+        // joystick.button(RevControllerConstants.m_square).onTrue(new StopAll(feeder, intake, shooter));
         // joystick.y().onTrue(new PivotToHomeCommand(intake));
         // joystick.b().onTrue(new PivotToSetpointCommand(intake));
-        joystick.button(RevControllerConstants.m_share).onTrue(new PivotToHomeCommand(intake));
-        joystick.button(RevControllerConstants.m_options).onTrue(new PivotToSetpointCommand(intake));
-        joystick.button(RevControllerConstants.m_M1).whileTrue(new IntakeCommand(intake));
+        // joystick.button(RevControllerConstants.m_share).onTrue(new PivotToHomeCommand(intake));
+        // joystick.button(RevControllerConstants.m_options).onTrue(new PivotToSetpointCommand(intake));
+        // joystick.button(RevControllerConstants.m_M1).whileTrue(new IntakeCommand(intake));
+
+        joystick.b().whileTrue(new IntakeCommand(intake));
+        joystick.x().whileTrue(new ShootSequence(shooter, intake, feeder, rollersSubsystem));
+        // joystick.button(7).onTrue(new PivotToHomeCommand(intake));
+        // joystick.button(8).onTrue(new PivotToSetpointCommand(intake));
+        joystick.a().onTrue(new StopAll(feeder, intake, shooter));
 
         // Reset the field-centric heading on left bumper press.
         joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));

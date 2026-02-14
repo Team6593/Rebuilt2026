@@ -25,7 +25,7 @@ public class Robot extends TimedRobot {
 
     private final RobotContainer m_robotContainer;
 
-    private ShooterSimulation shooterSimulation = new ShooterSimulation();
+    // private ShooterSimulation shooterSimulation = new ShooterSimulation();
 
     private CommandXboxController simJoystick = new CommandXboxController(3);
 
@@ -119,6 +119,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void simulationPeriodic() {
-        simJoystick.a().whileTrue(shooterSimulation.runShooterRPM(1000, 2000));
+        // simJoystick.a().whileTrue(shootrSimulation.runShooterRPM(1000, 2000));
     }
 }

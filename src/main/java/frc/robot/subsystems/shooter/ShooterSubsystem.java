@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Preferences;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -23,43 +24,48 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
 
   // motors
   private TalonFX shooterMasterMotor = new TalonFX(ShooterConstants.shooterMasterID);
-  private TalonFX shooterSecondaryMotor = new TalonFX(ShooterConstants.indexerID);
+  private TalonFX shooterSecondaryMotor = new TalonFX(ShooterConstants.shooterSecondaryID);
   private TalonFX indexerMotor = new TalonFX(ShooterConstants.indexerID);
 
   // configurators
   private TalonFXConfigurator shooterMasterConfigurator = shooterMasterMotor.getConfigurator();
   private TalonFXConfigurator shooterSecondaryConfigurator = shooterSecondaryMotor.getConfigurator();
   private TalonFXConfigurator indexerConfigurator = indexerMotor.getConfigurator();
-
-  // current limit configs
-  private CurrentLimitsConfigs shooterLimitConfigs = new CurrentLimitsConfigs();
-  private CurrentLimitsConfigs indexerLimitConfigs = new CurrentLimitsConfigs();
   
   // control configs
-  private Slot0Configs shooterConfigs = new Slot0Configs();
+  private TalonFXConfiguration shooter1Configs = new TalonFXConfiguration();
+  private TalonFXConfiguration shooter2Configs = new TalonFXConfiguration();
+  private TalonFXConfiguration indexerConfigs = new TalonFXConfiguration();
 
   /** Creates a new Shooter. */
   public ShooterSubsystem() {
     
     // configs
-    shooterLimitConfigs.StatorCurrentLimit = 80;
-    shooterLimitConfigs.StatorCurrentLimitEnable = true;
-    indexerLimitConfigs.SupplyCurrentLimit = 60;
-    indexerLimitConfigs.SupplyCurrentLimitEnable = true;
+    shooter1Configs.Slot0.kP = ShooterInputs.kP;
+    shooter1Configs.Slot0.kA = ShooterInputs.kA;
+    shooter1Configs.Slot0.kV = ShooterInputs.kV;
+    shooter1Configs.CurrentLimits.StatorCurrentLimit = 80;
+    shooter1Configs.CurrentLimits.StatorCurrentLimitEnable = true;
+    shooter1Configs.CurrentLimits.SupplyCurrentLimit = 80;
+    shooter1Configs.CurrentLimits.SupplyCurrentLimitEnable = true;
+    shooterMasterConfigurator.apply(shooter1Configs);
 
-    shooterConfigs.kP = ShooterInputs.kP;
-    shooterConfigs.kV = ShooterInputs.kV;
-    shooterConfigs.kA = ShooterInputs.kA; 
-    // shooterConfigs.kS = ShooterInputs.kS;
+    shooter2Configs.Slot0.kP = .7;
+    shooter2Configs.Slot0.kA = ShooterInputs.kA;
+    shooter2Configs.Slot0.kV = ShooterInputs.kV;
+    shooter2Configs.CurrentLimits.StatorCurrentLimit = 80;
+    shooter2Configs.CurrentLimits.StatorCurrentLimitEnable = true;
+    shooter2Configs.CurrentLimits.SupplyCurrentLimitEnable = true;
+    shooterSecondaryConfigurator.apply(shooter2Configs);
 
-    shooterMasterConfigurator.apply(shooterConfigs);
-    shooterMasterConfigurator.apply(shooterLimitConfigs);
-    shooterSecondaryConfigurator.apply(shooterConfigs);
-    shooterSecondaryConfigurator.apply(shooterLimitConfigs);
-    indexerConfigurator.apply(shooterConfigs);
-    indexerConfigurator.apply(indexerLimitConfigs);
+    indexerConfigs.Slot0.kP = 1;
+    indexerConfigs.CurrentLimits.StatorCurrentLimit = 60;
+    indexerConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+    indexerConfigs.CurrentLimits.SupplyCurrentLimit = 60;
+    indexerConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
+    indexerConfigurator.apply(indexerConfigs);
 
-    shooterSecondaryMotor.setControl(new Follower(ShooterConstants.shooterMasterID, MotorAlignmentValue.Opposed));
+    // shooterSecondaryMotor.setControl(new Follower(ShooterConstants.shooterMasterID, MotorAlignmentValue.Opposed));
 
     // preferences
     Preferences.initDouble(ShooterInputs.kPKey, ShooterInputs.kP);
@@ -74,8 +80,8 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    loadPreferences();
-    smartdashboardLogging();
+    // loadPreferences();
+    sdLogging();
   }
 
   // Data Logging
@@ -84,7 +90,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
    * Values from the Shooter being published to SD.
    */
   @Override
-  public void smartdashboardLogging() {
+  public void sdLogging() {
     SmartDashboard.putNumber("ShooterM Duty Cycle", shooterMasterMotor.getDutyCycle().getValueAsDouble());
     SmartDashboard.putNumber("ShooterS Duty Cycle", shooterSecondaryMotor.getDutyCycle().getValueAsDouble());
     SmartDashboard.putNumber("Indexer Duty Cycle", indexerMotor.getDutyCycle().getValueAsDouble());
@@ -110,19 +116,19 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
     if (ShooterInputs.kP != Preferences.getDouble(ShooterInputs.kPKey, ShooterInputs.kP)) {
       System.out.println("Old kP: " + ShooterInputs.kP);
       ShooterInputs.kP = Preferences.getDouble(ShooterInputs.kPKey, ShooterInputs.kP);
-      shooterConfigs.kP = ShooterInputs.kP;
+      shooter1Configs.Slot0.kP = ShooterInputs.kP;
       System.out.println("New kP: " + ShooterInputs.kP);
     }
     if (ShooterInputs.kV != Preferences.getDouble(ShooterInputs.kVKey, ShooterInputs.kV)) {
       System.out.println("Old kV: " + ShooterInputs.kV);
       ShooterInputs.kV = Preferences.getDouble(ShooterInputs.kVKey, ShooterInputs.kV);
-      shooterConfigs.kV = ShooterInputs.kV;
+      shooter1Configs.Slot0.kV = ShooterInputs.kV;
       System.out.println("New kV: " + ShooterInputs.kV);
     }
     if (ShooterInputs.kA != Preferences.getDouble(ShooterInputs.kAKey, ShooterInputs.kA)) {
       System.out.println("Old kA: " + ShooterInputs.kA);
       ShooterInputs.kA = Preferences.getDouble(ShooterInputs.kAKey, ShooterInputs.kA);
-      shooterConfigs.kA = ShooterInputs.kA;
+      shooter1Configs.Slot0.kA = ShooterInputs.kA;
       System.out.println("New kA: " + ShooterInputs.kA);
     }
     if (ShooterInputs.kS != Preferences.getDouble(ShooterInputs.kShooterFeedForwardKey, ShooterInputs.kS)) {
@@ -185,6 +191,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
   @Override
   public void stop() {
     shooterMasterMotor.stopMotor();
+    shooterSecondaryMotor.stopMotor();
     indexerMotor.stopMotor();
   }
 
@@ -201,9 +208,11 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
    * @param RPM - Desired RPM (Do not put RPS, method divides by 60) (default in {@link ShooterConstants})
    * @param feedForward - Desired feedforward (V to overcome gravity) (default in {@link ShooterConstants})
    */
-  public void setMasterRPM(double RPM) {
+  public void setMasterRPM(double RPM1, double RPM2) {
     final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
-    shooterMasterMotor.setControl(m_request.withVelocity(RPM / 60));
+    shooterMasterMotor.setControl(m_request.withVelocity(RPM1 / 60));
+    final VelocityVoltage m_request2 = new VelocityVoltage(0).withSlot(0);
+    shooterSecondaryMotor.setControl(m_request2.withVelocity(RPM2 / 60));
   }
 
   public void setIndexerRPM(double RPM) {
@@ -337,16 +346,6 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
   public Command shootCommand() {
     return this.run(
       () -> indexAndShoot(ShooterInputs.kShooterSpeed, ShooterInputs.kIndexerSpeed)).andThen(stopCommand());
-  }
-  
-  /**
-   * Comamnd that sets the RPM.
-   * @param RPM - Desired RPM (Do not put RPS, method divides by 60) (default in {@link ShooterConstants.java})
-   * @return command
-   */
-  public Command setRPMCommand(double RPM) {
-    return this.run(
-      () -> setMasterRPM(RPM)).andThen(stopCommand());
   }
 
   /**

@@ -7,6 +7,7 @@ package frc.robot.commands.shooter;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.feeder.FeederSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.rollers.RollersSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -15,14 +16,17 @@ public class ShootSequence extends Command {
   private ShooterSubsystem shooterSubsystem;
   private IntakeSubsystem intakeSubsystem;
   private FeederSubsystem feederSubsystem;
+  private RollersSubsystem rollersSubsystem;
 
   /** Creates a new ShootSequence. */
-  public ShootSequence(ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem, FeederSubsystem feederSubsystem) {
+  public ShootSequence(ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem, 
+  FeederSubsystem feederSubsystem, RollersSubsystem rollersSubsystem) {
     this.feederSubsystem = feederSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.intakeSubsystem = intakeSubsystem;
+    this.rollersSubsystem = rollersSubsystem;
 
-    addRequirements(intakeSubsystem, feederSubsystem, shooterSubsystem);
+    addRequirements(intakeSubsystem, feederSubsystem, shooterSubsystem, rollersSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -35,12 +39,14 @@ public class ShootSequence extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterSubsystem.setShooterRPM(-2350);
-    shooterSubsystem.setIndexerRPM(3000);
+    shooterSubsystem.setMasterRPM(-1500, 1500);
+    // shooterSubsystem.setIndexerRPM(-3000);
 
-    if (shooterSubsystem.getShooterRPM() < -2350 & shooterSubsystem.getIndexerRPM() > 3000) {
+    if (shooterSubsystem.getShooterRPM() < -1500) {
+        shooterSubsystem.setIndexerRPM(-3000);
         feederSubsystem.feed(.5);
         intakeSubsystem.runIntake(.45);
+        rollersSubsystem.set(.3);
     } 
   }
 
@@ -50,6 +56,7 @@ public class ShootSequence extends Command {
     shooterSubsystem.stop();
     intakeSubsystem.stop();
     feederSubsystem.stop();
+    rollersSubsystem.stop();
   }
 
   // Returns true when the command should end.
