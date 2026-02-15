@@ -8,19 +8,22 @@ public class ShotCalculator {
     // TODO: replace with real values
     public static final TreeMap<Double, ShooterParams> m_shooterMap = new TreeMap<>();
     static {
-        m_shooterMap.put(58.6, new ShooterParams(1750, 0));
-        m_shooterMap.put(65.0, new ShooterParams(1850, 0));
-        m_shooterMap.put(70.0, new ShooterParams(1900, 0));
-        m_shooterMap.put(80.0, new ShooterParams(2000, 0));
-        m_shooterMap.put(90.0, new ShooterParams(2000, 0));
-        m_shooterMap.put(95.6, new ShooterParams(2050, 0));
-        m_shooterMap.put(100.2, new ShooterParams(2100, 0));
-        m_shooterMap.put(105.0, new ShooterParams(2100, 0));
-        m_shooterMap.put(110.0, new ShooterParams(2150, 0));
-        m_shooterMap.put(116.2, new ShooterParams(2200, 0));
-        m_shooterMap.put(119.8, new ShooterParams(2200, 0));
-        m_shooterMap.put(130.0, new ShooterParams(2400, 0));
-        m_shooterMap.put(150.0, new ShooterParams(2500, 0));
+        m_shooterMap.put(55.3, new ShooterParams(1965, 0));
+        m_shooterMap.put(60.0, new ShooterParams(2015, 0));
+        m_shooterMap.put(64.8, new ShooterParams(2015, 0));
+        m_shooterMap.put(70.2, new ShooterParams(2015, 0));
+        m_shooterMap.put(75.0, new ShooterParams(2050, 0));
+        m_shooterMap.put(80.0, new ShooterParams(2050, 0));
+        m_shooterMap.put(85.1, new ShooterParams(2050, 0));
+        m_shooterMap.put(90.7, new ShooterParams(2100, 0));
+        m_shooterMap.put(95.3, new ShooterParams(2150, 0));
+        m_shooterMap.put(100.4, new ShooterParams(2200, 0));
+        m_shooterMap.put(105.75, new ShooterParams(2250, 0));
+        m_shooterMap.put(111.6, new ShooterParams(2250, 0));
+        m_shooterMap.put(115.0, new ShooterParams(2300, 0));
+        m_shooterMap.put(120.0, new ShooterParams(2350, 0));
+        m_shooterMap.put(125.0, new ShooterParams(2400, 0));
+        m_shooterMap.put(130.0, new ShooterParams(2450, 0));
     }
 
     /**

@@ -35,7 +35,7 @@ public class AimAndShootCommand extends Command {
       robotCentric
         .withVelocityX(0)
         .withVelocityY(0)
-        .withRotationalRate(LimelightHelpers.getTX("limelight") * LimelightConstants.desiredValue * LimelightConstants.MaxAngularRate)
+        .withRotationalRate(LimelightHelpers.getTX("limelight") * LimelightConstants.kHubAngle * LimelightConstants.MaxAngularRate)
     );
   }
 

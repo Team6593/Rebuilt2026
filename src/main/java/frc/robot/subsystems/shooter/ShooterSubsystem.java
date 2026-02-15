@@ -41,24 +41,24 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
     shooter1Configs.Slot0.kP = .76;
     shooter1Configs.Slot0.kA = ShooterInputs.kA;
     shooter1Configs.Slot0.kV = ShooterInputs.kV;
-    shooter1Configs.CurrentLimits.StatorCurrentLimit = 80;
+    shooter1Configs.CurrentLimits.StatorCurrentLimit = 40;
     shooter1Configs.CurrentLimits.StatorCurrentLimitEnable = true;
-    shooter1Configs.CurrentLimits.SupplyCurrentLimit = 80;
+    shooter1Configs.CurrentLimits.SupplyCurrentLimit = 40;
     shooter1Configs.CurrentLimits.SupplyCurrentLimitEnable = true;
     shooterMasterConfigurator.apply(shooter1Configs);
 
     shooter2Configs.Slot0.kP = .76;
     shooter2Configs.Slot0.kA = ShooterInputs.kA;
     shooter2Configs.Slot0.kV = ShooterInputs.kV;
-    shooter2Configs.CurrentLimits.StatorCurrentLimit = 80;
+    shooter2Configs.CurrentLimits.StatorCurrentLimit = 40;
     shooter2Configs.CurrentLimits.StatorCurrentLimitEnable = true;
     shooter2Configs.CurrentLimits.SupplyCurrentLimitEnable = true;
     shooterSecondaryConfigurator.apply(shooter2Configs);
 
     indexerConfigs.Slot0.kP = 1;
-    indexerConfigs.CurrentLimits.StatorCurrentLimit = 60;
+    indexerConfigs.CurrentLimits.StatorCurrentLimit = 40;
     indexerConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
-    indexerConfigs.CurrentLimits.SupplyCurrentLimit = 60;
+    indexerConfigs.CurrentLimits.SupplyCurrentLimit = 40;
     indexerConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
     indexerConfigurator.apply(indexerConfigs);
 

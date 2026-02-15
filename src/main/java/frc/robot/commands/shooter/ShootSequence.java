@@ -17,14 +17,16 @@ public class ShootSequence extends Command {
   private IntakeSubsystem intakeSubsystem;
   private FeederSubsystem feederSubsystem;
   private RollersSubsystem rollersSubsystem;
+  private double shooterRPM;
 
   /** Creates a new ShootSequence. */
   public ShootSequence(ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem, 
-  FeederSubsystem feederSubsystem, RollersSubsystem rollersSubsystem) {
+  FeederSubsystem feederSubsystem, RollersSubsystem rollersSubsystem, double shooterRPM) {
     this.feederSubsystem = feederSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.intakeSubsystem = intakeSubsystem;
     this.rollersSubsystem = rollersSubsystem;
+    this.shooterRPM = shooterRPM;
 
     addRequirements(intakeSubsystem, feederSubsystem, shooterSubsystem, rollersSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -39,10 +41,10 @@ public class ShootSequence extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterSubsystem.setMasterRPM(-2000, 2000);
+    shooterSubsystem.setMasterRPM(-shooterRPM, shooterRPM);
     // shooterSubsystem.setIndexerRPM(-3000);
 
-    if (shooterSubsystem.getShooterRPM() < -1900) {
+    if (shooterSubsystem.getShooterRPM() < -shooterRPM + 100) {
         shooterSubsystem.setIndexerRPM(-3000);
         feederSubsystem.feed(.5);
         // intakeSubsystem.runIntake(.45);

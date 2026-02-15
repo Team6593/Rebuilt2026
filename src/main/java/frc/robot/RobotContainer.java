@@ -83,16 +83,17 @@ public class RobotContainer {
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
-        double multiplier = .3;
+        double multiplier = .7;
+        double rotMultiplier = .7;
         double sotmMultiplier = .5;
-        double sotmRotMulti = .5;
+        double sotmRotMulti = .1;
         double lockedMultiplier = 0;
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier) // Drive forward with negative Y (forward)
                     .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate * multiplier * 2) // Drive counterclockwise with negative X (left)
+                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate * rotMultiplier) // Drive counterclockwise with negative X (left)
             )
         );
 
@@ -132,15 +133,15 @@ public class RobotContainer {
 
         joystick.b().whileTrue(new IntakeCommand(intake));
         joystick.rightTrigger(.3).whileTrue(new IntakeCommand(intake));
-        joystick.x().whileTrue(new ShootSequence(shooter, intake, feeder, rollersSubsystem));
-        joystick.rightBumper().whileTrue(
+        joystick.leftTrigger(.3).whileTrue(
             drivetrain.applyRequest(
                 () -> drive
-                    .withVelocityX(-joystick.getLeftX() * MaxSpeed * multiplier)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier)
-                    .withRotationalRate(LimelightHelpers.getTX("limelight") * LimelightConstants.desiredValue)
+                    .withRotationalRate(LimelightHelpers.getTX("limelight") * LimelightConstants.kTrenchAngle * sotmRotMulti)
+                    .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * sotmMultiplier)
+                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier * lockedMultiplier)       
             )
         );
+        joystick.x().whileTrue(new ShootSequence(shooter, intake, feeder, rollersSubsystem, 6000));
         // joystick.button(7).onTrue(new PivotToHomeCommand(intake));
         // joystick.button(8).onTrue(new PivotToSetpointCommand(intake));
         joystick.a().onTrue(new StopAll(feeder, intake, shooter));
@@ -151,13 +152,12 @@ public class RobotContainer {
         joystick.button(6).whileTrue(
             drivetrain.applyRequest(
                 () -> drive
-                    .withRotationalRate(LimelightHelpers.getTX("limelight") * LimelightConstants.desiredValue * sotmRotMulti)
+                    .withRotationalRate(LimelightHelpers.getTX("limelight") * LimelightConstants.kHubAngle * sotmRotMulti)
                     .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * sotmMultiplier * lockedMultiplier)
                     .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier)
             )
             .alongWith(new ShootOnTheMoveSequenceCommand(shooter, intake, feeder, limelight, rollersSubsystem))
         );
-
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 

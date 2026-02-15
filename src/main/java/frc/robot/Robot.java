@@ -48,7 +48,7 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().run();
         field.setRobotPose(m_robotContainer.drivetrain.getState().Pose);
         SmartDashboard.putNumber("Battery", RobotController.getBatteryVoltage());
-        SmartDashboard.putNumber("Calculated RPM", ShotCalculator.lerpGet(m_robotContainer.limelight.estimateDistance()).rpm);
+        // SmartDashboard.putNumber("Calculated RPM", ShotCalculator.lerpGet(m_robotContainer.limelight.estimateDistance()).rpm);
 
         /*
          * This example of adding Limelight is very simple and may not be sufficient for on-field use.
