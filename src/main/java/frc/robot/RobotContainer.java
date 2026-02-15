@@ -127,6 +127,7 @@ public class RobotContainer {
         // joystick.button(RevControllerConstants.m_M1).whileTrue(new IntakeCommand(intake));
 
         joystick.b().whileTrue(new IntakeCommand(intake));
+        joystick.rightTrigger(.3).whileTrue(new IntakeCommand(intake));
         joystick.x().whileTrue(new ShootSequence(shooter, intake, feeder, rollersSubsystem));
         // joystick.button(7).onTrue(new PivotToHomeCommand(intake));
         // joystick.button(8).onTrue(new PivotToSetpointCommand(intake));
