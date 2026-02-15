@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.utils.ShotCalculator;
 import frc.simulation.commands.ShooterSimDistanceSetter;
 import frc.simulation.commands.ShooterSimulationRPMCommand;
 import frc.simulation.shooter.ShooterSimulation;
@@ -47,6 +48,7 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().run();
         field.setRobotPose(m_robotContainer.drivetrain.getState().Pose);
         SmartDashboard.putNumber("Battery", RobotController.getBatteryVoltage());
+        SmartDashboard.putNumber("Calculated RPM", ShotCalculator.lerpGet(m_robotContainer.limelight.estimateDistance()).rpm);
 
         /*
          * This example of adding Limelight is very simple and may not be sufficient for on-field use.
