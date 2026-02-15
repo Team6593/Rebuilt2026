@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.shooter.ShootOnTheMoveSequenceCommand;
 import frc.robot.commands.shooter.ShootSequence;
 import frc.robot.commands.StopAll;
 import frc.robot.generated.TunerConstants;
@@ -83,12 +84,15 @@ public class RobotContainer {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
         double multiplier = .3;
+        double sotmMultiplier = .5;
+        double sotmRotMulti = .5;
+        double lockedMultiplier = 0;
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier) // Drive forward with negative Y (forward)
                     .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate * multiplier) // Drive counterclockwise with negative X (left)
+                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate * multiplier * 2) // Drive counterclockwise with negative X (left)
             )
         );
 
@@ -140,9 +144,19 @@ public class RobotContainer {
         // joystick.button(7).onTrue(new PivotToHomeCommand(intake));
         // joystick.button(8).onTrue(new PivotToSetpointCommand(intake));
         joystick.a().onTrue(new StopAll(feeder, intake, shooter));
+        joystick.y().whileTrue(new ShootOnTheMoveSequenceCommand(shooter, intake, feeder, limelight, rollersSubsystem));
 
         // Reset the field-centric heading on left bumper press.
-        joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        joystick.button(5).onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        joystick.button(6).whileTrue(
+            drivetrain.applyRequest(
+                () -> drive
+                    .withRotationalRate(LimelightHelpers.getTX("limelight") * LimelightConstants.desiredValue * sotmRotMulti)
+                    .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * sotmMultiplier * lockedMultiplier)
+                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier)
+            )
+            .alongWith(new ShootOnTheMoveSequenceCommand(shooter, intake, feeder, limelight, rollersSubsystem))
+        );
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }

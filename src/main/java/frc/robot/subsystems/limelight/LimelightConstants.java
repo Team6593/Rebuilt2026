@@ -16,6 +16,6 @@ public class LimelightConstants {
     public static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
     
     // get actual value later; https://youtu.be/QXU7Co__Xdc ~13:00
-    public static double desiredValue = -0.05;
+    public static double desiredValue = -0.4;
 
 }

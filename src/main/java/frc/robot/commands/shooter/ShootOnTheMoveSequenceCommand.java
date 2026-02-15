@@ -16,18 +16,24 @@ import frc.robot.utils.ShotCalculator;
 public class ShootOnTheMoveSequenceCommand extends Command {
 
   private ShooterSubsystem shooterSubsystem;
+  private Limelight limelight;
   private IntakeSubsystem intakeSubsystem;
   private FeederSubsystem feederSubsystem;
   private RollersSubsystem rollersSubsystem;
-  private Limelight limelight;
 
   /** Creates a new ShootOnTheMoveSequenceCommand. */
-  public ShootOnTheMoveSequenceCommand(ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem,
-  FeederSubsystem feederSubsystem, RollersSubsystem rollersSubsystem) {
+  public ShootOnTheMoveSequenceCommand(
+    ShooterSubsystem shooterSubsystem,
+    IntakeSubsystem intakeSubsystem,
+    FeederSubsystem feederSubsystem,
+    Limelight limelight,
+    RollersSubsystem rollersSubsystem) 
+    {
     this.shooterSubsystem = shooterSubsystem;
     this.feederSubsystem = feederSubsystem;
     this.intakeSubsystem = intakeSubsystem;
     this.rollersSubsystem = rollersSubsystem;
+    this.limelight = limelight;
 
     addRequirements(shooterSubsystem, intakeSubsystem, feederSubsystem, rollersSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -50,7 +56,18 @@ public class ShootOnTheMoveSequenceCommand extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    shooterSubsystem.setMasterRPM(
+      -ShotCalculator.lerpGet(limelight.estimateDistance()).rpm, 
+      ShotCalculator.lerpGet(limelight.estimateDistance()).rpm
+    );
+    if (shooterSubsystem.getShooterRPM() < -ShotCalculator.lerpGet(limelight.estimateDistance()).rpm + 100) {
+      shooterSubsystem.setIndexerRPM(-3000);
+      feederSubsystem.feed(.5);
+      // intakeSubsystem.runIntake(.45);
+      rollersSubsystem.set(.3);
+    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -64,6 +81,8 @@ public class ShootOnTheMoveSequenceCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+
+
     return false;
   }
 }
