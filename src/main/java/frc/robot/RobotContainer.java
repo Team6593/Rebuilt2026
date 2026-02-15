@@ -39,7 +39,7 @@ import frc.robot.commands.intake.PivotToHomeCommand;
 
 public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+    private double MaxAngularRate = 1.0 * RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
     private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
@@ -88,7 +88,7 @@ public class RobotContainer {
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier) // Drive forward with negative Y (forward)
                     .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate * multiplier) // Drive counterclockwise with negative X (left)
             )
         );
 
@@ -129,6 +129,14 @@ public class RobotContainer {
         joystick.b().whileTrue(new IntakeCommand(intake));
         joystick.rightTrigger(.3).whileTrue(new IntakeCommand(intake));
         joystick.x().whileTrue(new ShootSequence(shooter, intake, feeder, rollersSubsystem));
+        joystick.rightBumper().whileTrue(
+            drivetrain.applyRequest(
+                () -> drive
+                    .withVelocityX(-joystick.getLeftX() * MaxSpeed * multiplier)
+                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier)
+                    .withRotationalRate(LimelightHelpers.getTX("limelight") * LimelightConstants.desiredValue)
+            )
+        );
         // joystick.button(7).onTrue(new PivotToHomeCommand(intake));
         // joystick.button(8).onTrue(new PivotToSetpointCommand(intake));
         joystick.a().onTrue(new StopAll(feeder, intake, shooter));

@@ -5,6 +5,10 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.feeder.FeederSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.limelight.Limelight;
+import frc.robot.subsystems.rollers.RollersSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.utils.ShotCalculator;
 
@@ -12,19 +16,36 @@ import frc.robot.utils.ShotCalculator;
 public class ShootOnTheMoveSequenceCommand extends Command {
 
   private ShooterSubsystem shooterSubsystem;
+  private IntakeSubsystem intakeSubsystem;
+  private FeederSubsystem feederSubsystem;
+  private RollersSubsystem rollersSubsystem;
+  private Limelight limelight;
 
   /** Creates a new ShootOnTheMoveSequenceCommand. */
-  public ShootOnTheMoveSequenceCommand(ShooterSubsystem shooterSubsystem) {
+  public ShootOnTheMoveSequenceCommand(ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem,
+  FeederSubsystem feederSubsystem, RollersSubsystem rollersSubsystem) {
     this.shooterSubsystem = shooterSubsystem;
+    this.feederSubsystem = feederSubsystem;
+    this.intakeSubsystem = intakeSubsystem;
+    this.rollersSubsystem = rollersSubsystem;
 
-    addRequirements(shooterSubsystem);
+    addRequirements(shooterSubsystem, intakeSubsystem, feederSubsystem, rollersSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // shooterSubsystem.setMasterRPM(ShotCalculator.lerpGet(0).rpm); // replace 0 with distance estimate from LL
+    shooterSubsystem.setMasterRPM(
+      -ShotCalculator.lerpGet(limelight.estimateDistance()).rpm, 
+      ShotCalculator.lerpGet(limelight.estimateDistance()).rpm
+    );
+    if (shooterSubsystem.getShooterRPM() < (-ShotCalculator.lerpGet(limelight.estimateDistance()).rpm - 100)) {
+        shooterSubsystem.setIndexerRPM(-3000);
+        feederSubsystem.feed(.5);
+        // intakeSubsystem.runIntake(.45);
+        rollersSubsystem.set(.3);
+    } 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -33,7 +54,12 @@ public class ShootOnTheMoveSequenceCommand extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    shooterSubsystem.stop();
+    intakeSubsystem.stop();
+    feederSubsystem.stop();
+    rollersSubsystem.stop();
+  }
 
   // Returns true when the command should end.
   @Override

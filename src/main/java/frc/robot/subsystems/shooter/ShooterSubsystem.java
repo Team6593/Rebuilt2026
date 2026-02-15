@@ -6,14 +6,10 @@ package frc.robot.subsystems.shooter;
 
 import edu.wpi.first.wpilibj.Preferences;
 
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -41,7 +37,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
   public ShooterSubsystem() {
     
     // configs
-    shooter1Configs.Slot0.kP = ShooterInputs.kP;
+    shooter1Configs.Slot0.kP = .76;
     shooter1Configs.Slot0.kA = ShooterInputs.kA;
     shooter1Configs.Slot0.kV = ShooterInputs.kV;
     shooter1Configs.CurrentLimits.StatorCurrentLimit = 80;
@@ -50,7 +46,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
     shooter1Configs.CurrentLimits.SupplyCurrentLimitEnable = true;
     shooterMasterConfigurator.apply(shooter1Configs);
 
-    shooter2Configs.Slot0.kP = .7;
+    shooter2Configs.Slot0.kP = .76;
     shooter2Configs.Slot0.kA = ShooterInputs.kA;
     shooter2Configs.Slot0.kV = ShooterInputs.kV;
     shooter2Configs.CurrentLimits.StatorCurrentLimit = 80;
