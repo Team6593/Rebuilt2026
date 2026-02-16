@@ -9,11 +9,14 @@ import com.ctre.phoenix6.HootAutoReplay;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.limelight.Limelight;
+import frc.robot.subsystems.limelight.LimelightConstants;
 import frc.robot.utils.ShotCalculator;
 import frc.simulation.commands.ShooterSimDistanceSetter;
 import frc.simulation.commands.ShooterSimulationRPMCommand;
@@ -48,6 +51,8 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().run();
         field.setRobotPose(m_robotContainer.drivetrain.getState().Pose);
         SmartDashboard.putNumber("Battery", RobotController.getBatteryVoltage());
+        SmartDashboard.putNumber("Alignment Rate", LimelightHelpers.getTX("limelight") * LimelightConstants.kHubAngle * LimelightConstants.sotmRotMulti);
+        SmartDashboard.putNumber("ATag ID", LimelightHelpers.getFiducialID("limelight"));
         // SmartDashboard.putNumber("Calculated RPM", ShotCalculator.lerpGet(m_robotContainer.limelight.estimateDistance()).rpm);
 
         /*
@@ -68,6 +73,11 @@ public class Robot extends TimedRobot {
             if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
                 m_robotContainer.drivetrain.addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds);
             }
+        }
+        if (LimelightHelpers.getFiducialID("limelight") == -1) {
+            m_robotContainer.joystick.setRumble(RumbleType.kBothRumble, .5);
+        } else {
+            m_robotContainer.joystick.setRumble(RumbleType.kBothRumble, 0);
         }
     }
 

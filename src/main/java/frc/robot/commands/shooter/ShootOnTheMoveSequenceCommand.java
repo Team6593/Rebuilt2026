@@ -5,6 +5,7 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.feeder.FeederSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.limelight.Limelight;
@@ -42,30 +43,35 @@ public class ShootOnTheMoveSequenceCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.setMasterRPM(
-      -ShotCalculator.lerpGet(limelight.estimateDistance()).rpm, 
-      ShotCalculator.lerpGet(limelight.estimateDistance()).rpm
-    );
-    if (shooterSubsystem.getShooterRPM() < (-ShotCalculator.lerpGet(limelight.estimateDistance()).rpm - 100)) {
-        shooterSubsystem.setIndexerRPM(-3000);
-        feederSubsystem.feed(.5);
-        // intakeSubsystem.runIntake(.45);
-        rollersSubsystem.set(.3);
-    } 
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterSubsystem.setMasterRPM(
-      -ShotCalculator.lerpGet(limelight.estimateDistance()).rpm, 
-      ShotCalculator.lerpGet(limelight.estimateDistance()).rpm
-    );
-    if (shooterSubsystem.getShooterRPM() < -ShotCalculator.lerpGet(limelight.estimateDistance()).rpm + 100) {
-      shooterSubsystem.setIndexerRPM(-3000);
-      feederSubsystem.feed(.5);
-      // intakeSubsystem.runIntake(.45);
-      rollersSubsystem.set(.3);
+    if (LimelightHelpers.getFiducialID("limelight") == 26) {
+      shooterSubsystem.setMasterRPM(
+        -ShotCalculator.lerpGet(limelight.estimateDistance()).rpm + 250, 
+        ShotCalculator.lerpGet(limelight.estimateDistance()).rpm - 250
+      );
+      if (shooterSubsystem.getShooterRPM() < -ShotCalculator.lerpGet(limelight.estimateDistance()).rpm + 350) {
+        shooterSubsystem.setIndexerRPM(-6000);
+        feederSubsystem.feed(1);
+        // intakeSubsystem.runIntake(.45);
+        rollersSubsystem.set(.3);
+      }
+    }
+    if (LimelightHelpers.getFiducialID("limelight") == 25 || LimelightHelpers.getFiducialID("limelight") == 24) {
+      shooterSubsystem.setMasterRPM(
+        -ShotCalculator.lerpGet(limelight.estimateDistance()).rpm, 
+        ShotCalculator.lerpGet(limelight.estimateDistance()).rpm
+      );
+      if (shooterSubsystem.getShooterRPM() < -ShotCalculator.lerpGet(limelight.estimateDistance()).rpm + 100) {
+        shooterSubsystem.setIndexerRPM(-6000);
+        feederSubsystem.feed(1);
+        // intakeSubsystem.runIntake(.45);
+        rollersSubsystem.set(.3);
+      }
     }
   }
 

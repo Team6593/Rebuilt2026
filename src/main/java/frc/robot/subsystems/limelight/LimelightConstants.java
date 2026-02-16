@@ -16,7 +16,9 @@ public class LimelightConstants {
     public static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
     
     // get actual value later; https://youtu.be/QXU7Co__Xdc ~13:00
-    public static double kHubAngle = -0.75;
+    public static double kHubAngle = -.57;
+    public static double kHubTrueAngle = 1.76;
+    public static double sotmRotMulti = .275;
     public static double kTrenchAngle = -.13;
 
 }

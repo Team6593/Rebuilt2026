@@ -18,12 +18,12 @@ public class ShotCalculator {
         m_shooterMap.put(90.7, new ShooterParams(2100, 0));
         m_shooterMap.put(95.3, new ShooterParams(2150, 0));
         m_shooterMap.put(100.4, new ShooterParams(2200, 0));
-        m_shooterMap.put(105.75, new ShooterParams(2250, 0));
-        m_shooterMap.put(111.6, new ShooterParams(2250, 0));
+        m_shooterMap.put(105.75, new ShooterParams(2225, 0));
+        m_shooterMap.put(111.6, new ShooterParams(2225, 0));
         m_shooterMap.put(115.0, new ShooterParams(2300, 0));
-        m_shooterMap.put(120.0, new ShooterParams(2350, 0));
-        m_shooterMap.put(125.0, new ShooterParams(2400, 0));
-        m_shooterMap.put(130.0, new ShooterParams(2450, 0));
+        m_shooterMap.put(120.0, new ShooterParams(2300, 0));
+        m_shooterMap.put(125.0, new ShooterParams(2350, 0));
+        m_shooterMap.put(130.0, new ShooterParams(2400, 0));
     }
 
     /**
@@ -59,13 +59,14 @@ public class ShotCalculator {
         double rpm = interpolate(lowerParams.rpm, upperParams.rpm, ratio);
         double tof = interpolate(lowerParams.tof, upperParams.tof, ratio);
 
+        
         return new ShooterParams(rpm, tof);
     }
 
     /**
      * Actual linear interpolation method.
      * @param start
-     * @param end
+     * @param endbor
      * @param ratio
      * @return double
      */

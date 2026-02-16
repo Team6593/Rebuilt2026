@@ -72,5 +72,15 @@ public class Limelight extends SubsystemBase {
     targetingAngularVelocity *= -1.0;
     return targetingAngularVelocity;
   }
+  
+  public boolean hasValidTargets() {
+    double tvValue = table.getEntry("tv").getDouble(0);
+    if (tvValue == 1) {return false;}
+    else {return true;}
+  }
+
+  public double getID() {
+    return LimelightHelpers.getFiducialID("limelight");
+  }
 
 }

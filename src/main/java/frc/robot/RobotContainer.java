@@ -11,13 +11,18 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.FollowPathCommand;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -28,6 +33,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.feeder.FeederSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.utils.AlignToTrench;
 import frc.robot.utils.RevControllerConstants;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.limelight.Limelight;
@@ -57,7 +63,7 @@ public class RobotContainer {
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final CommandXboxController joystick = new CommandXboxController(0);
+    public final CommandXboxController joystick = new CommandXboxController(0);
 
     // Subsystems
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -86,7 +92,6 @@ public class RobotContainer {
         double multiplier = .7;
         double rotMultiplier = .7;
         double sotmMultiplier = .5;
-        double sotmRotMulti = .1;
         double lockedMultiplier = 0;
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
@@ -133,28 +138,32 @@ public class RobotContainer {
 
         joystick.b().whileTrue(new IntakeCommand(intake));
         joystick.rightTrigger(.3).whileTrue(new IntakeCommand(intake));
-        joystick.leftTrigger(.3).whileTrue(
-            drivetrain.applyRequest(
-                () -> drive
-                    .withRotationalRate(LimelightHelpers.getTX("limelight") * LimelightConstants.kTrenchAngle * sotmRotMulti)
-                    .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * sotmMultiplier)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier * lockedMultiplier)       
-            )
-        );
+        // joystick.leftTrigger(.3).whileTrue(
+        //     drivetrain.applyRequest(
+        //         () -> drive
+        //             .withRotationalRate(LimelightHelpers.getTX("limelight") * LimelightConstants.kTrenchAngle * sotmRotMulti)
+        //             .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * sotmMultiplier)
+        //             .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier * lockedMultiplier)       
+        //     )
+        // );
+        
         joystick.x().whileTrue(new ShootSequence(shooter, intake, feeder, rollersSubsystem, 6000));
         // joystick.button(7).onTrue(new PivotToHomeCommand(intake));
         // joystick.button(8).onTrue(new PivotToSetpointCommand(intake));
         joystick.a().onTrue(new StopAll(feeder, intake, shooter));
         joystick.y().whileTrue(new ShootOnTheMoveSequenceCommand(shooter, intake, feeder, limelight, rollersSubsystem));
 
+        // testing trench code
+        joystick.povUp().onTrue(new AlignToTrench(drivetrain, forwardStraight).withTimeout(3));
+
         // Reset the field-centric heading on left bumper press.
         joystick.button(5).onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
         joystick.button(6).whileTrue(
             drivetrain.applyRequest(
                 () -> drive
-                    .withRotationalRate(LimelightHelpers.getTX("limelight") * LimelightConstants.kHubAngle * sotmRotMulti)
-                    .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * sotmMultiplier * lockedMultiplier)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier)
+                    .withRotationalRate(LimelightHelpers.getTX("limelight") * LimelightConstants.kHubAngle * LimelightConstants.sotmRotMulti)
+                    .withVelocityX(0)
+                    .withVelocityY(0)
             )
             .alongWith(new ShootOnTheMoveSequenceCommand(shooter, intake, feeder, limelight, rollersSubsystem))
         );
@@ -165,4 +174,5 @@ public class RobotContainer {
         /* Run the path selected from the auto chooser */
         return autoChooser.getSelected();
     }
+
 }
