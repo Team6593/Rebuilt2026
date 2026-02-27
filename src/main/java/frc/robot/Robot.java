@@ -7,6 +7,7 @@ package frc.robot;
 import com.ctre.phoenix6.HootAutoReplay;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -15,9 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.limelight.LimelightConstants;
-import frc.robot.utils.ShotCalculator;
 import frc.simulation.commands.ShooterSimDistanceSetter;
 import frc.simulation.commands.ShooterSimulationRPMCommand;
 import frc.simulation.shooter.ShooterSimulation;
@@ -29,16 +28,16 @@ public class Robot extends TimedRobot {
 
     private final RobotContainer m_robotContainer;
 
-    // private ShooterSimulation shooterSimulation = new ShooterSimulation();
-
-    private CommandXboxController simJoystick = new CommandXboxController(3);
-
     /* log and replay timestamp and joystick data */
     private final HootAutoReplay m_timeAndJoystickReplay = new HootAutoReplay()
         .withTimestampReplay()
         .withJoystickReplay();
 
     private final boolean kUseLimelight = true;
+
+    // Simulation
+    private ShooterSimulation shooterSimulation = new ShooterSimulation();
+    private CommandXboxController simJoystick = new CommandXboxController(3);
 
     public Robot() {
         m_robotContainer = new RobotContainer();
@@ -78,6 +77,10 @@ public class Robot extends TimedRobot {
             m_robotContainer.joystick.setRumble(RumbleType.kBothRumble, .5);
         } else {
             m_robotContainer.joystick.setRumble(RumbleType.kBothRumble, 0);
+        }
+
+        if (!RobotBase.isReal()) {
+            
         }
     }
 
@@ -131,6 +134,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void simulationPeriodic() {
-        // simJoystick.a().whileTrue(shootrSimulation.runShooterRPM(1000, 2000));
+        simJoystick.a().whileTrue(new ShooterSimulationRPMCommand(shooterSimulation));
+        simJoystick.x().onTrue(new ShooterSimDistanceSetter(shooterSimulation, 66));
+        simJoystick.y().onTrue(new ShooterSimDistanceSetter(shooterSimulation, 102));
+        simJoystick.b().onTrue(new ShooterSimDistanceSetter(shooterSimulation, 140));
     }
 }

@@ -43,6 +43,7 @@ import frc.robot.commands.intake.PivotToSetpointCommand;
 import frc.robot.commands.intake.pivotCommand;
 import frc.robot.commands.intake.IntakeCommand;
 import frc.robot.commands.intake.PivotToHomeCommand;
+import com.pathplanner.lib.auto.NamedCommands;
 
 public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -84,6 +85,10 @@ public class RobotContainer {
 
         // Warmup PathPlanner to avoid Java pauses
         FollowPathCommand.warmupCommand().schedule();
+
+        NamedCommands.registerCommand("SOTF Shoot", 
+            new ShootOnTheMoveSequenceCommand(shooter, intake, feeder, limelight, rollersSubsystem)
+            .withTimeout(5));
     }
 
     private void configureBindings() {

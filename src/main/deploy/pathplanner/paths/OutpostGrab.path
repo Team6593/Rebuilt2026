@@ -4,44 +4,33 @@
     {
       "anchor": {
         "x": 4.0,
-        "y": 6.0
+        "y": 0.6646704545454554
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.011782256445642,
-        "y": 4.941118185612764
+        "x": 2.962183472711474,
+        "y": 0.6646704545454555
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "OutpostStart"
     },
     {
       "anchor": {
-        "x": 3.0,
-        "y": 4.0
+        "x": 0.37497727272767856,
+        "y": 0.6646704545454554
       },
       "prevControl": {
-        "x": 3.326390291360271,
-        "y": 5.342305067838959
+        "x": 2.8043469367859375,
+        "y": 0.6646704545454557
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Outpost"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "pointTowardsZones": [
-    {
-      "fieldPosition": {
-        "x": 4.0,
-        "y": 4.0
-      },
-      "rotationOffset": 0.0,
-      "minWaypointRelativePos": 0.6978609625668458,
-      "maxWaypointRelativePos": 1.0,
-      "name": "Point Towards Zone"
-    }
-  ],
+  "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 5.395,
@@ -59,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }
