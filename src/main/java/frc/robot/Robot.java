@@ -6,6 +6,10 @@ package frc.robot;
 
 import com.ctre.phoenix6.HootAutoReplay;
 
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
@@ -134,9 +138,15 @@ public class Robot extends TimedRobot {
 
     @Override
     public void simulationPeriodic() {
+
+        // 13.5in forward, 0m side, 1.5ft up, tilted back 15 degrees
+        Transform3d robotToShooter = new Transform3d(
+            new Translation3d(Units.inchesToMeters(13.5), Units.inchesToMeters(0), Units.inchesToMeters(18)),
+            new Rotation3d(0, Math.toRadians(-75), 0)
+        );
+        Pose3d launchPose = m_robotContainer.drivetrain.getPose3d().plus(robotToShooter);
+
         simJoystick.a().whileTrue(new ShooterSimulationRPMCommand(shooterSimulation));
-        simJoystick.x().onTrue(new ShooterSimDistanceSetter(shooterSimulation, 66));
-        simJoystick.y().onTrue(new ShooterSimDistanceSetter(shooterSimulation, 102));
-        simJoystick.b().onTrue(new ShooterSimDistanceSetter(shooterSimulation, 140));
+        m_robotContainer.joystick.b().onTrue(shooterSimulation.launchFuelCommand(launchPose, 28));
     }
 }

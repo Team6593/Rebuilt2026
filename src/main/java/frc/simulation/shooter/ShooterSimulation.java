@@ -6,18 +6,26 @@ package frc.simulation.shooter;
 
 import static edu.wpi.first.units.Units.Volts;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utils.Fuel;
 
 public class ShooterSimulation extends SubsystemBase{
 
@@ -38,6 +46,13 @@ public class ShooterSimulation extends SubsystemBase{
   private TalonFXConfiguration shooter2Configs = new TalonFXConfiguration();
 
   private double distanceSim = 0;
+
+  private final List<Fuel> activeFuel = new ArrayList<>();
+  private final StructArrayPublisher<Pose3d> fuelPublisher = NetworkTableInstance.getDefault()
+    .getStructArrayTopic("FuelPoses", Pose3d.struct)
+    .publish();
+
+  private double lastTimestamp = Timer.getFPGATimestamp();
 
   /** Creates a new ShooterSimulation. */
   public ShooterSimulation() {
@@ -83,6 +98,22 @@ public class ShooterSimulation extends SubsystemBase{
     shooter2Sim.setRawRotorPosition(m_motor2SimModel.getAngularPosition().times(ShooterSimulationConstants.shooter2Ratio));
     shooter2Sim.setRotorVelocity(m_motor2SimModel.getAngularVelocity().times(ShooterSimulationConstants.shooter2Ratio));
 
+    double currentTime = Timer.getFPGATimestamp();
+    double dt = currentTime - lastTimestamp;
+    lastTimestamp = currentTime;
+
+    for (int i = activeFuel.size() - 1; i>= 0; i--) {
+      Fuel fuel = activeFuel.get(i);
+      fuel.update(dt);
+      if (fuel.isExpired()) activeFuel.remove(i);
+    }
+
+    Pose3d[] poses = activeFuel.stream()
+      .map(Fuel::getPose)
+      .toArray(Pose3d[]::new);
+
+    fuelPublisher.set(poses);
+
     sdLogging();
   }
 
@@ -106,6 +137,16 @@ public class ShooterSimulation extends SubsystemBase{
     shooter1.setControl(m_request.withVelocity(RPM1 / 60));
     final VelocityVoltage m_request2 = new VelocityVoltage(0).withSlot(0);
     shooter2.setControl(m_request2.withVelocity(RPM2 / 60));
+  }
+
+  /**
+   * Simulate shooting fuel.
+   * @param robotPose
+   * @param speed
+   */
+  public void launcHFuel(Pose3d robotPose, double speed) {
+    activeFuel.clear();
+    activeFuel.add(new Fuel(robotPose, speed));
   }
 
   public double getRPM() {
@@ -138,6 +179,11 @@ public class ShooterSimulation extends SubsystemBase{
   public Command stopShooterSimCommand() {
     return this.runOnce(
       () -> stop());
+  }
+
+  public Command launchFuelCommand(Pose3d robotPose, double speed) {
+    return this.runOnce(
+      () -> launcHFuel(robotPose, speed));
   }
   
 }
