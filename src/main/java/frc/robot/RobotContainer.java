@@ -166,7 +166,7 @@ public class RobotContainer {
         joystick.button(6).whileTrue(
             drivetrain.applyRequest(
                 () -> drive
-                    .withRotationalRate(LimelightHelpers.getTX("limelight") * LimelightConstants.kHubAngle * LimelightConstants.sotmRotMulti)
+                    .withRotationalRate(LimelightHelpers.getTX("limelight") - LimelightConstants.kHubAngle * LimelightConstants.sotmRotMulti)
                     .withVelocityX(0)
                     .withVelocityY(0)
             )
