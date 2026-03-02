@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.rollers;
 
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
@@ -15,7 +16,7 @@ import frc.robot.utils.SubsystemInterface;
 
 public class RollersSubsystem extends SubsystemBase implements SubsystemInterface{
 
-  private SparkMax rollerMotor = new SparkMax(RollerConstants.rollerMotorID, MotorType.kBrushless);
+  private SparkFlex rollerMotor = new SparkFlex(RollerConstants.rollerMotorID, MotorType.kBrushless);
 
   /** Creates a new RollersSubsystem. */
   public RollersSubsystem() {
