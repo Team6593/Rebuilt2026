@@ -7,8 +7,8 @@ public class LimelightConstants {
     public static double kAimP = .035;
 
     // estimate variables
-    public static double limelightMountAngleDegrees = 0;
-    public static double limelightLensHeightInches = 19;
+    public static double limelightMountAngleDegrees = -25;
+    public static double limelightLensHeightInches = 8.3125;
     public static double goalHeightInches = 44.25;
 
     // drive speeds
@@ -16,9 +16,10 @@ public class LimelightConstants {
     public static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
     
     // get actual value later; https://youtu.be/QXU7Co__Xdc ~13:00
-    public static double kHubAngle = -.57;
+    public static double kHubAngle = -.07;
     public static double kHubTrueAngle = 1.76;
     public static double sotmRotMulti = .275;
     public static double kTrenchAngle = -.13;
 
 }
+

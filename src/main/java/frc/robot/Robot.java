@@ -73,11 +73,6 @@ public class Robot extends TimedRobot {
                 m_robotContainer.drivetrain.addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds);
             }
         }
-        if (LimelightHelpers.getFiducialID("limelight") == -1) {
-            m_robotContainer.joystick.setRumble(RumbleType.kBothRumble, .5);
-        } else {
-            m_robotContainer.joystick.setRumble(RumbleType.kBothRumble, 0);
-        }
 
         if (!RobotBase.isReal()) {
             

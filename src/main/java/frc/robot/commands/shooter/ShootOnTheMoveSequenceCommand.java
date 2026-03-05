@@ -51,7 +51,7 @@ public class ShootOnTheMoveSequenceCommand extends Command {
   public void execute() {
     if (LimelightHelpers.getFiducialID("limelight") == 26) {
       shooterSubsystem.setMasterRPM(
-        -ShotCalculator.lerpGet(limelight.estimateDistance()).rpm + 250, 
+        ShotCalculator.lerpGet(limelight.estimateDistance()).rpm + 250, 
         ShotCalculator.lerpGet(limelight.estimateDistance()).rpm - 250
       );
       if (shooterSubsystem.getShooterRPM() < -ShotCalculator.lerpGet(limelight.estimateDistance()).rpm + 350) {
