@@ -35,9 +35,9 @@ public class Robot extends TimedRobot {
 
     private final boolean kUseLimelight = true;
 
-    // Simulation
-    private ShooterSimulation shooterSimulation = new ShooterSimulation();
-    private CommandXboxController simJoystick = new CommandXboxController(3);
+    // // Simulation
+    // private ShooterSimulation shooterSimulation = new ShooterSimulation();
+    // private CommandXboxController simJoystick = new CommandXboxController(3);
 
     public Robot() {
         m_robotContainer = new RobotContainer();
@@ -129,9 +129,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void simulationPeriodic() {
-        simJoystick.a().whileTrue(new ShooterSimulationRPMCommand(shooterSimulation));
-        simJoystick.x().onTrue(new ShooterSimDistanceSetter(shooterSimulation, 66));
-        simJoystick.y().onTrue(new ShooterSimDistanceSetter(shooterSimulation, 102));
-        simJoystick.b().onTrue(new ShooterSimDistanceSetter(shooterSimulation, 140));
+        // simJoystick.a().whileTrue(new ShooterSimulationRPMCommand(shooterSimulation));
+        // simJoystick.x().onTrue(new ShooterSimDistanceSetter(shooterSimulation, 66));
+        // simJoystick.y().onTrue(new ShooterSimDistanceSetter(shooterSimulation, 102));
+        // simJoystick.b().onTrue(new ShooterSimDistanceSetter(shooterSimulation, 140));
     }
 }

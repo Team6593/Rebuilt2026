@@ -35,6 +35,7 @@ import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.limelight.LimelightConstants;
 import frc.robot.subsystems.rollers.RollersSubsystem;
 import frc.robot.commands.intake.PivotToSetpointCommand;
+import frc.robot.commands.intake.ShootPivot;
 import frc.robot.commands.intake.pivotCommand;
 import frc.robot.commands.intake.IntakeCommand;
 import frc.robot.commands.intake.PivotToHomeCommand;
@@ -64,7 +65,6 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public final ShooterSubsystem shooter = new ShooterSubsystem();
     public final IntakeSubsystem intake = new IntakeSubsystem();
-    public final FeederSubsystem feeder = new FeederSubsystem();
     public final RollersSubsystem rollersSubsystem = new RollersSubsystem();
     public final Limelight limelight = new Limelight();
 
@@ -132,25 +132,28 @@ public class RobotContainer {
         // joystick.button(RevControllerConstants.m_options).onTrue(new PivotToSetpointCommand(intake));
         // joystick.button(RevControllerConstants.m_M1).whileTrue(new IntakeCommand(intake));
 
-        joystick.b().whileTrue(new IntakeCommand(intake));
-        joystick.x().whileTrue(new ShootSequence(shooter, intake, feeder, rollersSubsystem, 1450));
+        // joystick.b().whileTrue(new IntakeCommand(intake));
+        joystick.button(6).whileTrue(new IntakeCommand(intake));
+        joystick.x().whileTrue(new ShootSequence(shooter, rollersSubsystem, 1450));
         // joystick.button(7).onTrue(new PivotToHomeCommand(intake));
         // joystick.button(8).onTrue(new PivotToSetpointCommand(intake));
-        joystick.a().onTrue(new StopAll(feeder, intake, shooter));
-        joystick.y().whileTrue(new ShootSequence(shooter, intake, feeder, rollersSubsystem, 6000));
+        // joystick.y().whileTrue(new ShootSequence(shooter, intake, rollersSubsystem, 6000));
+        joystick.povUp().onTrue(new PivotToHomeCommand(intake));
+        joystick.povDown().onTrue(new PivotToSetpointCommand(intake));
 
 
         // Reset the field-centric heading on pleft bumper press.
         joystick.button(5).onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-        joystick.button(6).whileTrue(
+        joystick.axisGreaterThan(2, .3).whileTrue(
             drivetrain.applyRequest(
                 () -> drive
                     .withRotationalRate(LimelightHelpers.getTX("limelight") * (LimelightConstants.kHubAngle * sotmRotMulti))
                     .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * sotmMultiplier * lockedMultiplier)
                     .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier)
             )
-            .alongWith(new ShootSequence(shooter, intake, feeder, rollersSubsystem, ShotCalculator.lerpGet(limelight.estimateDistance()).rpm))
-        );
+            .alongWith(new ShootSequence(shooter, rollersSubsystem, ShotCalculator.lerpGet(limelight.estimateDistance()).rpm - 25))
+            .alongWith(new ShootPivot(intake, .0175))
+        ).toggleOnFalse(new PivotToSetpointCommand(intake));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }

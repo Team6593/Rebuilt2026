@@ -32,7 +32,7 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
 
   private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
   private SparkMaxConfig pivotConfig = new SparkMaxConfig();
-  private SparkAbsoluteEncoder pivotEncoder = pivotMotor.getAbsoluteEncoder();
+  private SparkAbsoluteEncoder pivotEncoder = pivot2Motor.getAbsoluteEncoder();
 
   private ProfiledPIDController pidController = new ProfiledPIDController(IntakeInputs.kPivotP, 0, 0, new TrapezoidProfile.Constraints(10, 10));
   private ArmFeedforward armFeedforward = new ArmFeedforward(.5, 12, 12.5);
@@ -140,7 +140,7 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
   }
 
   public boolean positionCheck(double setpoint) {
-    double tolerance = 5;
+    double tolerance = 10;
     double error = Math.abs(pivotEncoder.getPosition() - setpoint);
     if (error < tolerance) {
       return true;

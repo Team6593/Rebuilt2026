@@ -14,21 +14,18 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 public class ShootSequence extends Command {
 
   private ShooterSubsystem shooterSubsystem;
-  private IntakeSubsystem intakeSubsystem;
-  private FeederSubsystem feederSubsystem;
+  // private IntakeSubsystem intakeSubsystem;
   private RollersSubsystem rollersSubsystem;
   private double shooterRPM;
 
   /** Creates a new ShootSequence. */
-  public ShootSequence(ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem, 
-  FeederSubsystem feederSubsystem, RollersSubsystem rollersSubsystem, double shooterRPM) {
-    this.feederSubsystem = feederSubsystem;
+  public ShootSequence(ShooterSubsystem shooterSubsystem, RollersSubsystem rollersSubsystem, double shooterRPM) {
     this.shooterSubsystem = shooterSubsystem;
-    this.intakeSubsystem = intakeSubsystem;
+    // this.intakeSubsystem = intakeSubsystem;
     this.rollersSubsystem = rollersSubsystem;
     this.shooterRPM = shooterRPM;
 
-    addRequirements(intakeSubsystem, feederSubsystem, shooterSubsystem, rollersSubsystem);
+    addRequirements(shooterSubsystem, rollersSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -45,7 +42,7 @@ public class ShootSequence extends Command {
     rollersSubsystem.set(.3);
     if (shooterSubsystem.getShooterRPM() > shooterRPM - 100) {
         shooterSubsystem.setIndexerRPM(-shooterRPM);
-        feederSubsystem.feed(.5);
+        //intakeSubsystem.runIntake(.75);
     } 
   }
 
@@ -53,8 +50,7 @@ public class ShootSequence extends Command {
   @Override
   public void end(boolean interrupted) {
     shooterSubsystem.stop();
-    intakeSubsystem.stop();
-    feederSubsystem.stop();
+    // intakeSubsystem.stop();
     rollersSubsystem.stop();
   }
 
