@@ -8,42 +8,37 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class PivotToHomeCommand extends Command {
+public class IntakeOnTheMove extends Command {
 
-  private IntakeSubsystem intake;
+  private IntakeSubsystem intakeSubsystem;
+  private double speed;
 
-  /** Creates a new PivotToSetpointCommand. */
-  public PivotToHomeCommand(IntakeSubsystem intake) {
-    this.intake = intake;
+  /** Creates a new IntakeOnTheMove. */
+  public IntakeOnTheMove(IntakeSubsystem intakeSubsystem, double speed) {
+    this.intakeSubsystem = intakeSubsystem;
+    this.speed = speed;
 
-    addRequirements(intake);
+    addRequirements(intakeSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    intake.pidToSetpoint(120, 0.0175);
-  }
-
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("Intake at setpoint: " + intake.positionCheck(120));
+    intakeSubsystem.runIntake(speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    System.out.println("Intake at setpoint: " + intake.positionCheck(120));
-    System.out.println("Command ended.");
-    intake.stop();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return intake.positionCheck(130);
+    return false;
   }
 }

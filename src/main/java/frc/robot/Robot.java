@@ -46,12 +46,16 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
+
+
         m_timeAndJoystickReplay.update();
         CommandScheduler.getInstance().run();
         field.setRobotPose(m_robotContainer.drivetrain.getState().Pose);
         SmartDashboard.putNumber("Battery", RobotController.getBatteryVoltage());
         SmartDashboard.putNumber("Alignment Rate", LimelightHelpers.getTX("limelight") * LimelightConstants.kHubAngle * LimelightConstants.sotmRotMulti);
         SmartDashboard.putNumber("ATag ID", LimelightHelpers.getFiducialID("limelight"));
+        SmartDashboard.putNumber("Drivetrain Speed", m_robotContainer.drivetrain.getState().Speeds.vxMetersPerSecond);
+        SmartDashboard.putNumber("LL Distance", LimelightHelpers.getTargetPose_RobotSpace("limelight")[2] *39.37);
         // SmartDashboard.putNumber("Calculated RPM", ShotCalculator.lerpGet(m_robotContainer.limelight.estimateDistance()).rpm);
 
         /*

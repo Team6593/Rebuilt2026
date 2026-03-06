@@ -2,56 +2,42 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.shooter;
+package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.feeder.FeederSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.subsystems.rollers.RollersSubsystem;
-import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ShootSequence extends Command {
+public class IntakePIDCommand extends Command {
 
-  private ShooterSubsystem shooterSubsystem;
   private IntakeSubsystem intakeSubsystem;
-  private RollersSubsystem rollersSubsystem;
-  private double shooterRPM;
+  private double setpoint;
 
-  /** Creates a new ShootSequence. */
-  public ShootSequence(ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem, RollersSubsystem rollersSubsystem, double shooterRPM) {
-    this.shooterSubsystem = shooterSubsystem;
+  /** Creates a new IntakePIDCommand. */
+  public IntakePIDCommand(IntakeSubsystem intakeSubsystem, double setpoint) {
     this.intakeSubsystem = intakeSubsystem;
-    this.rollersSubsystem = rollersSubsystem;
-    this.shooterRPM = shooterRPM;
+    this.setpoint = setpoint;
 
-    addRequirements(shooterSubsystem, intakeSubsystem, rollersSubsystem);
+    addRequirements(intakeSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    intakeSubsystem.profiledPIDIntake(setpoint);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterSubsystem.setMasterRPM(shooterRPM, shooterRPM);
-    rollersSubsystem.set(.3);
-    if (shooterSubsystem.getShooterRPM() > shooterRPM + 400) {
-        shooterSubsystem.setIndexerRPM(-shooterRPM);
-        intakeSubsystem.runIntake(.75);
-    } 
+    intakeSubsystem.profiledPIDIntake(setpoint);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooterSubsystem.stop();
     intakeSubsystem.stop();
-    rollersSubsystem.stop();
   }
 
   // Returns true when the command should end.

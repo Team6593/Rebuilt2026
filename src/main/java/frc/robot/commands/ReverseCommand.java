@@ -2,56 +2,48 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.shooter;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.feeder.FeederSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.rollers.RollersSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ShootSequence extends Command {
+public class ReverseCommand extends Command {
 
-  private ShooterSubsystem shooterSubsystem;
   private IntakeSubsystem intakeSubsystem;
   private RollersSubsystem rollersSubsystem;
-  private double shooterRPM;
+  private ShooterSubsystem shooterSubsystem;
 
-  /** Creates a new ShootSequence. */
-  public ShootSequence(ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem, RollersSubsystem rollersSubsystem, double shooterRPM) {
-    this.shooterSubsystem = shooterSubsystem;
+  /** Creates a new ReverseIntakeCommand. */
+  public ReverseCommand(IntakeSubsystem intakeSubsystem, RollersSubsystem rollersSubsystem, ShooterSubsystem shooterSubsystem) {
     this.intakeSubsystem = intakeSubsystem;
     this.rollersSubsystem = rollersSubsystem;
-    this.shooterRPM = shooterRPM;
+    this.shooterSubsystem = shooterSubsystem;
 
-    addRequirements(shooterSubsystem, intakeSubsystem, rollersSubsystem);
+    addRequirements(intakeSubsystem, rollersSubsystem, shooterSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterSubsystem.setMasterRPM(shooterRPM, shooterRPM);
-    rollersSubsystem.set(.3);
-    if (shooterSubsystem.getShooterRPM() > shooterRPM + 400) {
-        shooterSubsystem.setIndexerRPM(-shooterRPM);
-        intakeSubsystem.runIntake(.75);
-    } 
+    intakeSubsystem.runIntake(-.75);
+    rollersSubsystem.set(-.3);
+    shooterSubsystem.index(1000);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooterSubsystem.stop();
     intakeSubsystem.stop();
     rollersSubsystem.stop();
+    shooterSubsystem.stopIndexer();
   }
 
   // Returns true when the command should end.

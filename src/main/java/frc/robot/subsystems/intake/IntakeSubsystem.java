@@ -33,8 +33,11 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
   private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
   private SparkMaxConfig pivotConfig = new SparkMaxConfig();
   private SparkAbsoluteEncoder pivotEncoder = pivot2Motor.getAbsoluteEncoder();
+  private SparkClosedLoopController intakeController = intakeMotor.getClosedLoopController();
+  private SparkMaxConfig intakeConfig = new SparkMaxConfig();
 
   private ProfiledPIDController pidController = new ProfiledPIDController(IntakeInputs.kPivotP, 0, 0, new TrapezoidProfile.Constraints(10, 10));
+  private ProfiledPIDController intakePIDController = new ProfiledPIDController(10, 0, 0, new TrapezoidProfile.Constraints(6000, 10));
   private ArmFeedforward armFeedforward = new ArmFeedforward(.5, 12, 12.5);
 
   /** Creates a new IntakeSubsystem. */
@@ -49,6 +52,13 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
     pivotConfig.absoluteEncoder.positionConversionFactor(360.0);
     pivotMotor.configure(pivotConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     pivot2Motor.configure(pivotConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    
+    intakeConfig
+      .closedLoop
+        .p(2)
+        .i(0)
+        .d(0);
+    intakeMotor.configure(intakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
     Preferences.initDouble(IntakeInputs.kIntakeSpeedKey, IntakeInputs.kIntakeSpeed);
   }
@@ -70,6 +80,8 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
     SmartDashboard.putNumber("Intake Duty Cycle", intakeMotor.getAppliedOutput());
     SmartDashboard.putNumber("Intake Applied Output A", intakeMotor.getOutputCurrent());
     SmartDashboard.putNumber("Intake Temp (F)", ((intakeMotor.getMotorTemperature()) * 1.8) + 32);
+    SmartDashboard.putNumber("Intake RPM", intakeMotor.getEncoder().getVelocity());
+    SmartDashboard.putNumber("Intake Ft/S", (intakeMotor.getEncoder().getVelocity() * 1.125 * (Math.PI/12)));
     SmartDashboard.putNumber("Pivot Duty Cycle", pivotMotor.getAppliedOutput());
     SmartDashboard.putNumber("Pivot Applied Output A", pivotMotor.getOutputCurrent());
     SmartDashboard.putNumber("Pivot Temp (F)", ((pivotMotor.getMotorTemperature()) * 1.8) + 32);
@@ -115,6 +127,18 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
     var feedForwardOutput =
       armFeedforward.calculate(setpoint, pidController.getSetpoint().velocity);
     pivotMotor.setVoltage(pidOutput);
+  }
+
+  public void profiledPIDIntake(double setpoint) {
+    pidController.setGoal(setpoint);
+    var pidOutput = 
+      pidController.calculate(
+        intakeMotor.getEncoder().getVelocity(), setpoint);
+    intakeMotor.setVoltage(pidOutput);
+  }
+
+  public void pidIntake(double setpoint) {
+    intakeController.setSetpoint(setpoint, ControlType.kVelocity);
   }
 
   public boolean pidAtSetpoint() {
