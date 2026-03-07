@@ -23,12 +23,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "SOTF Shoot"
-          }
-        },
-        {
           "type": "wait",
           "data": {
             "waitTime": 8.0

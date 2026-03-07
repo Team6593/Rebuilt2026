@@ -38,7 +38,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
   public ShooterSubsystem() {
     
     // configs
-    shooter1Configs.Slot0.kP = .76;
+    shooter1Configs.Slot0.kP = .1;
     shooter1Configs.Slot0.kA = ShooterInputs.kA;
     shooter1Configs.Slot0.kV = ShooterInputs.kV;
     shooter1Configs.CurrentLimits.StatorCurrentLimit = 40;
@@ -47,7 +47,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemInterfac
     shooter1Configs.CurrentLimits.SupplyCurrentLimitEnable = true;
     shooterMasterConfigurator.apply(shooter1Configs);
 
-    shooter2Configs.Slot0.kP = .76;
+    shooter2Configs.Slot0.kP = .01;
     shooter2Configs.Slot0.kA = ShooterInputs.kA;
     shooter2Configs.Slot0.kV = ShooterInputs.kV;
     shooter2Configs.CurrentLimits.StatorCurrentLimit = 40;

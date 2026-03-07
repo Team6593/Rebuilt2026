@@ -81,7 +81,7 @@ public class RobotContainer {
         configureBindings();
 
         // Warmup PathPlanner to avoid Java pauses
-        FollowPathCommand.warmupCommand().schedule();
+        // FollowPathCommand.warmupCommand().schedule();
     }
 
     private void configureBindings() {
@@ -90,7 +90,6 @@ public class RobotContainer {
         double multiplier = -.5;
         double sotmMultiplier = .5;
         double sotmRotMulti = .05;
-        double lockedMultiplier = 0;
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
@@ -138,7 +137,7 @@ public class RobotContainer {
         // joystick.b().whileTrue(new IntakeCommand(intake));
         // joystick.button(6).whileTrue(new IntakeCommand(intake));
         joystick.a().whileTrue(new ReverseCommand(intake, rollers, shooter));
-        joystick.y().whileTrue(new ShootSequence(shooter, intake, rollers, 1780));
+        joystick.y().whileTrue(new ShootSequence(shooter, intake, rollers, 2425));
         // joystick.x().whileTrue(new ShootSequence(shooter, rollersSubsystem, 1450));
         // joystick.button(7).onTrue(new PivotToHomeCommand(intake));
         // joystick.button(8).onTrue(new PivotToSetpointCommand(intake));
@@ -163,24 +162,24 @@ public class RobotContainer {
             drivetrain.applyRequest(
                 () -> drive
                     .withRotationalRate(LimelightHelpers.getTX("limelight") * (LimelightConstants.kHubAngle * sotmRotMulti))
-                    .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * sotmMultiplier)
+                    .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * .1)
                     .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier * 0)
             )
             // .alongWith(new ShootSequence(shooter, intake, rollers, ShotCalculator.lerpGet(limelight.estimateDistance()).rpm + 25))
-            .alongWith(new ShootSequence(shooter, intake, rollers, ShotCalculator.lerpGet(LimelightHelpers.getTargetPose_RobotSpace("limelight")[2] *39.37).rpm - 25)
+            .alongWith(new ShootSequence(shooter, intake, rollers, ShotCalculator.lerpGet(LimelightHelpers.getTargetPose_RobotSpace("limelight")[2] *39.37).rpm + 25)
         ));
-        joystick.axisGreaterThan(3, .3).whileTrue(new IntakeCommand(intake));
+        // joystick.axisGreaterThan(3, .3).whileTrue(new IntakeCommand(intake));
 
         
-        // joystick.axisGreaterThan(3, .3).whileTrue(
-        //     drivetrain.applyRequest(
-        //         () -> drive
-        //             .withRotationalRate(-joystick.getRightX() * MaxAngularRate * multiplier * 2)
-        //             .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * sotmMultiplier)
-        //             .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier * 0)
-        //     )
-        //     .alongWith(new IntakeOnTheMove(intake, .75))
-        // );
+        joystick.axisGreaterThan(3, .3).whileTrue(
+            drivetrain.applyRequest(
+                () -> drive
+                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate * multiplier * 2)
+                    .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * .5)
+                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * .5)
+            )
+            .alongWith(new IntakeCommand(intake))
+        );
 
 
         drivetrain.registerTelemetry(logger::telemeterize);
