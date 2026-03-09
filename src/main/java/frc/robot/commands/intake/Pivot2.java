@@ -8,15 +8,17 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class IntakeCommand extends Command {
+public class Pivot2 extends Command {
 
-  private IntakeSubsystem intakeSubsystem;
+  private IntakeSubsystem intake;
+  private double speed;
 
-  /** Creates a new IntakeCommand. */
-  public IntakeCommand(IntakeSubsystem intakeSubsystem) {
-    this.intakeSubsystem = intakeSubsystem;
+  /** Creates a new Pivot1. */
+  public Pivot2(IntakeSubsystem intake, double speed) {
+    this.intake = intake;
+    this.speed = speed;
 
-    addRequirements(intakeSubsystem);
+    addRequirements(intake);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -27,14 +29,13 @@ public class IntakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intakeSubsystem.runIntake(1);
+    intake.pivot2(speed);
   }
 
   // Called once the command ends or is interrupted.
-
   @Override
   public void end(boolean interrupted) {
-    intakeSubsystem.stop();
+    intake.stop();
   }
 
   // Returns true when the command should end.

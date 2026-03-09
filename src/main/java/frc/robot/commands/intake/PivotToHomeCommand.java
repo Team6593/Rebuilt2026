@@ -44,6 +44,6 @@ public class PivotToHomeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return intake.positionCheck(130);
+    return intake.positionCheck(120);
   }
 }

@@ -31,27 +31,36 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
   private SparkMax pivot2Motor = new SparkMax(IntakeConstants.pivotMotor2ID, MotorType.kBrushless);
 
   private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
-  private SparkMaxConfig pivotConfig = new SparkMaxConfig();
-  private SparkAbsoluteEncoder pivotEncoder = pivot2Motor.getAbsoluteEncoder();
+  private SparkMaxConfig pivot1Config = new SparkMaxConfig();
+  private SparkMaxConfig pivot2Config = new SparkMaxConfig();
+  private SparkAbsoluteEncoder pivot2Encoder = pivot2Motor.getAbsoluteEncoder();
   private SparkClosedLoopController intakeController = intakeMotor.getClosedLoopController();
   private SparkMaxConfig intakeConfig = new SparkMaxConfig();
 
   private ProfiledPIDController pidController = new ProfiledPIDController(IntakeInputs.kPivotP, 0, 0, new TrapezoidProfile.Constraints(10, 10));
-  private ProfiledPIDController intakePIDController = new ProfiledPIDController(10, 0, 0, new TrapezoidProfile.Constraints(6000, 10));
-  private ArmFeedforward armFeedforward = new ArmFeedforward(.5, 12, 12.5);
+  // private ProfiledPIDController intakePIDController = new ProfiledPIDController(10, 0, 0, new TrapezoidProfile.Constraints(6000, 10));
+  // private ArmFeedforward armFeedforward = new ArmFeedforward(.5, 12, 12.5);
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
-    pivotConfig
+    pivot1Config
       .closedLoop
-        .p(IntakeInputs.kPivotP)
+        .p(.0175)
         .i(0)
           .feedForward
             .kV(.126);
-    pivotConfig.encoder.positionConversionFactor(360.0);
-    pivotConfig.absoluteEncoder.positionConversionFactor(360.0);
-    pivotMotor.configure(pivotConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-    pivot2Motor.configure(pivotConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    pivot2Config
+      .closedLoop
+        .p(.0175)
+        .i(0)
+          .feedForward
+            .kV(.126);
+    pivot2Config.encoder.positionConversionFactor(360.0);
+    pivot2Config.absoluteEncoder.positionConversionFactor(360.0);
+    pivot1Config.encoder.positionConversionFactor(360.0);
+    pivot1Config.absoluteEncoder.positionConversionFactor(360.0);
+    pivotMotor.configure(pivot1Config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    pivot2Motor.configure(pivot2Config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     
     intakeConfig
       .closedLoop
@@ -82,11 +91,16 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
     SmartDashboard.putNumber("Intake Temp (F)", ((intakeMotor.getMotorTemperature()) * 1.8) + 32);
     SmartDashboard.putNumber("Intake RPM", intakeMotor.getEncoder().getVelocity());
     SmartDashboard.putNumber("Intake Ft/S", (intakeMotor.getEncoder().getVelocity() * 1.125 * (Math.PI/12)));
-    SmartDashboard.putNumber("Pivot Duty Cycle", pivotMotor.getAppliedOutput());
+    SmartDashboard.putNumber("Pivot1 Duty Cycle", pivotMotor.getAppliedOutput());
+    SmartDashboard.putNumber("Pivot2 Duty Cycle", pivot2Motor.getAppliedOutput());
     SmartDashboard.putNumber("Pivot Applied Output A", pivotMotor.getOutputCurrent());
     SmartDashboard.putNumber("Pivot Temp (F)", ((pivotMotor.getMotorTemperature()) * 1.8) + 32);
-    SmartDashboard.putNumber("Pivot Position", pivotEncoder.getPosition());
+    SmartDashboard.putNumber("Pivot Position", pivot2Encoder.getPosition());
     SmartDashboard.putNumber("Pivot Voltage", pivotMotor.getBusVoltage());
+    SmartDashboard.putNumber("Pivot2 Voltage", pivot2Motor.getBusVoltage());
+    SmartDashboard.putNumber("Pivot1 RPM", pivotMotor.getEncoder().getVelocity());
+    SmartDashboard.putNumber("Pivot2 RPM", pivot2Motor.getEncoder().getVelocity());
+    SmartDashboard.putNumber("Pivot P: ", pidController.getP());
   }
 
   /**
@@ -122,11 +136,11 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
     pidController.setGoal(setpoint);
     var pidOutput = 
       pidController.calculate(
-        pivotEncoder.getPosition(), Units.degreesToRadians(setpoint));
-    @SuppressWarnings("unused")
-    var feedForwardOutput =
-      armFeedforward.calculate(setpoint, pidController.getSetpoint().velocity);
-    pivotMotor.setVoltage(pidOutput);
+        pivot2Encoder.getPosition(), Units.degreesToRadians(setpoint));
+    // @SuppressWarnings("unused")
+    // var feedForwardOutput =
+    //   armFeedforward.calculate(setpoint, pidController.getSetpoint().velocity);
+    pivot2Motor.setVoltage(pidOutput);
   }
 
   public void profiledPIDIntake(double setpoint) {
@@ -135,6 +149,14 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
       pidController.calculate(
         intakeMotor.getEncoder().getVelocity(), setpoint);
     intakeMotor.setVoltage(pidOutput);
+  }
+
+  public void revINeedThis(double setpoint) {
+    pivot2Motor.getClosedLoopController().setSetpoint(setpoint, ControlType.kPosition);
+  }
+
+  public boolean myRobotsKindaPivotless() {
+    return pivot2Motor.getClosedLoopController().isAtSetpoint();
   }
 
   public void pidIntake(double setpoint) {
@@ -157,15 +179,15 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
    */
   public void pivotToSetpoint(double setpoint, double p) {
     // pivotController.setSetpoint(setpoint, ControlType.kPosition);
-    pivotConfig.closedLoop.p(p);
-    pivot2Motor.configure(pivotConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-    pivotMotor.configure(pivotConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    pivot1Config.closedLoop.p(p);
+    pivot2Motor.configure(pivot1Config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    pivotMotor.configure(pivot1Config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     pivotController.setSetpoint(setpoint, ControlType.kPosition);
   }
 
   public boolean positionCheck(double setpoint) {
     double tolerance = 10;
-    double error = Math.abs(pivotEncoder.getPosition() - setpoint);
+    double error = Math.abs(pivot2Encoder.getPosition() - setpoint);
     if (error < tolerance) {
       return true;
     } else {
@@ -178,19 +200,27 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
    * @param setpoint
    * @return boolean True if at setpoint, False if otherwise.
    */
-  public boolean atSetpoint(double setpoint) {
-    // return pivotController.isAtSetpoint();
-    double tolerance = 3;
-    double error = Math.abs(pivotEncoder.getPosition() - setpoint);
-    if (error < tolerance) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+  // public boolean atSetpoint(double setpoint) {
+  //   // return pivotController.isAtSetpoint();
+  //   double tolerance = 3;
+  //   double error = Math.abs(pivot2Encoder.getPosition() - setpoint);
+  //   if (error < tolerance) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
 
   public void pivot(double speed) {
+    pivot2Motor.set(speed);
+  }
+
+  public void pivot1(double speed) {
     pivotMotor.set(speed);
+  }
+
+  public void pivot2(double speed) {
+    pivot2Motor.set(speed);
   }
 
   /**
@@ -200,6 +230,7 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
   public void stop() {
     intakeMotor.stopMotor();
     pivotMotor.stopMotor();
+    pivot2Motor.stopMotor();
   }
 
   // Commands

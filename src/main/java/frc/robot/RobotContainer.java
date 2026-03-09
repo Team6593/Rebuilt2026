@@ -36,11 +36,14 @@ import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.limelight.LimelightConstants;
 import frc.robot.subsystems.rollers.RollersSubsystem;
 import frc.robot.commands.intake.PivotToSetpointCommand;
+import frc.robot.commands.intake.RevINeedThis;
 import frc.robot.commands.intake.ShootPivot;
 import frc.robot.commands.intake.pivotCommand;
 import frc.robot.commands.intake.IntakeCommand;
 import frc.robot.commands.intake.IntakeOnTheMove;
 import frc.robot.commands.intake.IntakePIDCommand;
+import frc.robot.commands.intake.Pivot1;
+import frc.robot.commands.intake.Pivot2;
 import frc.robot.commands.intake.PivotToHomeCommand;
 
 public class RobotContainer {
@@ -144,6 +147,8 @@ public class RobotContainer {
         // joystick.y().whileTrue(new ShootSequence(shooter, intake, rollersSubsystem, 6000));
         joystick.povUp().onTrue(new PivotToHomeCommand(intake));
         joystick.povDown().onTrue(new PivotToSetpointCommand(intake));
+        joystick.povLeft().whileTrue(new RevINeedThis(intake));
+        joystick.povRight().whileTrue(new Pivot2(intake, -1));
 
 
         // Reset the field-centric heading on pleft bumper press.
