@@ -17,8 +17,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.limelight.LimelightConstants;
+import frc.simulation.commands.IntakeSimPIDCommand;
 import frc.simulation.commands.ShooterSimDistanceSetter;
 import frc.simulation.commands.ShooterSimulationRPMCommand;
+import frc.simulation.intake.IntakeSimulation;
 import frc.simulation.shooter.ShooterSimulation;
 
 public class Robot extends TimedRobot {
@@ -37,7 +39,8 @@ public class Robot extends TimedRobot {
 
     // // Simulation
     // private ShooterSimulation shooterSimulation = new ShooterSimulation();
-    // private CommandXboxController simJoystick = new CommandXboxController(3);
+    private CommandXboxController simJoystick = new CommandXboxController(3);
+    private IntakeSimulation intakeSimulation = new IntakeSimulation();
 
     public Robot() {
         m_robotContainer = new RobotContainer();
@@ -55,7 +58,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Alignment Rate", LimelightHelpers.getTX("limelight") * LimelightConstants.kHubAngle * LimelightConstants.sotmRotMulti);
         SmartDashboard.putNumber("ATag ID", LimelightHelpers.getFiducialID("limelight"));
         SmartDashboard.putNumber("Drivetrain Speed", m_robotContainer.drivetrain.getState().Speeds.vxMetersPerSecond);
-        SmartDashboard.putNumber("LL Distance", LimelightHelpers.getTargetPose_RobotSpace("limelight")[2] *39.37);
+        // SmartDashboard.putNumber("LL Distance", LimelightHelpers.getTargetPose_RobotSpace("limelight")[2] *39.37);
         // SmartDashboard.putNumber("Calculated RPM", ShotCalculator.lerpGet(m_robotContainer.limelight.estimateDistance()).rpm);
 
         /*
@@ -137,5 +140,7 @@ public class Robot extends TimedRobot {
         // simJoystick.x().onTrue(new ShooterSimDistanceSetter(shooterSimulation, 66));
         // simJoystick.y().onTrue(new ShooterSimDistanceSetter(shooterSimulation, 102));
         // simJoystick.b().onTrue(new ShooterSimDistanceSetter(shooterSimulation, 140));
+        simJoystick.a().onTrue(new IntakeSimPIDCommand(intakeSimulation, 110, .0175));
+        simJoystick.b().onTrue(new IntakeSimPIDCommand(intakeSimulation, 330, .0175));
     }
 }

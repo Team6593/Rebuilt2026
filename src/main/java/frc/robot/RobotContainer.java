@@ -163,16 +163,16 @@ public class RobotContainer {
         //     .alongWith(new ShootSequence(shooter, rollers, ShotCalculator.lerpGet(limelight.estimateDistance()).rpm - 25))
         //     .alongWith(new ShootPivot(intake, .0175))
         // ).toggleOnFalse(new PivotToSetpointCommand(intake));
-        joystick.axisGreaterThan(2, .3).whileTrue(
-            drivetrain.applyRequest(
-                () -> drive
-                    .withRotationalRate(LimelightHelpers.getTX("limelight") * (LimelightConstants.kHubAngle * sotmRotMulti))
-                    .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * .1)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier * 0)
-            )
-            // .alongWith(new ShootSequence(shooter, intake, rollers, ShotCalculator.lerpGet(limelight.estimateDistance()).rpm + 25))
-            .alongWith(new ShootSequence(shooter, intake, rollers, ShotCalculator.lerpGet(LimelightHelpers.getTargetPose_RobotSpace("limelight")[2] *39.37).rpm + 25)
-        ));
+        // joystick.axisGreaterThan(2, .3).whileTrue(
+        //     drivetrain.applyRequest(
+        //         () -> drive
+        //             .withRotationalRate(LimelightHelpers.getTX("limelight") * (LimelightConstants.kHubAngle * sotmRotMulti))
+        //             .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * .1)
+        //             .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier * 0)
+        //     )
+        //     // .alongWith(new ShootSequence(shooter, intake, rollers, ShotCalculator.lerpGet(limelight.estimateDistance()).rpm + 25))
+        //     .alongWith(new ShootSequence(shooter, intake, rollers, ShotCalculator.lerpGet(LimelightHelpers.getTargetPose_RobotSpace("limelight")[2] *39.37).rpm + 25)
+        // ));
         // joystick.axisGreaterThan(3, .3).whileTrue(new IntakeCommand(intake));
 
         
