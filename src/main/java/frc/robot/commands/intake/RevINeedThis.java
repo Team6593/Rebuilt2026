@@ -29,7 +29,6 @@ public class RevINeedThis extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intakeSubsystem.revINeedThis(120);
   }
 
   // Called once the command ends or is interrupted.
@@ -38,7 +37,7 @@ public class RevINeedThis extends Command {
     intakeSubsystem.stop();
   }
 
-  // Returns true when the command should end.
+  // Returns true when the command should end.  
   @Override
   public boolean isFinished() {
     return false;

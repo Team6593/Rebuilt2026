@@ -147,8 +147,8 @@ public class RobotContainer {
         // joystick.y().whileTrue(new ShootSequence(shooter, intake, rollersSubsystem, 6000));
         joystick.povUp().onTrue(new PivotToHomeCommand(intake));
         joystick.povDown().onTrue(new PivotToSetpointCommand(intake));
-        joystick.povLeft().whileTrue(new RevINeedThis(intake));
-        joystick.povRight().whileTrue(new Pivot2(intake, -1));
+        joystick.povLeft().whileTrue(new Pivot1(intake, 1));
+        joystick.povRight().whileTrue(new Pivot1(intake, -1));
 
 
         // Reset the field-centric heading on pleft bumper press.

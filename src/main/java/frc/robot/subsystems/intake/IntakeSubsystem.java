@@ -37,7 +37,7 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
   private SparkClosedLoopController intakeController = intakeMotor.getClosedLoopController();
   private SparkMaxConfig intakeConfig = new SparkMaxConfig();
 
-  private ProfiledPIDController pidController = new ProfiledPIDController(IntakeInputs.kPivotP, 0, 0, new TrapezoidProfile.Constraints(10, 10));
+  private ProfiledPIDController pidController = new ProfiledPIDController(0.0175, 0, 0, new TrapezoidProfile.Constraints(10, 10));
   // private ProfiledPIDController intakePIDController = new ProfiledPIDController(10, 0, 0, new TrapezoidProfile.Constraints(6000, 10));
   // private ArmFeedforward armFeedforward = new ArmFeedforward(.5, 12, 12.5);
 
@@ -141,6 +141,19 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
     // var feedForwardOutput =
     //   armFeedforward.calculate(setpoint, pidController.getSetpoint().velocity);
     pivot2Motor.setVoltage(pidOutput);
+    pivotMotor.setVoltage(pidOutput);
+  }
+
+  public void revPlease1(double setpoint, double p) {
+    pidController.setP(p);
+    pidController.setGoal(setpoint);
+    var pidOutput = 
+      pidController.calculate(
+        pivot2Encoder.getPosition(), Units.degreesToRadians(setpoint));
+    // @SuppressWarnings("unused")
+    // var feedForwardOutput =
+    //   armFeedforward.calculate(setpoint, pidController.getSetpoint().velocity);
+    pivotMotor.setVoltage(pidOutput);
   }
 
   public void profiledPIDIntake(double setpoint) {

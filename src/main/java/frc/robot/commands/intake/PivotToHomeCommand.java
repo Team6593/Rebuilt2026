@@ -23,7 +23,7 @@ public class PivotToHomeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intake.pidToSetpoint(120, 0.0175);
+    intake.pidToSetpoint(120, 0.03);
   }
 
 
