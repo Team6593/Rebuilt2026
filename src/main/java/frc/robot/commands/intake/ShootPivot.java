@@ -4,6 +4,7 @@
 
 package frc.robot.commands.intake;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
@@ -12,6 +13,7 @@ public class ShootPivot extends Command {
 
   private IntakeSubsystem intake;
   private double kP;
+  private double startTime;
 
   /** Creates a new PivotToSetpointCommand. */
   public ShootPivot(IntakeSubsystem intake, double kP) {
@@ -25,21 +27,24 @@ public class ShootPivot extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intake.pidToSetpoint(120, kP);
+    startTime = Timer.getFPGATimestamp();
   }
 
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("Intake at setpoint: " + intake.positionCheck(120));
-    intake.runIntake(.75);
+    if (Timer.getFPGATimestamp() - startTime > 2.5) {
+    intake.pivot(.19);
+    System.out.println("Intake at setpoint: " + intake.positionCheck(250));
+    intake.runIntake(1);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("Intake at setpoint: " + intake.positionCheck(120));
+    System.out.println("Intake at setpoint: " + intake.positionCheck(250));
     System.out.println("Command ended.");
     intake.stop();
   }
@@ -47,6 +52,6 @@ public class ShootPivot extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return intake.positionCheck(130);
+    return intake.positionCheck(250);
   }
 }

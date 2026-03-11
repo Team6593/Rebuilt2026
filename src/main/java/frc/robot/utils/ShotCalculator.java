@@ -8,26 +8,22 @@ public class ShotCalculator {
     // TODO: replace with real values
     public static final TreeMap<Double, ShooterParams> m_shooterMap = new TreeMap<>();
     static {
-        m_shooterMap.put(55.0, new ShooterParams(1825, 0));
-        m_shooterMap.put(60.0, new ShooterParams(1850, 0));
-        m_shooterMap.put(65.0, new ShooterParams(1850, 0));
-        m_shooterMap.put(65.0, new ShooterParams(1875, 0));
-        m_shooterMap.put(70.0, new ShooterParams(1900, 0));
-        m_shooterMap.put(75.0, new ShooterParams(1925, 0));
-        m_shooterMap.put(81.3, new ShooterParams(1950, 0));
-        m_shooterMap.put(85.0, new ShooterParams(1975, 0));
-        m_shooterMap.put(90.0, new ShooterParams(2000, 0));
-        m_shooterMap.put(95.0, new ShooterParams(2025, 0));
-        m_shooterMap.put(100.0, new ShooterParams(2050, 0));
-        m_shooterMap.put(105.0, new ShooterParams(2075, 0));
+        m_shooterMap.put(55.0, new ShooterParams(1875, 0));
+        m_shooterMap.put(60.0, new ShooterParams(1880, 0));
+        m_shooterMap.put(65.0, new ShooterParams(1900, 0));
+        m_shooterMap.put(70.0, new ShooterParams(1910, 0));
+        m_shooterMap.put(75.0, new ShooterParams(1920, 0));
+        m_shooterMap.put(80.5, new ShooterParams(1930, 0));
+        m_shooterMap.put(85.0, new ShooterParams(1940, 0));
+        m_shooterMap.put(90.0, new ShooterParams(1950, 0));
+        m_shooterMap.put(95.0, new ShooterParams(1980, 0));
+        m_shooterMap.put(100.0, new ShooterParams(2045, 0));
+        m_shooterMap.put(105.0, new ShooterParams(2060, 0));
         m_shooterMap.put(110.0, new ShooterParams(2125, 0));
         m_shooterMap.put(115.0, new ShooterParams(2150, 0));
-        m_shooterMap.put(119.0, new ShooterParams(2185, 0));
+        m_shooterMap.put(119.0, new ShooterParams(2175, 0));
         m_shooterMap.put(125.0, new ShooterParams(2225, 0));
-        m_shooterMap.put(130.0, new ShooterParams(2300, 0));
-        m_shooterMap.put(135.0, new ShooterParams(2325, 0));
-        m_shooterMap.put(140.0, new ShooterParams(2385, 0));
-        m_shooterMap.put(145.0, new ShooterParams(2425, 0));
+        m_shooterMap.put(130.0, new ShooterParams(2250, 0));
     }
 
     /**
@@ -63,7 +59,10 @@ public class ShotCalculator {
         double rpm = interpolate(lowerParams.rpm, upperParams.rpm, ratio);
         double tof = interpolate(lowerParams.tof, upperParams.tof, ratio);
 
-        
+        if (distance > 90) {
+            rpm += 50;
+        }
+
         return new ShooterParams(rpm, tof);
     }
 

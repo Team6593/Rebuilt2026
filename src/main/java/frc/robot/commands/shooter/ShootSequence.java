@@ -5,8 +5,6 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.feeder.FeederSubsystem;
-import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.rollers.RollersSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
@@ -14,22 +12,20 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 public class ShootSequence extends Command {
 
   private ShooterSubsystem shooterSubsystem;
-  private IntakeSubsystem intakeSubsystem;
   private RollersSubsystem rollersSubsystem;
   private double shooterRPM;
 
   /** Creates a new ShootSequence. */
-  public ShootSequence(ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem, RollersSubsystem rollersSubsystem, double shooterRPM) {
+  public ShootSequence(ShooterSubsystem shooterSubsystem, RollersSubsystem rollersSubsystem, double shooterRPM) {
     this.shooterSubsystem = shooterSubsystem;
-    this.intakeSubsystem = intakeSubsystem;
     this.rollersSubsystem = rollersSubsystem;
     this.shooterRPM = shooterRPM;
 
-    addRequirements(shooterSubsystem, intakeSubsystem, rollersSubsystem);
+    addRequirements(shooterSubsystem, rollersSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  // Called when the command is initially scheduled.
+// Called when the command is initially scheduled.
   @Override
   public void initialize() {
 
@@ -39,10 +35,9 @@ public class ShootSequence extends Command {
   @Override
   public void execute() {
     shooterSubsystem.setMasterRPM(shooterRPM, shooterRPM);
-    if (shooterSubsystem.getShooterRPM() > shooterRPM - 50) {
-        rollersSubsystem.set(.3);
-        shooterSubsystem.setIndexerRPM(-shooterRPM);
-        intakeSubsystem.runIntake(.5);
+    if (shooterSubsystem.getShooterRPM() > shooterRPM) {
+        rollersSubsystem.set(.25);
+        shooterSubsystem.setIndexerRPM(-3700);
     } 
   }
 
@@ -50,7 +45,6 @@ public class ShootSequence extends Command {
   @Override
   public void end(boolean interrupted) {
     shooterSubsystem.stop();
-    intakeSubsystem.stop();
     rollersSubsystem.stop();
   }
 

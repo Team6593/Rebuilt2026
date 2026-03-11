@@ -48,7 +48,7 @@ import frc.robot.commands.intake.PivotToHomeCommand;
 
 public class RobotContainer {
     private double MaxSpeed = -1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+    private double MaxAngularRate = .5 * RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
     private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
@@ -90,7 +90,7 @@ public class RobotContainer {
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
-        double multiplier = -.5;
+        double multiplier = -.8;
         double sotmMultiplier = .5;
         double sotmRotMulti = .05;
         drivetrain.setDefaultCommand(
@@ -98,7 +98,7 @@ public class RobotContainer {
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier) // Drive forward with negative Y (forward)
                     .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate * multiplier * 2) // Drive counterclockwise with negative X (left)
+                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate * multiplier) // Drive counterclockwise with negative X (left)
             )
         );
 
@@ -140,29 +140,30 @@ public class RobotContainer {
         // joystick.b().whileTrue(new IntakeCommand(intake));
         // joystick.button(6).whileTrue(new IntakeCommand(intake));
         joystick.a().whileTrue(new ReverseCommand(intake, rollers, shooter));
-        joystick.y().whileTrue(new ShootSequence(shooter, intake, rollers, 2425));
+        joystick.y().whileTrue(new ShootSequence(shooter, rollers, 2125));
+        joystick.x().whileTrue(new ShootSequence(shooter, rollers, 6000));
         // joystick.x().whileTrue(new ShootSequence(shooter, rollersSubsystem, 1450));
         // joystick.button(7).onTrue(new PivotToHomeCommand(intake));
         // joystick.button(8).onTrue(new PivotToSetpointCommand(intake));
         // joystick.y().whileTrue(new ShootSequence(shooter, intake, rollersSubsystem, 6000));
         joystick.povUp().onTrue(new PivotToHomeCommand(intake));
         joystick.povDown().onTrue(new PivotToSetpointCommand(intake));
-        joystick.povLeft().whileTrue(new Pivot1(intake, 1));
-        joystick.povRight().whileTrue(new Pivot1(intake, -1));
+        joystick.povLeft().whileTrue(new pivotCommand(intake, .09));
+        joystick.povRight().whileTrue(new pivotCommand(intake, -.09));
 
 
-        // Reset the field-centric heading on pleft bumper press.
+        // Reset the field-centric heading on left bumper press.
         joystick.button(5).onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-        // joystick.axisGreaterThan(2, .3).whileTrue(
-        //     drivetrain.applyRequest(
-        //         () -> drive
-        //             .withRotationalRate(LimelightHelpers.getTX("limelight") * (LimelightConstants.kHubAngle * sotmRotMulti))
-        //             .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * sotmMultiplier * lockedMultiplier)
-        //             .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier)
-        //     )
-        //     .alongWith(new ShootSequence(shooter, rollers, ShotCalculator.lerpGet(limelight.estimateDistance()).rpm - 25))
-        //     .alongWith(new ShootPivot(intake, .0175))
-        // ).toggleOnFalse(new PivotToSetpointCommand(intake));
+        joystick.axisGreaterThan(2, .3).whileTrue(
+            drivetrain.applyRequest(
+                () -> drive
+                    .withRotationalRate(LimelightHelpers.getTX("limelight") * -LimelightConstants.kHubAngle * 0.5)
+                    .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * sotmMultiplier * 0)
+                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier)
+            )
+            .alongWith(new ShootSequence(shooter, rollers, ShotCalculator.lerpGet(limelight.estimateDistance()).rpm))
+            .alongWith(new ShootPivot(intake, 1))
+        ).toggleOnFalse(new PivotToSetpointCommand(intake));
         // joystick.axisGreaterThan(2, .3).whileTrue(
         //     drivetrain.applyRequest(
         //         () -> drive
@@ -173,7 +174,7 @@ public class RobotContainer {
         //     // .alongWith(new ShootSequence(shooter, intake, rollers, ShotCalculator.lerpGet(limelight.estimateDistance()).rpm + 25))
         //     .alongWith(new ShootSequence(shooter, intake, rollers, ShotCalculator.lerpGet(LimelightHelpers.getTargetPose_RobotSpace("limelight")[2] *39.37).rpm + 25)
         // ));
-        // joystick.axisGreaterThan(3, .3).whileTrue(new IntakeCommand(intake));
+        joystick.axisGreaterThan(3, .3).whileTrue(new IntakeCommand(intake));
 
         
         joystick.axisGreaterThan(3, .3).whileTrue(

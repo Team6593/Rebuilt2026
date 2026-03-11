@@ -13,7 +13,6 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -37,7 +36,7 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
   private SparkClosedLoopController intakeController = intakeMotor.getClosedLoopController();
   private SparkMaxConfig intakeConfig = new SparkMaxConfig();
 
-  private ProfiledPIDController pidController = new ProfiledPIDController(0.0175, 0, 0, new TrapezoidProfile.Constraints(10, 10));
+  private ProfiledPIDController pidController = new ProfiledPIDController(0.0175, 0, 0, new TrapezoidProfile.Constraints(6.545, 0));
   // private ProfiledPIDController intakePIDController = new ProfiledPIDController(10, 0, 0, new TrapezoidProfile.Constraints(6000, 10));
   // private ArmFeedforward armFeedforward = new ArmFeedforward(.5, 12, 12.5);
 
@@ -55,10 +54,10 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
         .i(0)
           .feedForward
             .kV(.126);
-    pivot2Config.encoder.positionConversionFactor(360.0);
-    pivot2Config.absoluteEncoder.positionConversionFactor(360.0);
-    pivot1Config.encoder.positionConversionFactor(360.0);
-    pivot1Config.absoluteEncoder.positionConversionFactor(360.0);
+    pivot1Config.closedLoop.outputRange(-.15, .15);
+    pivot2Config.closedLoop.outputRange(-.15, .15);
+    pivot1Config.smartCurrentLimit(40);
+    pivot2Config.smartCurrentLimit(40);
     pivotMotor.configure(pivot1Config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     pivot2Motor.configure(pivot2Config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     
@@ -176,6 +175,10 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
     intakeController.setSetpoint(setpoint, ControlType.kVelocity);
   }
 
+  public void zeroPivot() {
+  
+  }
+
   public boolean pidAtSetpoint() {
     return pidController.atSetpoint();
   }
@@ -226,6 +229,7 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
 
   public void pivot(double speed) {
     pivot2Motor.set(speed);
+    pivotMotor.set(-speed);
   }
 
   public void pivot1(double speed) {

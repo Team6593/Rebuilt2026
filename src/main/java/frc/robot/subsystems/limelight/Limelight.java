@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 import frc.robot.generated.TunerConstants;
+import frc.robot.utils.ShotCalculator;
 
 public class Limelight extends SubsystemBase {
 
@@ -38,6 +39,7 @@ public class Limelight extends SubsystemBase {
    */
   public void sdLogging() {
     SmartDashboard.putNumber("Distance (in.)", estimateDistance());
+    SmartDashboard.putNumber("Target RPM", ShotCalculator.lerpGet(estimateDistance()).rpm);
   }
 
   /**
@@ -60,10 +62,13 @@ public class Limelight extends SubsystemBase {
    * @return distance (inches)
    */
   public double estimateDistance() {
-    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    NetworkTableEntry ty = table.getEntry("ty");
-    return LimelightHelpers.estimateDistance(LimelightConstants.limelightMountAngleDegrees, LimelightConstants.limelightLensHeightInches, LimelightConstants.goalHeightInches, ty.getDouble(0));
+    if (hasValidTargets()) {
+      return LimelightHelpers.getTargetPose_RobotSpace("limelight")[2] * 39.37;
+    } else {
+      return 0;
+    }
   }
+
 
   public double limelightAimProportional() {
     double kP = LimelightConstants.kAimP;
@@ -74,9 +79,11 @@ public class Limelight extends SubsystemBase {
   }
   
   public boolean hasValidTargets() {
-    double tvValue = table.getEntry("tv").getDouble(0);
-    if (tvValue == 1) {return false;}
-    else {return true;}
+    if (LimelightHelpers.getFiducialID("limelight") > 0) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   public double getID() {
