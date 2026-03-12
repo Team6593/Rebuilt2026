@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.shooter.ShootAutomatic;
 import frc.robot.commands.shooter.ShootOnTheMoveSequenceCommand;
 import frc.robot.commands.shooter.ShootSequence;
 import frc.robot.commands.ReverseCommand;
@@ -73,6 +74,7 @@ public class RobotContainer {
     public final IntakeSubsystem intake = new IntakeSubsystem();
     public final RollersSubsystem rollers = new RollersSubsystem();
     public final Limelight limelight = new Limelight();
+    public final Camera camera = new Camera(0, "Camera 1");
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
@@ -80,6 +82,7 @@ public class RobotContainer {
     public RobotContainer() {
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
+        camera.streamVideo();
 
         configureBindings();
 
@@ -161,7 +164,7 @@ public class RobotContainer {
                     .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * sotmMultiplier * 0)
                     .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier)
             )
-            .alongWith(new ShootSequence(shooter, rollers, ShotCalculator.lerpGet(limelight.estimateDistance()).rpm))
+            .alongWith(new ShootAutomatic(shooter, rollers))
             .alongWith(new ShootPivot(intake, 1))
         ).toggleOnFalse(new PivotToSetpointCommand(intake));
         // joystick.axisGreaterThan(2, .3).whileTrue(
@@ -175,17 +178,6 @@ public class RobotContainer {
         //     .alongWith(new ShootSequence(shooter, intake, rollers, ShotCalculator.lerpGet(LimelightHelpers.getTargetPose_RobotSpace("limelight")[2] *39.37).rpm + 25)
         // ));
         joystick.axisGreaterThan(3, .3).whileTrue(new IntakeCommand(intake));
-
-        
-        joystick.axisGreaterThan(3, .3).whileTrue(
-            drivetrain.applyRequest(
-                () -> drive
-                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate * multiplier * 2)
-                    .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * .5)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * .5)
-            )
-            .alongWith(new IntakeCommand(intake))
-        );
 
 
         drivetrain.registerTelemetry(logger::telemeterize);

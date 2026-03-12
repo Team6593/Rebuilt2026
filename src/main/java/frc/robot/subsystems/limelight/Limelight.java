@@ -39,7 +39,7 @@ public class Limelight extends SubsystemBase {
    */
   public void sdLogging() {
     SmartDashboard.putNumber("Distance (in.)", estimateDistance());
-    SmartDashboard.putNumber("Target RPM", ShotCalculator.lerpGet(estimateDistance()).rpm);
+    SmartDashboard.putNumber("Target RPM", ShotCalculator.targetRPM(estimateDistance()).rpm);
   }
 
   /**
@@ -63,6 +63,14 @@ public class Limelight extends SubsystemBase {
    */
   public double estimateDistance() {
     if (hasValidTargets()) {
+      return LimelightHelpers.getTargetPose_RobotSpace("limelight")[2] * 39.37;
+    } else {
+      return 0;
+    }
+  }
+
+  public static double staticDistanceGet() {
+    if (LimelightHelpers.getFiducialID("limelight") > 0) {
       return LimelightHelpers.getTargetPose_RobotSpace("limelight")[2] * 39.37;
     } else {
       return 0;
