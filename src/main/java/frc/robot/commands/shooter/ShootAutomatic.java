@@ -28,7 +28,7 @@ public class ShootAutomatic extends Command {
 // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    System.out.println("SHOOTING INIT");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -39,6 +39,7 @@ public class ShootAutomatic extends Command {
         rollersSubsystem.set(.25);
         shooterSubsystem.setIndexerRPM(-3700);
     } 
+    System.out.println("SHOOTING!!!!!!!!! ~ nafi");
   }
 
   // Called once the command ends or is interrupted.
@@ -46,6 +47,7 @@ public class ShootAutomatic extends Command {
   public void end(boolean interrupted) {
     shooterSubsystem.stop();
     rollersSubsystem.stop();
+    System.out.println("SHOOTING END");
   }
 
   // Returns true when the command should end.

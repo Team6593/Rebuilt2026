@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.FollowPathCommand;
 
 import edu.wpi.first.math.MathUtil;
@@ -49,7 +50,7 @@ import frc.robot.commands.intake.PivotToHomeCommand;
 
 public class RobotContainer {
     private double MaxSpeed = -1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    private double MaxAngularRate = .5 * RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+    private double MaxAngularRate = .75 * RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
     private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
@@ -80,6 +81,13 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
+        NamedCommands.registerCommand("Shoot",
+            drivetrain.applyRequest(
+                () -> drive
+                    .withRotationalRate(LimelightHelpers.getTX("limelight") * -LimelightConstants.kHubAngle * 0.15))
+            .alongWith(new ShootAutomatic(shooter, rollers))
+            .alongWith(new ShootPivot(intake, 1))
+            .withTimeout(5));
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
         camera.streamVideo();
@@ -160,7 +168,7 @@ public class RobotContainer {
         joystick.axisGreaterThan(2, .3).whileTrue(
             drivetrain.applyRequest(
                 () -> drive
-                    .withRotationalRate(LimelightHelpers.getTX("limelight") * -LimelightConstants.kHubAngle * 0.5)
+                    .withRotationalRate(LimelightHelpers.getTX("limelight") * -LimelightConstants.kHubAngle * 0.15)
                     .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * sotmMultiplier * 0)
                     .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier)
             )
@@ -177,7 +185,16 @@ public class RobotContainer {
         //     // .alongWith(new ShootSequence(shooter, intake, rollers, ShotCalculator.lerpGet(limelight.estimateDistance()).rpm + 25))
         //     .alongWith(new ShootSequence(shooter, intake, rollers, ShotCalculator.lerpGet(LimelightHelpers.getTargetPose_RobotSpace("limelight")[2] *39.37).rpm + 25)
         // ));
-        joystick.axisGreaterThan(3, .3).whileTrue(new IntakeCommand(intake));
+        // joystick.axisGreaterThan(3, .3).whileTrue(new IntakeCommand(intake));
+        joystick.axisGreaterThan(3, .3).whileTrue(
+            drivetrain.applyRequest(
+                () -> drive
+                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate * multiplier)
+                    .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * .5)
+                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * .5)
+            )
+            .alongWith(new IntakeCommand(intake))
+        );
 
 
         drivetrain.registerTelemetry(logger::telemeterize);

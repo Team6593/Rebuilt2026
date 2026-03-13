@@ -76,16 +76,16 @@ public class ShotCalculator {
             adjustment += 125;
         } else if (distance > 110 && distance < 120) {
             System.out.println("110-120");
-            adjustment += 175;
+            adjustment += 125;
         } else if (distance > 130 && distance < 140) {
             System.out.println("130-140");
-            adjustment += 225;
+            adjustment += 175;
         } else if (distance > 140 && distance < 150) {
             System.out.println("140-150");
-            adjustment += 275;
+            adjustment += 225;
         } else if (adjustment > 150 && distance < 160) {
             System.out.println("150-160");
-            adjustment += 325;
+            adjustment += 375;
         }
     
         System.out.println("Adjustment: " + adjustment);
