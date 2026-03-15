@@ -32,7 +32,6 @@ public class ShotCalculator {
      * @return New {@link ShooterParams} object.
      */
     public static ShooterParams lerpGet(double distance) {
-        System.out.println(distance);
         if (m_shooterMap.containsKey(distance)) {
             // Exact key found, return directly
             return m_shooterMap.get(distance);
@@ -63,32 +62,23 @@ public class ShotCalculator {
         double adjustment = 0;
 
         if (distance > 60 && distance < 80) {
-            System.out.println("60-80");
             adjustment += 0;
         } else if (distance > 80 && distance < 90) {
-            System.out.println("80-90");
             adjustment += 75;
         } else if (distance > 90 && distance < 100) {
-            System.out.println("90-100");
             adjustment += 100;
         } else if (distance > 100 && distance < 110) {
-            System.out.println("100-110");
             adjustment += 125;
         } else if (distance > 110 && distance < 120) {
-            System.out.println("110-120");
             adjustment += 125;
         } else if (distance > 130 && distance < 140) {
-            System.out.println("130-140");
             adjustment += 175;
         } else if (distance > 140 && distance < 150) {
-            System.out.println("140-150");
             adjustment += 225;
         } else if (adjustment > 150 && distance < 160) {
-            System.out.println("150-160");
             adjustment += 375;
         }
-    
-        System.out.println("Adjustment: " + adjustment);
+
         rpm += adjustment;
         // System.out.println("rpm: " + rpm);
         return new ShooterParams(rpm, tof);

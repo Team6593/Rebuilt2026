@@ -3,7 +3,6 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands.intake;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
@@ -28,6 +27,7 @@ public class PivotToSetpointCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+  
     intake.pivot(-.09);
     System.out.println("Intake at setpoint: " + intake.positionCheck(40));
   }
@@ -37,6 +37,7 @@ public class PivotToSetpointCommand extends Command {
   public void end(boolean interrupted) {
     System.out.println("Intake at setpoint: " + intake.positionCheck(40));
     System.out.println("Command ended.");
+    intake.zeroPivot();
     intake.stop();
   }
 

@@ -9,16 +9,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ShootPivot extends Command {
+public class AutoPivotUp extends Command {
 
   private IntakeSubsystem intake;
-  private double kP;
   private double startTime;
 
   /** Creates a new PivotToSetpointCommand. */
-  public ShootPivot(IntakeSubsystem intake, double kP) {
+  public AutoPivotUp(IntakeSubsystem intake) {
     this.intake = intake;
-    this.kP = kP;
 
     addRequirements(intake);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -35,21 +33,22 @@ public class ShootPivot extends Command {
   @Override
   public void execute() {
     if (Timer.getFPGATimestamp() - startTime > 1.5) {
-        if (intake.positionCheck(250)) {
-          intake.pivot(.025);
-          System.out.println("Intake at setpoint: " + intake.positionCheck(250));
-          intake.runIntake(1);
-        }
-        intake.pivot(.125);
-        System.out.println("Intake at setpoint: " + intake.positionCheck(250));
+      if (intake.getOutputCurrent() > 30) { 
+        intake.pivot(.3);
+        System.out.println("Intake at setpoint: " + intake.positionCheck(150));
         intake.runIntake(1);
+      } else {
+        intake.pivot(.19);
+        System.out.println("Intake at setpoint: " + intake.positionCheck(150));
+        intake.runIntake(1);
+      }
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("Intake at setpoint: " + intake.positionCheck(250));
+    System.out.println("Intake at setpoint: " + intake.positionCheck(150));
     System.out.println("Command ended.");
     intake.stop();
   }
@@ -57,6 +56,6 @@ public class ShootPivot extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return intake.positionCheck(150);
   }
 }

@@ -41,6 +41,7 @@ import frc.robot.commands.intake.PivotToSetpointCommand;
 import frc.robot.commands.intake.RevINeedThis;
 import frc.robot.commands.intake.ShootPivot;
 import frc.robot.commands.intake.pivotCommand;
+import frc.robot.commands.intake.AutoPivotUp;
 import frc.robot.commands.intake.IntakeCommand;
 import frc.robot.commands.intake.IntakeOnTheMove;
 import frc.robot.commands.intake.IntakePIDCommand;
@@ -58,7 +59,7 @@ public class RobotContainer {
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.05) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
@@ -88,6 +89,11 @@ public class RobotContainer {
             .alongWith(new ShootAutomatic(shooter, rollers))
             .alongWith(new ShootPivot(intake, 1))
             .withTimeout(5));
+        NamedCommands.registerCommand("Pivot Down",
+            new PivotToSetpointCommand(intake)
+            .withTimeout(1));
+        NamedCommands.registerCommand("Field Centric", drivetrain.runOnce(drivetrain::seedFieldCentric));
+        
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
         camera.streamVideo();
@@ -165,6 +171,7 @@ public class RobotContainer {
 
         // Reset the field-centric heading on left bumper press.
         joystick.button(5).onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        joystick.button(7).onTrue(intake.offsetCommand());
         joystick.axisGreaterThan(2, .3).whileTrue(
             drivetrain.applyRequest(
                 () -> drive

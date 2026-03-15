@@ -67,7 +67,7 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
         .i(0)
         .d(0);
     intakeMotor.configure(intakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-
+    pivot2Motor.getEncoder().setPosition(-100);
     Preferences.initDouble(IntakeInputs.kIntakeSpeedKey, IntakeInputs.kIntakeSpeed);
   }
 
@@ -93,8 +93,10 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
     SmartDashboard.putNumber("Pivot1 Duty Cycle", pivotMotor.getAppliedOutput());
     SmartDashboard.putNumber("Pivot2 Duty Cycle", pivot2Motor.getAppliedOutput());
     SmartDashboard.putNumber("Pivot Applied Output A", pivotMotor.getOutputCurrent());
+    SmartDashboard.putNumber("Pivot2 Applied Output A", pivot2Motor.getOutputCurrent());
     SmartDashboard.putNumber("Pivot Temp (F)", ((pivotMotor.getMotorTemperature()) * 1.8) + 32);
     SmartDashboard.putNumber("Pivot Position", pivot2Encoder.getPosition());
+    SmartDashboard.putNumber("Pivot2 Rel Pos", pivot2Motor.getEncoder().getPosition());
     SmartDashboard.putNumber("Pivot Voltage", pivotMotor.getBusVoltage());
     SmartDashboard.putNumber("Pivot2 Voltage", pivot2Motor.getBusVoltage());
     SmartDashboard.putNumber("Pivot1 RPM", pivotMotor.getEncoder().getVelocity());
@@ -188,6 +190,26 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
     return pidController.atSetpoint();
   }
 
+  public double getOutputCurrent() {
+    return pivot2Motor.getOutputCurrent();
+  }
+
+  public void offsetEncoder() {
+    if (!positionCheck(40)) {
+      double offset = pivot2Encoder.getPosition() / 360;
+      if (offset > 1) offset += 1; 
+      offset += .125;
+      System.out.println(offset);
+      if (offset > 1) {
+        offset -= 1;
+      }
+      pivot2Config.absoluteEncoder.zeroOffset(offset);
+      pivot2Motor.configure(pivot2Config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+      System.out.println(offset);
+      System.out.println("Offset'd.");
+    }
+  }
+
   /**
    * Pivots the intake to a setpoint.
    * @param setpoint - Defaults to value in {@link IntakeInputs}
@@ -203,6 +225,16 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
 
   public boolean positionCheck(double setpoint) {
     double tolerance = 10;
+    double error = Math.abs(pivot2Encoder.getPosition() - setpoint);
+    if (error < tolerance) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public boolean homeCheck(double setpoint) {
+    double tolerance = 20;
     double error = Math.abs(pivot2Encoder.getPosition() - setpoint);
     if (error < tolerance) {
       return true;
@@ -303,6 +335,13 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
   public Command stopIntakeCommand() {
     return this.runOnce(
       () -> stop());
+  }
+
+  public Command offsetCommand() {
+    System.out.println("Offset running");
+    return this.runOnce(
+      () -> offsetEncoder()
+    );
   }
 
 }
