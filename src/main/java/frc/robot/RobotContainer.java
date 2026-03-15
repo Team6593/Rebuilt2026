@@ -28,6 +28,7 @@ import frc.robot.commands.shooter.ShootSequence;
 import frc.robot.commands.Recenter;
 import frc.robot.commands.ReverseCommand;
 import frc.robot.commands.Hyperjank;
+import frc.robot.commands.MoveForwards;
 import frc.robot.commands.StopAll;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -102,7 +103,10 @@ public class RobotContainer {
             .until(() -> Math.abs(drivetrain.getPigeon2().getYaw().getValueAsDouble()) < 5)
             .withTimeout(2));
         NamedCommands.registerCommand("RecenterToShoot", 
-           new Hyperjank(drivetrain).withTimeout(1.5));
+           new Hyperjank(drivetrain).withTimeout(1));
+
+
+        NamedCommands.registerCommand("Move Forward", new MoveForwards(drivetrain, MaxSpeed).withTimeout(3));
         
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
