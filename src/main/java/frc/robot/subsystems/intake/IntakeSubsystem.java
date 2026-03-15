@@ -198,7 +198,7 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
     if (!positionCheck(40)) {
       double offset = pivot2Encoder.getPosition() / 360;
       if (offset > 1) offset += 1; 
-      offset += .125;
+      offset += .01;
       System.out.println(offset);
       if (offset > 1) {
         offset -= 1;
@@ -207,7 +207,6 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
       pivot2Motor.configure(pivot2Config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
       System.out.println(offset);
       System.out.println("Offset'd.");
-      offsetEncoder();
     }
   }
 

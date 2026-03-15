@@ -25,7 +25,9 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.shooter.ShootAutomatic;
 import frc.robot.commands.shooter.ShootOnTheMoveSequenceCommand;
 import frc.robot.commands.shooter.ShootSequence;
+import frc.robot.commands.Recenter;
 import frc.robot.commands.ReverseCommand;
+import frc.robot.commands.Hyperjank;
 import frc.robot.commands.StopAll;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -45,6 +47,7 @@ import frc.robot.commands.intake.AutoPivotUp;
 import frc.robot.commands.intake.IntakeCommand;
 import frc.robot.commands.intake.IntakeOnTheMove;
 import frc.robot.commands.intake.IntakePIDCommand;
+import frc.robot.commands.intake.OffsetPivot;
 import frc.robot.commands.intake.Pivot1;
 import frc.robot.commands.intake.Pivot2;
 import frc.robot.commands.intake.PivotToHomeCommand;
@@ -94,6 +97,12 @@ public class RobotContainer {
             .withTimeout(1));
         NamedCommands.registerCommand("Field Centric", drivetrain.runOnce(drivetrain::seedFieldCentric));
         NamedCommands.registerCommand("Intake", new IntakeCommand(intake));
+        NamedCommands.registerCommand("RecenterToZero", 
+            new Recenter(drivetrain, 0)
+            .until(() -> Math.abs(drivetrain.getPigeon2().getYaw().getValueAsDouble()) < 5)
+            .withTimeout(2));
+        NamedCommands.registerCommand("RecenterToShoot", 
+           new Hyperjank(drivetrain).withTimeout(1.5));
         
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
@@ -172,7 +181,8 @@ public class RobotContainer {
 
         // Reset the field-centric heading on left bumper press.
         joystick.button(5).onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-        joystick.button(7).onTrue(intake.offsetCommand());
+        joystick.button(7).onTrue(new OffsetPivot(intake));
+        joystick.button(8).whileTrue(new Recenter(drivetrain, 0));
         joystick.axisGreaterThan(2, .3).whileTrue(
             drivetrain.applyRequest(
                 () -> drive

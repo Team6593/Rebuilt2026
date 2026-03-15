@@ -13,13 +13,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Trench to Neutral"
+            "pathName": "Trench to Neutral 1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Neutral to Trench"
+            "pathName": "Trench to Neutral 2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Neutral to Trench 1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Neutral to Trench 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RecenterToZero"
           }
         },
         {
@@ -31,7 +49,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ShootFromTrench"
+            "pathName": "ShootFromTrench 1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootFromTrench 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RecenterToShoot"
           }
         },
         {
