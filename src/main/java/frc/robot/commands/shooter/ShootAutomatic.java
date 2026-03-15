@@ -4,6 +4,7 @@
 
 package frc.robot.commands.shooter;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.rollers.RollersSubsystem;
@@ -34,8 +35,8 @@ public class ShootAutomatic extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterSubsystem.setMasterRPM(ShotCalculator.lerpGet(Limelight.staticDistanceGet()).rpm, ShotCalculator.lerpGet(Limelight.staticDistanceGet()).rpm);
-    if (shooterSubsystem.getShooterRPM() > ShotCalculator.lerpGet(Limelight.staticDistanceGet()).rpm) {
+    shooterSubsystem.setMasterRPM(ShotCalculator.lerpGet(SmartDashboard.getNumber("Last Distance", 0)).rpm, ShotCalculator.lerpGet(SmartDashboard.getNumber("Last Distance", 0)).rpm);
+    if (shooterSubsystem.getShooterRPM() > ShotCalculator.lerpGet(SmartDashboard.getNumber("Last Distance", 0)).rpm) {
         rollersSubsystem.set(.25);
         shooterSubsystem.setIndexerRPM(-3700);
     } 

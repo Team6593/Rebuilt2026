@@ -207,6 +207,7 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
       pivot2Motor.configure(pivot2Config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
       System.out.println(offset);
       System.out.println("Offset'd.");
+      offsetEncoder();
     }
   }
 

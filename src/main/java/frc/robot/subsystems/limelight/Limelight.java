@@ -40,6 +40,9 @@ public class Limelight extends SubsystemBase {
   public void sdLogging() {
     SmartDashboard.putNumber("Distance (in.)", estimateDistance());
     SmartDashboard.putNumber("Target RPM", ShotCalculator.targetRPM(estimateDistance()).rpm);
+    if (LimelightHelpers.getFiducialID("limelight") > 0) {
+      SmartDashboard.putNumber("Last Distance", estimateDistance());
+    }
   }
 
   /**

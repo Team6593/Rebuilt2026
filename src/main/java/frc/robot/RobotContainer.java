@@ -93,6 +93,7 @@ public class RobotContainer {
             new PivotToSetpointCommand(intake)
             .withTimeout(1));
         NamedCommands.registerCommand("Field Centric", drivetrain.runOnce(drivetrain::seedFieldCentric));
+        NamedCommands.registerCommand("Intake", new IntakeCommand(intake));
         
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
