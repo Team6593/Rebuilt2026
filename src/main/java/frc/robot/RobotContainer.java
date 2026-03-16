@@ -137,10 +137,15 @@ public class RobotContainer {
             new MoveX(drivetrain, 5, MaxSpeed/2)
                 .withTimeout(2));
         NamedCommands.registerCommand("Move left to Hub", 
-            new MoveY(drivetrain, -2, MaxSpeed/2)
+            new MoveY(drivetrain, -2.5, MaxSpeed/2)
                 .withTimeout(2));
 
-
+        // for hyper jank 2
+        NamedCommands.registerCommand("SL to CL 2", 
+            new MoveX(drivetrain, -3, MaxSpeed/2)
+                .withTimeout(2));
+        
+        
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
         camera.streamVideo();
