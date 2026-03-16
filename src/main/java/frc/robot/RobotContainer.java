@@ -145,8 +145,11 @@ public class RobotContainer {
             new MoveX(drivetrain, -3, MaxSpeed/2)
                 .withTimeout(2));
         
+        NamedCommands.registerCommand("Rotate to 180",
+            new RotateTo(180, MaxAngularRate, drivetrain).withTimeout(2));
         
-        autoChooser = AutoBuilder.buildAutoChooser("Tests");
+        
+        autoChooser = AutoBuilder.buildAutoChooser("Hyperjank 2");
         SmartDashboard.putData("Auto Mode", autoChooser);
         camera.streamVideo();
 
@@ -261,6 +264,10 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
+        // if PathPlanner is giving issues try manually doing the auto here
+        // 99 percent of the auto is just calling motion commands one after the other
+        // so re-writing it here should be easy. 2024 2 note auto moment
+
         /* Run the path selected from the auto chooser */
         return autoChooser.getSelected();
     }
