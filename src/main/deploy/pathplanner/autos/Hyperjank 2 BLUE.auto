@@ -31,13 +31,13 @@
         {
           "type": "named",
           "data": {
-            "name": "CL To Alli Zone"
+            "name": "Rotate to 180"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Rotate to 180"
+            "name": "CL To Alli Zone"
           }
         },
         {

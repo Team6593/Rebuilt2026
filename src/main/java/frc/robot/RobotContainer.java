@@ -117,32 +117,34 @@ public class RobotContainer {
         // due to large number of namedcommands used in this godforsaken auton,
         // you should keep your timeouts at low values to conserve time
         NamedCommands.registerCommand("SL to CL", 
-            new MoveX(drivetrain, -3, MaxSpeed/2)
+            new MoveX(drivetrain, 3, MaxSpeed/2)
+                .alongWith(new PivotToSetpointCommand(intake))
                 .withTimeout(2));
         NamedCommands.registerCommand("Turn around left", 
             new RotateTo(270, MaxAngularRate, drivetrain)
                 .withTimeout(2));
         // In PP, Pivot down before calling this
         NamedCommands.registerCommand("Move left and Intake", 
-            new MoveY(drivetrain, -2, MaxSpeed/2)
+            new MoveY(drivetrain, 1.5, MaxSpeed/3)
                 .alongWith(new IntakeCommand(intake))
                 .withTimeout(2));
         NamedCommands.registerCommand("Move right", 
-            new MoveY(drivetrain, 2, MaxSpeed/2)
+            new MoveY(drivetrain, -1.5, MaxSpeed/2)
                 .withTimeout(2));
         // Can't schedule two motion commands at the same time because they both use swerve
         NamedCommands.registerCommand("Rotate to 0",
             new RotateTo(0, MaxAngularRate, drivetrain).withTimeout(2));
         NamedCommands.registerCommand("CL To Alli Zone",
-            new MoveX(drivetrain, 5, MaxSpeed/2)
+            new MoveX(drivetrain, 4.5, MaxSpeed/2)
                 .withTimeout(2));
         NamedCommands.registerCommand("Move left to Hub", 
-            new MoveY(drivetrain, -2.5, MaxSpeed/2)
+            new MoveY(drivetrain, 2.5, MaxSpeed/2)
                 .withTimeout(2));
 
         // for hyper jank 2
         NamedCommands.registerCommand("SL to CL 2", 
-            new MoveX(drivetrain, -3, MaxSpeed/2)
+            new MoveX(drivetrain, 3.7, MaxSpeed/2)
+                .alongWith(new PivotToSetpointCommand(intake))
                 .withTimeout(2));
         
         NamedCommands.registerCommand("Rotate to 180",
@@ -231,7 +233,7 @@ public class RobotContainer {
         joystick.axisGreaterThan(2, .3).whileTrue(
             drivetrain.applyRequest(
                 () -> drive
-                    .withRotationalRate(LimelightHelpers.getTX("limelight") * -LimelightConstants.kHubAngle * 0.15)
+                    .withRotationalRate(LimelightHelpers.getTX("limelight") * -LimelightConstants.kHubAngle * 0.2)
                     .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * sotmMultiplier * 0)
                     .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier)
             )
@@ -270,5 +272,5 @@ public class RobotContainer {
 
         /* Run the path selected from the auto chooser */
         return autoChooser.getSelected();
-    }
+        }
 }

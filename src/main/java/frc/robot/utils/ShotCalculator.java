@@ -61,7 +61,9 @@ public class ShotCalculator {
 
         double adjustment = 0;
 
-        if (distance > 60 && distance < 80) {
+        if (distance < 60) {
+            adjustment -= 25;
+        } else if (distance > 60 && distance < 80) {
             adjustment += 0;
         } else if (distance > 80 && distance < 90) {
             adjustment += 75;
