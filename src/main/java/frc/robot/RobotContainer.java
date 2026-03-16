@@ -44,6 +44,9 @@ import frc.robot.commands.intake.PivotToSetpointCommand;
 import frc.robot.commands.intake.RevINeedThis;
 import frc.robot.commands.intake.ShootPivot;
 import frc.robot.commands.intake.pivotCommand;
+import frc.robot.commands.motioncommands.MoveX;
+import frc.robot.commands.motioncommands.MoveY;
+import frc.robot.commands.motioncommands.RotateTo;
 import frc.robot.commands.intake.AutoPivotUp;
 import frc.robot.commands.intake.IntakeCommand;
 import frc.robot.commands.intake.IntakeOnTheMove;
@@ -108,6 +111,36 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("Move Forward", new MoveForwards(drivetrain, MaxSpeed).withTimeout(3));
         
+        // Commands for HyperJank NZ auto
+        // as of 3/15/26 in the night, values are merely placeholders
+        // .withTimeouts are just here to guarentee command expiration
+        // due to large number of namedcommands used in this godforsaken auton,
+        // you should keep your timeouts at low values to conserve time
+        NamedCommands.registerCommand("SL to CL", 
+            new MoveX(drivetrain, -3, MaxSpeed/2)
+                .withTimeout(2));
+        NamedCommands.registerCommand("Turn around left", 
+            new RotateTo(270, MaxAngularRate, drivetrain)
+                .withTimeout(2));
+        // In PP, Pivot down before calling this
+        NamedCommands.registerCommand("Move left and Intake", 
+            new MoveY(drivetrain, -2, MaxSpeed/2)
+                .alongWith(new IntakeCommand(intake))
+                .withTimeout(2));
+        NamedCommands.registerCommand("Move right", 
+            new MoveY(drivetrain, 2, MaxSpeed/2)
+                .withTimeout(2));
+        // Can't schedule two motion commands at the same time because they both use swerve
+        NamedCommands.registerCommand("Rotate to 0",
+            new RotateTo(0, MaxAngularRate, drivetrain).withTimeout(2));
+        NamedCommands.registerCommand("CL To Alli Zone",
+            new MoveX(drivetrain, 5, MaxSpeed/2)
+                .withTimeout(2));
+        NamedCommands.registerCommand("Move left to Hub", 
+            new MoveY(drivetrain, -2, MaxSpeed/2)
+                .withTimeout(2));
+
+
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
         camera.streamVideo();

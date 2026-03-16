@@ -1,0 +1,73 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Barely move"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SL to CL"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Turn around left"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Pivot Down"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Move left and Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Move right"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Rotate to 0"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "CL To Alli Zone"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Move left to Hub"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
