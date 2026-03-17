@@ -22,7 +22,9 @@ public class OffsetSetpoint extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    System.out.println("SETTING SETPOINT");
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

@@ -60,8 +60,8 @@ import frc.robot.commands.intake.Pivot2;
 import frc.robot.commands.intake.PivotToHomeCommand;
 
 public class RobotContainer {
-    private double MaxSpeed = -1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    private double MaxAngularRate = .75 * RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+    private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    private double MaxAngularRate = -.75 * RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
     private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
@@ -195,7 +195,7 @@ public class RobotContainer {
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
 
-        joystick.a().whileTrue(new ReverseCommand(intake, rollers, shooter));
+        joystick.x().whileTrue(new ReverseCommand(intake, rollers, shooter));
         joystick.y().whileTrue(new ShootSequence(shooter, rollers, 3000));
 
         joystick.povUp().onTrue(new PivotToHomeCommand(intake));
@@ -204,13 +204,11 @@ public class RobotContainer {
         joystick.povRight().whileTrue(new pivotCommand(intake, -.09));
         
         joystick.button(5).onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-        joystick.button(7).onTrue(new OffsetSetpoint(intake));
-        joystick.button(8).whileTrue(new Recenter(drivetrain, 0));
         
         joystick.axisGreaterThan(2, .3).whileTrue(
             drivetrain.applyRequest(
                 () -> drive
-                    .withRotationalRate(LimelightHelpers.getTX("limelight") * -LimelightConstants.kHubAngle * 0.2)
+                    .withRotationalRate(LimelightHelpers.getTX("limelight") * -LimelightConstants.kHubAngle * 0.15)
                     .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * sotmMultiplier * 0)
                     .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier)
             )
@@ -227,20 +225,20 @@ public class RobotContainer {
             .alongWith(new IntakeCommand(intake))
         );
 
-        buttonboard.button(11).onTrue(new StopAll(null, intake, shooter));
+        buttonboard.button(11).onTrue(new StopAll(intake, shooter, rollers));
         buttonboard.button(9).onTrue(new OffsetHome(intake));
-        buttonboard.button(8).onTrue(new OffsetSetpoint(intake));
+        buttonboard.button(2).onTrue(new OffsetSetpoint(intake));
         buttonboard.button(6).onTrue(new PivotToHomeCommand(intake));
         buttonboard.button(7).onTrue(new PivotToSetpointCommand(intake));
-        buttonboard.button(3).whileTrue(drivetrain.applyRequest(
-                () -> drive
-                    .withRotationalRate(LimelightHelpers.getTX("limelight") * -LimelightConstants.kHubAngle * 0.2)
-                    .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * sotmMultiplier * 0)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier)
-            )
-            .alongWith(new ShootAutomatic(shooter, rollers))
-            .alongWith(new ShootPivot(intake, 1))
-        ).toggleOnFalse(new PivotToSetpointCommand(intake));
+        // buttonboard.button(3).whileTrue(drivetrain.applyRequest(
+        //         () -> drive
+        //             .withRotationalRate(LimelightHelpers.getTX("limelight") * -LimelightConstants.kHubAngle * 0.15)
+        //             .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * sotmMultiplier * 0)
+        //             .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier)
+        //     )
+        //     .alongWith(new ShootAutomatic(shooter, rollers))
+        //     .alongWith(new ShootPivot(intake, 1))
+        // ).toggleOnFalse(new PivotToSetpointCommand(intake));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }

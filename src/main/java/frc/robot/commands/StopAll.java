@@ -5,8 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.feeder.FeederSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.rollers.RollersSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -14,30 +14,29 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class StopAll extends InstantCommand {
 
-  private FeederSubsystem feeder;
   private IntakeSubsystem intake;
   private ShooterSubsystem shooter;
+  private RollersSubsystem rollers;
 
   /**
    * Command that stops all subsystems.
-   * @param feeder
    * @param intake
    * @param shooter
    */
-  public StopAll(FeederSubsystem feeder, IntakeSubsystem intake, ShooterSubsystem shooter) {
-    this.feeder = feeder;
+  public StopAll(IntakeSubsystem intake, ShooterSubsystem shooter, RollersSubsystem rollers) {
     this.shooter = shooter;
     this.intake = intake;
+    this.rollers = rollers;
 
-    addRequirements(feeder, shooter, intake);
+    addRequirements(shooter, intake, rollers);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    feeder.stop();
     shooter.stop();
     intake.stop();
+    rollers.stop();
   }
 }
