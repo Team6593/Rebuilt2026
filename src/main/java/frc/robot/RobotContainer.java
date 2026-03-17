@@ -16,9 +16,11 @@ import com.pathplanner.lib.commands.FollowPathCommand;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -51,7 +53,8 @@ import frc.robot.commands.intake.AutoPivotUp;
 import frc.robot.commands.intake.IntakeCommand;
 import frc.robot.commands.intake.IntakeOnTheMove;
 import frc.robot.commands.intake.IntakePIDCommand;
-import frc.robot.commands.intake.OffsetPivot;
+import frc.robot.commands.intake.OffsetHome;
+import frc.robot.commands.intake.OffsetSetpoint;
 import frc.robot.commands.intake.Pivot1;
 import frc.robot.commands.intake.Pivot2;
 import frc.robot.commands.intake.PivotToHomeCommand;
@@ -76,6 +79,7 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController joystick = new CommandXboxController(0);
+    private final CommandJoystick buttonboard = new CommandJoystick(1);
 
     // Subsystems
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -183,19 +187,6 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
 
-        // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        // joystick.b().whileTrue(drivetrain.applyRequest(() ->
-        //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
-        // ));
-
-        // joystick.povUp().whileTrue(drivetrain.applyRequest(() ->
-        //     forwardStraight.withVelocityX(0.5).withVelocityY(0))
-        // );
-        // joystick.povDown().whileTrue(drivetrain.applyRequest(() ->
-
-        //     forwardStraight.withVelocityX(-0.5).withVelocityY(0))
-        // );
-
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
@@ -203,33 +194,19 @@ public class RobotContainer {
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        // joystick.button(RevControllerConstants.m_M2).whileTrue(new ShootSequence(shooter, intake, feeder));
-        // joystick.button(RevControllerConstants.m_square).onTrue(new StopAll(feeder, intake, shooter));
-        // joystick.y().onTrue(new PivotToHomeCommand(intake));
-        // joystick.b().onTrue(new PivotToSetpointCommand(intake));
-        // joystick.button(RevControllerConstants.m_share).onTrue(new PivotToHomeCommand(intake));
-        // joystick.button(RevControllerConstants.m_options).onTrue(new PivotToSetpointCommand(intake));
-        // joystick.button(RevControllerConstants.m_M1).whileTrue(new IntakeCommand(intake));
 
-        // joystick.b().whileTrue(new IntakeCommand(intake));
-        // joystick.button(6).whileTrue(new IntakeCommand(intake));
         joystick.a().whileTrue(new ReverseCommand(intake, rollers, shooter));
-        joystick.y().whileTrue(new ShootSequence(shooter, rollers, 2125));
-        joystick.x().whileTrue(new ShootSequence(shooter, rollers, 6000));
-        // joystick.x().whileTrue(new ShootSequence(shooter, rollersSubsystem, 1450));
-        // joystick.button(7).onTrue(new PivotToHomeCommand(intake));
-        // joystick.button(8).onTrue(new PivotToSetpointCommand(intake));
-        // joystick.y().whileTrue(new ShootSequence(shooter, intake, rollersSubsystem, 6000));
+        joystick.y().whileTrue(new ShootSequence(shooter, rollers, 3000));
+
         joystick.povUp().onTrue(new PivotToHomeCommand(intake));
         joystick.povDown().onTrue(new PivotToSetpointCommand(intake));
         joystick.povLeft().whileTrue(new pivotCommand(intake, .09));
         joystick.povRight().whileTrue(new pivotCommand(intake, -.09));
-
-
-        // Reset the field-centric heading on left bumper press.
+        
         joystick.button(5).onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-        joystick.button(7).onTrue(new OffsetPivot(intake));
+        joystick.button(7).onTrue(new OffsetSetpoint(intake));
         joystick.button(8).whileTrue(new Recenter(drivetrain, 0));
+        
         joystick.axisGreaterThan(2, .3).whileTrue(
             drivetrain.applyRequest(
                 () -> drive
@@ -240,17 +217,6 @@ public class RobotContainer {
             .alongWith(new ShootAutomatic(shooter, rollers))
             .alongWith(new ShootPivot(intake, 1))
         ).toggleOnFalse(new PivotToSetpointCommand(intake));
-        // joystick.axisGreaterThan(2, .3).whileTrue(
-        //     drivetrain.applyRequest(
-        //         () -> drive
-        //             .withRotationalRate(LimelightHelpers.getTX("limelight") * (LimelightConstants.kHubAngle * sotmRotMulti))
-        //             .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * .1)
-        //             .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier * 0)
-        //     )
-        //     // .alongWith(new ShootSequence(shooter, intake, rollers, ShotCalculator.lerpGet(limelight.estimateDistance()).rpm + 25))
-        //     .alongWith(new ShootSequence(shooter, intake, rollers, ShotCalculator.lerpGet(LimelightHelpers.getTargetPose_RobotSpace("limelight")[2] *39.37).rpm + 25)
-        // ));
-        // joystick.axisGreaterThan(3, .3).whileTrue(new IntakeCommand(intake));
         joystick.axisGreaterThan(3, .3).whileTrue(
             drivetrain.applyRequest(
                 () -> drive
@@ -261,6 +227,20 @@ public class RobotContainer {
             .alongWith(new IntakeCommand(intake))
         );
 
+        buttonboard.button(11).onTrue(new StopAll(null, intake, shooter));
+        buttonboard.button(9).onTrue(new OffsetHome(intake));
+        buttonboard.button(8).onTrue(new OffsetSetpoint(intake));
+        buttonboard.button(6).onTrue(new PivotToHomeCommand(intake));
+        buttonboard.button(7).onTrue(new PivotToSetpointCommand(intake));
+        buttonboard.button(3).whileTrue(drivetrain.applyRequest(
+                () -> drive
+                    .withRotationalRate(LimelightHelpers.getTX("limelight") * -LimelightConstants.kHubAngle * 0.2)
+                    .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * sotmMultiplier * 0)
+                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier)
+            )
+            .alongWith(new ShootAutomatic(shooter, rollers))
+            .alongWith(new ShootPivot(intake, 1))
+        ).toggleOnFalse(new PivotToSetpointCommand(intake));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }

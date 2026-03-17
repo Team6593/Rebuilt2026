@@ -194,8 +194,24 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
     return pivot2Motor.getOutputCurrent();
   }
 
-  public void offsetEncoder() {
+  public void offsetSetpoint() {
     if (!positionCheck(40)) {
+      double offset = pivot2Encoder.getPosition() / 360;
+      if (offset > 1) offset += 1; 
+      offset += .01;
+      System.out.println(offset);
+      if (offset > 1) {
+        offset -= 1;
+      }
+      pivot2Config.absoluteEncoder.zeroOffset(offset);
+      pivot2Motor.configure(pivot2Config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+      System.out.println(offset);
+      System.out.println("Offset'd.");
+    }
+  }
+
+  public void offsetHome() {
+    if (!positionCheck(255)) {
       double offset = pivot2Encoder.getPosition() / 360;
       if (offset > 1) offset += 1; 
       offset += .01;
@@ -340,7 +356,7 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
   public Command offsetCommand() {
     System.out.println("Offset running");
     return this.runOnce(
-      () -> offsetEncoder()
+      () -> offsetSetpoint()
     );
   }
 
