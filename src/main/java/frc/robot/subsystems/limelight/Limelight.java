@@ -18,12 +18,11 @@ import frc.robot.utils.ShotCalculator;
 
 public class Limelight extends SubsystemBase {
 
-  private static final NetworkTable table =
-    NetworkTableInstance.getDefault().getTable("limelight");
+  private static final NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
 
   /** Creates a new Limelight. */
   public Limelight() {
-    LimelightHelpers.setPipelineIndex("base", 0);
+    LimelightHelpers.setPipelineIndex("limelight", 0);
   }
 
   @Override
@@ -38,10 +37,19 @@ public class Limelight extends SubsystemBase {
    * Logs values onto SD.
    */
   public void sdLogging() {
-    SmartDashboard.putNumber("Distance (in.)", estimateDistance());
-    SmartDashboard.putNumber("Target RPM", ShotCalculator.targetRPM(estimateDistance()).rpm);
     if (LimelightHelpers.getFiducialID("limelight") > 0) {
-      SmartDashboard.putNumber("Last Distance", estimateDistance());
+      SmartDashboard.putNumber("Distance (in.)", estimateDistance("limelight"));
+    } else if (LimelightHelpers.getFiducialID("limelight-two") > 0) {
+      SmartDashboard.putNumber("Distance (in.)", estimateDistance("limelight-two"));
+    } else {
+      SmartDashboard.putNumber("Distance (in.)",0);
+    }
+
+    SmartDashboard.putNumber("Target RPM", ShotCalculator.targetRPM(SmartDashboard.getNumber("Last Distance", getDistanceToTagInches())).rpm);
+    if (LimelightHelpers.getFiducialID("limelight") > 0) {
+      SmartDashboard.putNumber("Last Distance", estimateDistance("limelight"));
+    } else if (LimelightHelpers.getFiducialID("limelight-two") > 0) {
+      SmartDashboard.putNumber("Last Distance", estimateDistance("limelight-two"));
     }
   }
 
@@ -64,9 +72,9 @@ public class Limelight extends SubsystemBase {
    * Just steals from limelighthelpers lol
    * @return distance (inches)
    */
-  public double estimateDistance() {
+  public double estimateDistance(String limelightName) {
     if (hasValidTargets()) {
-      return LimelightHelpers.getTargetPose_RobotSpace("limelight")[2] * 39.37;
+      return LimelightHelpers.getTargetPose_RobotSpace(limelightName)[2] * 39.37;
     } else {
       return 0;
     }
