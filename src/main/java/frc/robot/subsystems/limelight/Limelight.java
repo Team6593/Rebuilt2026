@@ -8,7 +8,6 @@ import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,6 +22,8 @@ public class Limelight extends SubsystemBase {
   /** Creates a new Limelight. */
   public Limelight() {
     LimelightHelpers.setPipelineIndex("limelight", 0);
+    LimelightHelpers.setPipelineIndex("limelight-two", 0);
+    SmartDashboard.putBoolean("Aligning", false);
   }
 
   @Override
@@ -44,13 +45,12 @@ public class Limelight extends SubsystemBase {
     } else {
       SmartDashboard.putNumber("Distance (in.)",0);
     }
-
-    SmartDashboard.putNumber("Target RPM", ShotCalculator.targetRPM(SmartDashboard.getNumber("Last Distance", getDistanceToTagInches())).rpm);
     if (LimelightHelpers.getFiducialID("limelight") > 0) {
       SmartDashboard.putNumber("Last Distance", estimateDistance("limelight"));
     } else if (LimelightHelpers.getFiducialID("limelight-two") > 0) {
       SmartDashboard.putNumber("Last Distance", estimateDistance("limelight-two"));
     }
+    SmartDashboard.putNumber("Target RPM", ShotCalculator.targetRPM(SmartDashboard.getNumber("Last Distance", getDistanceToTagInches())).rpm);
   }
 
   /**
@@ -88,7 +88,6 @@ public class Limelight extends SubsystemBase {
     }
   }
 
-
   public double limelightAimProportional() {
     double kP = LimelightConstants.kAimP;
     double targetingAngularVelocity = LimelightHelpers.getTX("limelight") * kP;
@@ -99,6 +98,14 @@ public class Limelight extends SubsystemBase {
   
   public boolean hasValidTargets() {
     if (LimelightHelpers.getFiducialID("limelight") > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public static boolean staticValidTargets(String limelightName) {
+    if (LimelightHelpers.getFiducialID(limelightName) > 0) {
       return true;
     } else {
       return false;

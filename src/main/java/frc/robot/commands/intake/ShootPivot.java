@@ -35,14 +35,15 @@ public class ShootPivot extends Command {
   @Override
   public void execute() {
     if (Timer.getFPGATimestamp() - startTime > 1.5) {
-        if (intake.positionCheck(250)) {
-          intake.pivot(.025);
-          System.out.println("Intake at setpoint: " + intake.positionCheck(250));
-          intake.runIntake(1);
-        }
+      if (intake.positionCheck(250)) {
+        intake.pivot(.025);
+        System.out.println("Intake at setpoint: " + intake.positionCheck(250));
+        intake.runIntake(1);
+      } else {
         intake.pivot(.125);
         System.out.println("Intake at setpoint: " + intake.positionCheck(250));
         intake.runIntake(1);
+      }
     }
   }
 

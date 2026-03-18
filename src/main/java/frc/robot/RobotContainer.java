@@ -46,6 +46,7 @@ import frc.robot.commands.intake.PivotToSetpointCommand;
 import frc.robot.commands.intake.RevINeedThis;
 import frc.robot.commands.intake.ShootPivot;
 import frc.robot.commands.intake.pivotCommand;
+import frc.robot.commands.limelight.Alignment;
 import frc.robot.commands.motioncommands.MoveX;
 import frc.robot.commands.motioncommands.MoveY;
 import frc.robot.commands.motioncommands.RotateTo;
@@ -206,12 +207,11 @@ public class RobotContainer {
         joystick.button(5).onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
         
         joystick.axisGreaterThan(2, .3).whileTrue(
-            drivetrain.applyRequest(
-                () -> drive
-                    .withRotationalRate(LimelightHelpers.getTX("limelight") * -LimelightConstants.kHubAngle * 0.15)
-                    .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * sotmMultiplier * 0)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier)
-            )
+            new Alignment(
+                drivetrain, 
+                .2, 
+                -joystick.getLeftY() * MaxSpeed * multiplier * sotmMultiplier * 0, // 0 because we want to lock movement.
+                -joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier)
             .alongWith(new ShootAutomatic(shooter, rollers))
             .alongWith(new ShootPivot(intake, 1))
         ).toggleOnFalse(new PivotToSetpointCommand(intake));
@@ -230,15 +230,6 @@ public class RobotContainer {
         buttonboard.button(2).onTrue(new OffsetSetpoint(intake));
         buttonboard.button(6).onTrue(new PivotToHomeCommand(intake));
         buttonboard.button(7).onTrue(new PivotToSetpointCommand(intake));
-        // buttonboard.button(3).whileTrue(drivetrain.applyRequest(
-        //         () -> drive
-        //             .withRotationalRate(LimelightHelpers.getTX("limelight") * -LimelightConstants.kHubAngle * 0.15)
-        //             .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * sotmMultiplier * 0)
-        //             .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier)
-        //     )
-        //     .alongWith(new ShootAutomatic(shooter, rollers))
-        //     .alongWith(new ShootPivot(intake, 1))
-        // ).toggleOnFalse(new PivotToSetpointCommand(intake));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }

@@ -37,7 +37,6 @@ public class PivotToSetpointCommand extends Command {
   public void end(boolean interrupted) {
     System.out.println("Intake at setpoint: " + intake.positionCheck(40));
     System.out.println("Command ended.");
-    intake.zeroPivot();
     intake.stop();
   }
 
