@@ -28,7 +28,7 @@ public class PivotToSetpointCommand extends Command {
   @Override
   public void execute() {
   
-    intake.pivot(-.09);
+    intake.pivot(-.19);
     System.out.println("Intake at setpoint: " + intake.positionCheck(40));
   }
 

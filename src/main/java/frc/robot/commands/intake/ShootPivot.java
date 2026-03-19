@@ -34,7 +34,7 @@ public class ShootPivot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (Timer.getFPGATimestamp() - startTime > 1.5) {
+    if (Timer.getFPGATimestamp() - startTime > .75) {
       if (intake.positionCheck(250)) {
         intake.pivot(.025);
         System.out.println("Intake at setpoint: " + intake.positionCheck(250));

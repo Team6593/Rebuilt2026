@@ -51,6 +51,11 @@ public class Limelight extends SubsystemBase {
       SmartDashboard.putNumber("Last Distance", estimateDistance("limelight-two"));
     }
     SmartDashboard.putNumber("Target RPM", ShotCalculator.targetRPM(SmartDashboard.getNumber("Last Distance", getDistanceToTagInches())).rpm);
+    SmartDashboard.putNumber("LL TX", LimelightHelpers.getTX("limelight"));
+    SmartDashboard.putNumber("LL Alignment", LimelightHelpers.getTX("limelight") * -LimelightConstants.kHubAngle * .2);
+    SmartDashboard.putNumber("LL2 TX", LimelightHelpers.getTX("limelight-two"));
+    SmartDashboard.putNumber("LL2 Alignment", LimelightHelpers.getTX("limelight-two") * -LimelightConstants.kHubAngle * 1);
+    
   }
 
   /**
@@ -113,7 +118,7 @@ public class Limelight extends SubsystemBase {
   }
 
   public double getID() {
-    return LimelightHelpers.getFiducialID("limelight");
+    return LimelightHelpers.getFiducialID("limelight-two");
   }
 
 }

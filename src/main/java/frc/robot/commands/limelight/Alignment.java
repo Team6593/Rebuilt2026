@@ -50,14 +50,14 @@ public class Alignment extends Command {
   public void execute() {
     System.out.println("ALIGNING");
     SmartDashboard.putBoolean("Aligning", true);
-    if (Limelight.staticValidTargets("limelight")) {
+    if (Limelight.staticValidTargets("limelight-two")) {
       drivetrain.applyRequest(
         () -> drive
-          .withRotationalRate(LimelightHelpers.getTX("limelight") * -LimelightConstants.kHubAngle * rotKP)
+          .withRotationalRate(LimelightHelpers.getTX("limelight-two") * -LimelightConstants.LimelightTwo.kHubAngle * rotKP)
           .withVelocityX(velocityX)
           .withVelocityY(velocityY)
       );
-    } else if (Limelight.staticValidTargets("limelight-two")) {
+    } else if (Limelight.staticValidTargets("limelight")) {
       drivetrain.applyRequest(
         () -> drive
           .withRotationalRate(LimelightHelpers.getTX("limelight") * -LimelightConstants.kHubAngle * rotKP)
