@@ -8,7 +8,6 @@ import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,12 +17,13 @@ import frc.robot.utils.ShotCalculator;
 
 public class Limelight extends SubsystemBase {
 
-  private static final NetworkTable table =
-    NetworkTableInstance.getDefault().getTable("limelight");
+  private static final NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
 
   /** Creates a new Limelight. */
   public Limelight() {
-    LimelightHelpers.setPipelineIndex("base", 0);
+    LimelightHelpers.setPipelineIndex("limelight", 0);
+    LimelightHelpers.setPipelineIndex("limelight-two", 0);
+    SmartDashboard.putBoolean("Aligning", false);
   }
 
   @Override
@@ -38,11 +38,24 @@ public class Limelight extends SubsystemBase {
    * Logs values onto SD.
    */
   public void sdLogging() {
-    SmartDashboard.putNumber("Distance (in.)", estimateDistance());
-    SmartDashboard.putNumber("Target RPM", ShotCalculator.targetRPM(estimateDistance()).rpm);
     if (LimelightHelpers.getFiducialID("limelight") > 0) {
-      SmartDashboard.putNumber("Last Distance", estimateDistance());
+      SmartDashboard.putNumber("Distance (in.)", estimateDistance("limelight"));
+    } else if (LimelightHelpers.getFiducialID("limelight-two") > 0) {
+      SmartDashboard.putNumber("Distance (in.)", estimateDistance("limelight-two"));
+    } else {
+      SmartDashboard.putNumber("Distance (in.)",0);
     }
+    if (LimelightHelpers.getFiducialID("limelight") > 0) {
+      SmartDashboard.putNumber("Last Distance", estimateDistance("limelight"));
+    } else if (LimelightHelpers.getFiducialID("limelight-two") > 0) {
+      SmartDashboard.putNumber("Last Distance", estimateDistance("limelight-two"));
+    }
+    SmartDashboard.putNumber("Target RPM", ShotCalculator.targetRPM(SmartDashboard.getNumber("Last Distance", getDistanceToTagInches())).rpm);
+    SmartDashboard.putNumber("LL TX", LimelightHelpers.getTX("limelight"));
+    SmartDashboard.putNumber("LL Alignment", LimelightHelpers.getTX("limelight") * -LimelightConstants.kHubAngle * .2);
+    SmartDashboard.putNumber("LL2 TX", LimelightHelpers.getTX("limelight-two"));
+    SmartDashboard.putNumber("LL2 Alignment", LimelightHelpers.getTX("limelight-two") * -LimelightConstants.kHubAngle * 1);
+    
   }
 
   /**
@@ -64,9 +77,9 @@ public class Limelight extends SubsystemBase {
    * Just steals from limelighthelpers lol
    * @return distance (inches)
    */
-  public double estimateDistance() {
+  public double estimateDistance(String limelightName) {
     if (hasValidTargets()) {
-      return LimelightHelpers.getTargetPose_RobotSpace("limelight")[2] * 39.37;
+      return LimelightHelpers.getTargetPose_RobotSpace(limelightName)[2] * 39.37;
     } else {
       return 0;
     }
@@ -79,7 +92,6 @@ public class Limelight extends SubsystemBase {
       return 0;
     }
   }
-
 
   public double limelightAimProportional() {
     double kP = LimelightConstants.kAimP;
@@ -97,8 +109,16 @@ public class Limelight extends SubsystemBase {
     }
   }
 
+  public static boolean staticValidTargets(String limelightName) {
+    if (LimelightHelpers.getFiducialID(limelightName) > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   public double getID() {
-    return LimelightHelpers.getFiducialID("limelight");
+    return LimelightHelpers.getFiducialID("limelight-two");
   }
 
 }

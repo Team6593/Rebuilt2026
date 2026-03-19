@@ -51,10 +51,10 @@ public class ShootOnTheMoveSequenceCommand extends Command {
   public void execute() {
     if (LimelightHelpers.getFiducialID("limelight") == 26) {
       shooterSubsystem.setMasterRPM(
-        ShotCalculator.lerpGet(limelight.estimateDistance()).rpm + 250, 
-        ShotCalculator.lerpGet(limelight.estimateDistance()).rpm - 250
+        ShotCalculator.lerpGet(limelight.estimateDistance("limelight")).rpm + 250, 
+        ShotCalculator.lerpGet(limelight.estimateDistance("limelight")).rpm - 250
       );
-      if (shooterSubsystem.getShooterRPM() < -ShotCalculator.lerpGet(limelight.estimateDistance()).rpm + 350) {
+      if (shooterSubsystem.getShooterRPM() < -ShotCalculator.lerpGet(limelight.estimateDistance("limelight")).rpm + 350) {
         shooterSubsystem.setIndexerRPM(-6000);
         feederSubsystem.feed(1);
         // intakeSubsystem.runIntake(.45);
@@ -63,10 +63,10 @@ public class ShootOnTheMoveSequenceCommand extends Command {
     }
     if (LimelightHelpers.getFiducialID("limelight") == 25 || LimelightHelpers.getFiducialID("limelight") == 24) {
       shooterSubsystem.setMasterRPM(
-        -ShotCalculator.lerpGet(limelight.estimateDistance()).rpm, 
-        ShotCalculator.lerpGet(limelight.estimateDistance()).rpm
+        -ShotCalculator.lerpGet(limelight.estimateDistance("limelight")).rpm, 
+        ShotCalculator.lerpGet(limelight.estimateDistance("limelight")).rpm
       );
-      if (shooterSubsystem.getShooterRPM() < -ShotCalculator.lerpGet(limelight.estimateDistance()).rpm + 100) {
+      if (shooterSubsystem.getShooterRPM() < -ShotCalculator.lerpGet(limelight.estimateDistance("limelight")).rpm + 100) {
         shooterSubsystem.setIndexerRPM(-6000);
         feederSubsystem.feed(1);
         // intakeSubsystem.runIntake(.45);

@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.shooter.ShootAutomatic;
 import frc.robot.commands.shooter.ShootOnTheMoveSequenceCommand;
 import frc.robot.commands.shooter.ShootSequence;
+import frc.robot.commands.shooter.ShooterFerry;
 import frc.robot.commands.Recenter;
 import frc.robot.commands.ReverseCommand;
 import frc.robot.commands.Hyperjank;
@@ -78,8 +79,8 @@ public class RobotContainer {
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final CommandXboxController joystick = new CommandXboxController(0);
-    private final CommandJoystick buttonboard = new CommandJoystick(1);
+    private final CommandXboxController joystick = new CommandXboxController(1);
+    private final CommandJoystick buttonboard = new CommandJoystick(0);
 
     // Subsystems
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -96,10 +97,13 @@ public class RobotContainer {
         NamedCommands.registerCommand("Shoot",
             drivetrain.applyRequest(
                 () -> drive
-                    .withRotationalRate(LimelightHelpers.getTX("limelight") * -LimelightConstants.kHubAngle * 0.15))
+                    .withRotationalRate(LimelightHelpers.getTX("limelight-two") * LimelightConstants.getAngle((int) LimelightHelpers.getFiducialID("limelight-two")) * .3)
+                    .withVelocityX(-joystick.getLeftY() * MaxSpeed * -.8 * .5 * 0)
+                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * -.8 * .5)
+            )
             .alongWith(new ShootAutomatic(shooter, rollers))
             .alongWith(new ShootPivot(intake, 1))
-            .withTimeout(5));
+        );
         NamedCommands.registerCommand("Pivot Down",
             new PivotToSetpointCommand(intake)
             .withTimeout(1));
@@ -197,6 +201,16 @@ public class RobotContainer {
 
         joystick.x().whileTrue(new ReverseCommand(intake, rollers, shooter));
         joystick.y().whileTrue(new ShootSequence(shooter, rollers, 3000));
+        joystick.b().whileTrue(
+            drivetrain.applyRequest(
+                () -> drive
+                    .withRotationalRate(LimelightHelpers.getTX("limelight-two") * LimelightConstants.kTrenchAngle * .3)
+                    .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * sotmMultiplier * 0)
+                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier)
+            )
+            .alongWith(new ShooterFerry(shooter, rollers))
+            .alongWith(new ShootPivot(intake, 1))
+        ).toggleOnFalse(new PivotToSetpointCommand(intake));
 
         joystick.povUp().onTrue(new PivotToHomeCommand(intake));
         joystick.povDown().onTrue(new PivotToSetpointCommand(intake));
@@ -208,7 +222,7 @@ public class RobotContainer {
         joystick.axisGreaterThan(2, .3).whileTrue(
             drivetrain.applyRequest(
                 () -> drive
-                    .withRotationalRate(LimelightHelpers.getTX("limelight") * -LimelightConstants.kHubAngle * 0.15)
+                    .withRotationalRate(LimelightHelpers.getTX("limelight-two") * LimelightConstants.getAngle((int) LimelightHelpers.getFiducialID("limelight-two")) * .3)
                     .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * sotmMultiplier * 0)
                     .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier)
             )
