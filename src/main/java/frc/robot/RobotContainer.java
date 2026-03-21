@@ -79,8 +79,8 @@ public class RobotContainer {
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final CommandXboxController joystick = new CommandXboxController(1);
-    private final CommandJoystick buttonboard = new CommandJoystick(0);
+    private final CommandXboxController joystick = new CommandXboxController(0);
+    private final CommandJoystick buttonboard = new CommandJoystick(1);
 
     // Subsystems
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -88,7 +88,7 @@ public class RobotContainer {
     public final IntakeSubsystem intake = new IntakeSubsystem();
     public final RollersSubsystem rollers = new RollersSubsystem();
     public final Limelight limelight = new Limelight();
-    public final Camera camera = new Camera(0, "Camera 1");
+    // public final Camera camera = new Camera(0, "Camera 1");
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
@@ -161,7 +161,7 @@ public class RobotContainer {
         
         autoChooser = AutoBuilder.buildAutoChooser("Hyperjank 2");
         SmartDashboard.putData("Auto Mode", autoChooser);
-        camera.streamVideo();
+        // camera.streamVideo();
 
         configureBindings();
 
@@ -172,7 +172,7 @@ public class RobotContainer {
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
-        double multiplier = -.8;
+        double multiplier = -1;
         double sotmMultiplier = .5;
         double sotmRotMulti = .05;
         drivetrain.setDefaultCommand(
@@ -211,6 +211,16 @@ public class RobotContainer {
             .alongWith(new ShooterFerry(shooter, rollers))
             .alongWith(new ShootPivot(intake, 1))
         ).toggleOnFalse(new PivotToSetpointCommand(intake));
+        buttonboard.button(3).whileTrue(
+            drivetrain.applyRequest(
+                () -> drive
+                    .withRotationalRate(LimelightHelpers.getTX("limelight-two") * LimelightConstants.kTrenchAngle * .3)
+                    .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * sotmMultiplier * 0)
+                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier)
+            )
+            .alongWith(new ShooterFerry(shooter, rollers))
+            .alongWith(new ShootPivot(intake, 1))
+        ).toggleOnFalse(new PivotToSetpointCommand(intake));
 
         joystick.povUp().onTrue(new PivotToHomeCommand(intake));
         joystick.povDown().onTrue(new PivotToSetpointCommand(intake));
@@ -240,10 +250,10 @@ public class RobotContainer {
         );
 
         buttonboard.button(11).onTrue(new StopAll(intake, shooter, rollers));
-        buttonboard.button(9).onTrue(new OffsetHome(intake));
-        buttonboard.button(2).onTrue(new OffsetSetpoint(intake));
-        buttonboard.button(6).onTrue(new PivotToHomeCommand(intake));
-        buttonboard.button(7).onTrue(new PivotToSetpointCommand(intake));
+        buttonboard.button(4).onTrue(new OffsetHome(intake));
+        buttonboard.button(5).onTrue(new OffsetSetpoint(intake));
+        buttonboard.button(1).onTrue(new PivotToHomeCommand(intake));
+        buttonboard.button(2).onTrue(new PivotToSetpointCommand(intake));
         // buttonboard.button(3).whileTrue(drivetrain.applyRequest(
         //         () -> drive
         //             .withRotationalRate(LimelightHelpers.getTX("limelight") * -LimelightConstants.kHubAngle * 0.15)
