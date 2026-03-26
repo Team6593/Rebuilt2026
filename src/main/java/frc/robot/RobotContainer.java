@@ -53,7 +53,6 @@ import frc.robot.commands.motioncommands.RotateTo;
 import frc.robot.commands.intake.AutoPivotUp;
 import frc.robot.commands.intake.IntakeCommand;
 import frc.robot.commands.intake.IntakeOnTheMove;
-import frc.robot.commands.intake.IntakePIDCommand;
 import frc.robot.commands.intake.OffsetHome;
 import frc.robot.commands.intake.OffsetSetpoint;
 import frc.robot.commands.intake.Pivot1;
