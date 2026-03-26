@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.intake;
 
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -25,7 +26,8 @@ import frc.robot.utils.SubsystemInterface;
 public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface {
 
   // Devices
-  private SparkMax intakeMotor = new SparkMax(IntakeConstants.intakeMotorID, MotorType.kBrushless);
+  private TalonFX intakeMotor1 = new TalonFX(IntakeConstants.intakeMotor1ID);
+  private TalonFX intakeMotor2 = new TalonFX(IntakeConstants.intakeMotor2ID);
   private SparkMax pivotMotor = new SparkMax(IntakeConstants.pivotMotorID, MotorType.kBrushless);
   private SparkMax pivot2Motor = new SparkMax(IntakeConstants.pivotMotor2ID, MotorType.kBrushless);
 
@@ -33,8 +35,6 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
   private SparkMaxConfig pivot1Config = new SparkMaxConfig();
   private SparkMaxConfig pivot2Config = new SparkMaxConfig();
   private SparkAbsoluteEncoder pivot2Encoder = pivot2Motor.getAbsoluteEncoder();
-  private SparkClosedLoopController intakeController = intakeMotor.getClosedLoopController();
-  private SparkMaxConfig intakeConfig = new SparkMaxConfig();
 
   private ProfiledPIDController pidController = new ProfiledPIDController(0.0175, 0, 0, new TrapezoidProfile.Constraints(6.545, 0));
   // private ProfiledPIDController intakePIDController = new ProfiledPIDController(10, 0, 0, new TrapezoidProfile.Constraints(6000, 10));
@@ -60,13 +60,6 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
     pivot2Config.smartCurrentLimit(40);
     pivotMotor.configure(pivot1Config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     pivot2Motor.configure(pivot2Config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-    
-    intakeConfig
-      .closedLoop
-        .p(2)
-        .i(0)
-        .d(0);
-    intakeMotor.configure(intakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     pivot2Motor.getEncoder().setPosition(-100);
     Preferences.initDouble(IntakeInputs.kIntakeSpeedKey, IntakeInputs.kIntakeSpeed);
   }
@@ -85,11 +78,6 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
    */
   @Override
   public void sdLogging() {
-    SmartDashboard.putNumber("Intake Duty Cycle", intakeMotor.getAppliedOutput());
-    SmartDashboard.putNumber("Intake Applied Output A", intakeMotor.getOutputCurrent());
-    SmartDashboard.putNumber("Intake Temp (F)", ((intakeMotor.getMotorTemperature()) * 1.8) + 32);
-    SmartDashboard.putNumber("Intake RPM", intakeMotor.getEncoder().getVelocity());
-    SmartDashboard.putNumber("Intake Ft/S", (intakeMotor.getEncoder().getVelocity() * 1.125 * (Math.PI/12)));
     SmartDashboard.putNumber("Pivot1 Duty Cycle", pivotMotor.getAppliedOutput());
     SmartDashboard.putNumber("Pivot2 Duty Cycle", pivot2Motor.getAppliedOutput());
     SmartDashboard.putNumber("Pivot Applied Output A", pivotMotor.getOutputCurrent());
@@ -121,7 +109,8 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
    * @param speed - Defaults to value in {@link IntakeInputs}
    */
   public void runIntake(double speed) {
-    intakeMotor.set(speed);
+    intakeMotor1.set(speed);
+    intakeMotor2.set(speed);
   }
 
   /**
@@ -129,7 +118,8 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
    * @param speed - Defaults to value in {@link IntakeInputs}
    */
   public void intake() {
-    intakeMotor.set(IntakeInputs.kIntakeSpeed);
+    intakeMotor1.set(IntakeInputs.kIntakeSpeed);
+    intakeMotor2.set(IntakeInputs.kIntakeSpeed);
   }
 
   public void pidToSetpoint(double setpoint, double p) {
@@ -157,13 +147,6 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
     pivotMotor.setVoltage(pidOutput);
   }
 
-  public void profiledPIDIntake(double setpoint) {
-    pidController.setGoal(setpoint);
-    var pidOutput = 
-      pidController.calculate(
-        intakeMotor.getEncoder().getVelocity(), setpoint);
-    intakeMotor.setVoltage(pidOutput);
-  }
 
   public void revINeedThis(double setpoint) {
     pivot2Motor.getClosedLoopController().setSetpoint(setpoint, ControlType.kPosition);
@@ -171,10 +154,6 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
 
   public boolean myRobotsKindaPivotless() {
     return pivot2Motor.getClosedLoopController().isAtSetpoint();
-  }
-
-  public void pidIntake(double setpoint) {
-    intakeController.setSetpoint(setpoint, ControlType.kVelocity);
   }
 
   public void zeroPivot() {
@@ -293,7 +272,8 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
    */
   @Override
   public void stop() {
-    intakeMotor.stopMotor();
+    intakeMotor1.stopMotor();
+    intakeMotor2.stopMotor();
     pivotMotor.stopMotor();
     pivot2Motor.stopMotor();
   }
