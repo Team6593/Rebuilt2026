@@ -31,12 +31,8 @@ public class PivotToHomeCommand extends Command {
   public void execute() {
     if (intake.getOutputCurrent() > 30) { 
       System.out.println("Intake at setpoint: " + intake.positionCheck(250));
-      intake.runIntake(1);
-      intake.pivot(.23);
-    } else {
-      System.out.println("Intake at setpoint: " + intake.positionCheck(250));
-      intake.runIntake(1);
-      intake.pivot(.23);
+      // intake.runIntake(1);
+      intake.pivot(.2);
     }
   }
 
