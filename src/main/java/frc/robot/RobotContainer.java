@@ -51,7 +51,10 @@ import frc.robot.commands.motioncommands.MoveX;
 import frc.robot.commands.motioncommands.MoveY;
 import frc.robot.commands.motioncommands.RotateTo;
 import frc.robot.commands.intake.AutoPivotUp;
+import frc.robot.commands.intake.IncramentalPivot;
 import frc.robot.commands.intake.IntakeCommand;
+import frc.robot.commands.intake.IntakeOff;
+import frc.robot.commands.intake.IntakeOn;
 import frc.robot.commands.intake.IntakeOnTheMove;
 import frc.robot.commands.intake.OffsetHome;
 import frc.robot.commands.intake.OffsetSetpoint;
@@ -225,9 +228,7 @@ public class RobotContainer {
         joystick.povDown().onTrue(new PivotToSetpointCommand(intake));
         joystick.povLeft().whileTrue(new pivotCommand(intake, .09));
         joystick.povRight().whileTrue(new pivotCommand(intake, -.09));
-        
         joystick.button(5).onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-        
         joystick.axisGreaterThan(2, .3).whileTrue(
             drivetrain.applyRequest(
                 () -> drive
@@ -238,15 +239,7 @@ public class RobotContainer {
             .alongWith(new ShootAutomatic(shooter, rollers))
             .alongWith(new ShootPivot(intake, 1))
         ).toggleOnFalse(new PivotToSetpointCommand(intake));
-        joystick.axisGreaterThan(3, .3).whileTrue(
-            drivetrain.applyRequest(
-                () -> drive
-                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate * multiplier)
-                    .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * .5)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * .5)
-            )
-            .alongWith(new IntakeCommand(intake))
-        );
+        joystick.axisGreaterThan(3, .3).onTrue(new IntakeOn(intake));
 
         buttonboard.button(11).onTrue(new StopAll(intake, shooter, rollers));
         buttonboard.button(4).onTrue(new OffsetHome(intake));

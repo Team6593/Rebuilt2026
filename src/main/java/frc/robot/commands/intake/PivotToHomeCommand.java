@@ -29,17 +29,15 @@ public class PivotToHomeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (intake.getOutputCurrent() > 30) { 
-      System.out.println("Intake at setpoint: " + intake.positionCheck(250));
-      // intake.runIntake(1);
-      intake.pivot(.2);
-    }
+    System.out.println("Intake at setpoint: " + intake.positionCheck(220));
+    // intake.runIntake(1);
+    intake.pivot(.2);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("Intake at setpoint: " + intake.positionCheck(250));
+    System.out.println("Intake at setpoint: " + intake.positionCheck(220));
     System.out.println("Command ended.");
     intake.stop();
   }
@@ -47,6 +45,6 @@ public class PivotToHomeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return intake.positionCheck(250);
+    return intake.positionCheck(220);
   }
 }

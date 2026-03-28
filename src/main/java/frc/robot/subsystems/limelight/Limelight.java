@@ -45,9 +45,7 @@ public class Limelight extends SubsystemBase {
     } else {
       SmartDashboard.putNumber("Distance (in.)",0);
     }
-    if (LimelightHelpers.getFiducialID("limelight") > 0) {
-      SmartDashboard.putNumber("Last Distance", estimateDistance("limelight"));
-    } else if (LimelightHelpers.getFiducialID("limelight-two") > 0) {
+    if (LimelightHelpers.getFiducialID("limelight-two") > 0 && estimateDistance("limelight-two") > 0) {
       SmartDashboard.putNumber("Last Distance", estimateDistance("limelight-two"));
     }
     SmartDashboard.putNumber("Target RPM", ShotCalculator.targetRPM(SmartDashboard.getNumber("Last Distance", getDistanceToTagInches())).rpm);

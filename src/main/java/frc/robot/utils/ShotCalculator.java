@@ -72,13 +72,13 @@ public class ShotCalculator {
         } else if (distance > 100 && distance < 110) {
             adjustment += 125;
         } else if (distance > 110 && distance < 120) {
-            adjustment += 125;
+            adjustment += 150;
         } else if (distance > 130 && distance < 140) {
-            adjustment += 175;
+            adjustment += 200;
         } else if (distance > 140 && distance < 150) {
-            adjustment += 225;
+            adjustment += 250;
         } else if (adjustment > 150 && distance < 160) {
-            adjustment += 375;
+            adjustment += 400;
         }
 
         rpm += adjustment;

@@ -5,8 +5,10 @@
 package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.utils.ShotCalculator;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ShootPivot extends Command {
@@ -28,23 +30,28 @@ public class ShootPivot extends Command {
   @Override
   public void initialize() {
     startTime = Timer.getFPGATimestamp();
+    intake.runIntake(0);
   }
 
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (Timer.getFPGATimestamp() - startTime > .75) {
+    if (SmartDashboard.getNumber("ShooterM RPM", 0) > ShotCalculator.lerpGet(SmartDashboard.getNumber("Last Distance", 0)).rpm) {
+      if (intake.getPosition() > 220) {
+        System.out.println("Intake at setpoint: " + (intake.getPosition() < 200));
+        intake.stop();
+      } else {
+        System.out.println("Intake at setpoint: " + (intake.getPosition() < 200));
         intake.pivot(.2);
-        System.out.println("Intake at setpoint: " + intake.positionCheck(250));
-        // intake.runIntake(1);
+      }
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("Intake at setpoint: " + intake.positionCheck(250));
+    System.out.println("Intake at setpoint: " + intake.positionCheck(200));
     System.out.println("Command ended.");
     intake.stop();
   }

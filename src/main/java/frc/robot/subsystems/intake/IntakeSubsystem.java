@@ -36,6 +36,8 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
   private SparkMaxConfig pivot2Config = new SparkMaxConfig();
   private SparkAbsoluteEncoder pivot2Encoder = pivot2Motor.getAbsoluteEncoder();
 
+  private int stage = 0;
+
   private ProfiledPIDController pidController = new ProfiledPIDController(0.0175, 0, 0, new TrapezoidProfile.Constraints(6.545, 0));
   // private ProfiledPIDController intakePIDController = new ProfiledPIDController(10, 0, 0, new TrapezoidProfile.Constraints(6000, 10));
   // private ArmFeedforward armFeedforward = new ArmFeedforward(.5, 12, 12.5);
@@ -80,16 +82,19 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
   public void sdLogging() {
     SmartDashboard.putNumber("Pivot1 Duty Cycle", pivotMotor.getAppliedOutput());
     SmartDashboard.putNumber("Pivot2 Duty Cycle", pivot2Motor.getAppliedOutput());
+    SmartDashboard.putNumber("Intake1 Temp", intakeMotor1.getDeviceTemp().getValueAsDouble());
+    SmartDashboard.putNumber("Intake2 Temp", intakeMotor2.getDeviceTemp().getValueAsDouble());
     SmartDashboard.putNumber("Pivot Applied Output A", pivotMotor.getOutputCurrent());
     SmartDashboard.putNumber("Pivot2 Applied Output A", pivot2Motor.getOutputCurrent());
     SmartDashboard.putNumber("Pivot Temp (F)", ((pivotMotor.getMotorTemperature()) * 1.8) + 32);
-    SmartDashboard.putNumber("Pivot Position", pivot2Encoder.getPosition());
+    SmartDashboard.putNumber("Pivot Position",getPosition());
     SmartDashboard.putNumber("Pivot2 Rel Pos", pivot2Motor.getEncoder().getPosition());
     SmartDashboard.putNumber("Pivot Voltage", pivotMotor.getBusVoltage());
     SmartDashboard.putNumber("Pivot2 Voltage", pivot2Motor.getBusVoltage());
     SmartDashboard.putNumber("Pivot1 RPM", pivotMotor.getEncoder().getVelocity());
     SmartDashboard.putNumber("Pivot2 RPM", pivot2Motor.getEncoder().getVelocity());
     SmartDashboard.putNumber("Pivot P: ", pidController.getP());
+    SmartDashboard.putNumber("Stage", stage);
   }
 
   /**
@@ -102,6 +107,21 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
       IntakeInputs.kIntakeSpeed = Preferences.getDouble(IntakeInputs.kIntakeSpeedKey, IntakeInputs.kIntakeSpeed);
       System.out.println("New kIntakeSpeed: " + IntakeInputs.kIntakeSpeed);
     }
+  }
+
+  public int stage() {
+    if (stage > 5) {
+      stage = 1;
+    }
+    return stage;
+  }
+
+  public void changeStage(double increment) {
+    stage += increment;
+  }
+
+  public void setStage(int value) {
+    stage = value;
   }
 
   /**
@@ -147,6 +167,9 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
     pivotMotor.setVoltage(pidOutput);
   }
 
+  public double getPosition() {
+    return pivot2Encoder.getPosition();
+  }
 
   public void revINeedThis(double setpoint) {
     pivot2Motor.getClosedLoopController().setSetpoint(setpoint, ControlType.kPosition);
