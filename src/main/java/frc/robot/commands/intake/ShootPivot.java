@@ -43,7 +43,7 @@ public class ShootPivot extends Command {
         intake.stop();
       } else {
         System.out.println("Intake at setpoint: " + (intake.getPosition() < 200));
-        intake.pivot(.2);
+        intake.pivot(.3);
       }
     }
   }

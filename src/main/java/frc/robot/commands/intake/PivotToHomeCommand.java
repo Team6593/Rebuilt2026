@@ -31,7 +31,7 @@ public class PivotToHomeCommand extends Command {
   public void execute() {
     System.out.println("Intake at setpoint: " + intake.positionCheck(220));
     // intake.runIntake(1);
-    intake.pivot(.15);
+    intake.pivot(.25);
   }
 
   // Called once the command ends or is interrupted.
