@@ -3,16 +3,48 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.283050595238095,
+        "x": 8.276525297619047,
         "y": 0.8376041666666674
       },
       "prevControl": null,
       "nextControl": {
-        "x": 9.283050595238095,
+        "x": 9.276525297619047,
         "y": 0.8376041666666674
       },
       "isLocked": false,
       "linkedName": "NYN1 INTAKEBACK END"
+    },
+    {
+      "anchor": {
+        "x": 6.501644345238095,
+        "y": 0.8376041666666674
+      },
+      "prevControl": {
+        "x": 8.278971354166666,
+        "y": 0.8376041666666674
+      },
+      "nextControl": {
+        "x": 4.724317336309523,
+        "y": 0.8376041666666676
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.387447916666666,
+        "y": 0.8376041666666674
+      },
+      "prevControl": {
+        "x": 4.658196730840773,
+        "y": 0.8376041666666674
+      },
+      "nextControl": {
+        "x": 4.116699102492559,
+        "y": 0.8376041666666674
+      },
+      "isLocked": false,
+      "linkedName": null
     },
     {
       "anchor": {
@@ -21,7 +53,7 @@
       },
       "prevControl": {
         "x": 2.167217261904762,
-        "y": 0.8376041666666674
+        "y": 0.8376041666666675
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,7 +65,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 2.0,
     "maxAcceleration": 6.8,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 1612.0,
