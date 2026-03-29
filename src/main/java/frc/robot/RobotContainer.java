@@ -105,6 +105,7 @@ public class RobotContainer {
             )
             .alongWith(new ShootAutomatic(shooter, rollers))
             .alongWith(new ShootPivot(intake, 1))
+            .withTimeout(5)
         );
         NamedCommands.registerCommand("Pivot Down",
             new PivotToSetpointCommand(intake)
@@ -117,6 +118,7 @@ public class RobotContainer {
             .withTimeout(2));
         NamedCommands.registerCommand("RecenterToShoot", 
            new Hyperjank(drivetrain).withTimeout(1));
+        NamedCommands.registerCommand("Offset Home", new OffsetHome(intake));
 
 
         NamedCommands.registerCommand("Move Forward", new MoveForwards(drivetrain, MaxSpeed).withTimeout(3));

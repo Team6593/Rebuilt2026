@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.283050595238095,
+        "y": 0.8376041666666674
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 9.283050595238095,
+        "y": 0.8376041666666674
+      },
+      "isLocked": false,
+      "linkedName": "NYN1 INTAKEBACK END"
+    },
+    {
+      "anchor": {
+        "x": 3.167217261904762,
+        "y": 0.8376041666666674
+      },
+      "prevControl": {
+        "x": 2.167217261904762,
+        "y": 0.8376041666666674
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 6.8,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 1612.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -90.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -90.0
+  },
+  "useDefaultConstraints": false
+}

@@ -33,73 +33,74 @@ public class Robot extends TimedRobot {
         .withTimestampReplay()
         .withJoystickReplay();
 
-    private final boolean kUseLimelight = false;
-
-    // // Simulation
-    // private ShooterSimulation shooterSimulation = new ShooterSimulation();
-    // private CommandXboxController simJoystick = new CommandXboxController(3);
-    // private IntakeSimulation intakeSimulation = new IntakeSimulation();
-
-    public Robot() {
-        m_robotContainer = new RobotContainer();
-        SmartDashboard.putData(field);
-    }
-
-    @Override
-    public void robotPeriodic() {
-
-
-        m_timeAndJoystickReplay.update();
-        CommandScheduler.getInstance().run();
-        field.setRobotPose(m_robotContainer.drivetrain.getState().Pose);
-        SmartDashboard.putNumber("Battery", RobotController.getBatteryVoltage());
-        SmartDashboard.putNumber("Alignment Rate", LimelightHelpers.getTX("limelight") * LimelightConstants.kHubAngle * LimelightConstants.sotmRotMulti);
-        SmartDashboard.putNumber("ATag ID", LimelightHelpers.getFiducialID("limelight"));
-        SmartDashboard.putNumber("Drivetrain Speed", m_robotContainer.drivetrain.getState().Speeds.vxMetersPerSecond);
-        // SmartDashboard.putNumber("Calculated RPM", ShotCalculator.lerpGet(m_robotContainer.limelight.estimateDistance()).rpm);
-
-        /*
-         * This example of adding Limelight is very simple and may not be sufficient for on-field use.
-         * Users typically need to provide a standard deviation that scales with the distance to target
-         * and changes with number of tags available.
-         *
-         * This example is sufficient to show that vision integration is possible, though exact implementation
-         * of how to use vision should be tuned per-robot and to the team's specification.
-         */
-        if (kUseLimelight) {
-            var driveState = m_robotContainer.drivetrain.getState();
-            double headingDeg = driveState.Pose.getRotation().getDegrees();
-            double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
-
-            LimelightHelpers.SetRobotOrientation("limelight", headingDeg, 0, 0, 0, 0, 0);
-            var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-            if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
-                m_robotContainer.drivetrain.addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds);
+    private boolean kUseLimelight = false;
+    
+        // // Simulation
+        // private ShooterSimulation shooterSimulation = new ShooterSimulation();
+        // private CommandXboxController simJoystick = new CommandXboxController(3);
+        // private IntakeSimulation intakeSimulation = new IntakeSimulation();
+    
+        public Robot() {
+            m_robotContainer = new RobotContainer();
+            SmartDashboard.putData(field);
+        }
+    
+        @Override
+        public void robotPeriodic() {
+    
+    
+            m_timeAndJoystickReplay.update();
+            CommandScheduler.getInstance().run();
+            field.setRobotPose(m_robotContainer.drivetrain.getState().Pose);
+            SmartDashboard.putNumber("Battery", RobotController.getBatteryVoltage());
+            SmartDashboard.putNumber("Alignment Rate", LimelightHelpers.getTX("limelight") * LimelightConstants.kHubAngle * LimelightConstants.sotmRotMulti);
+            SmartDashboard.putNumber("ATag ID", LimelightHelpers.getFiducialID("limelight"));
+            SmartDashboard.putNumber("Drivetrain Speed", m_robotContainer.drivetrain.getState().Speeds.vxMetersPerSecond);
+            // SmartDashboard.putNumber("Calculated RPM", ShotCalculator.lerpGet(m_robotContainer.limelight.estimateDistance()).rpm);
+    
+            /*
+             * This example of adding Limelight is very simple and may not be sufficient for on-field use.
+             * Users typically need to provide a standard deviation that scales with the distance to target
+             * and changes with number of tags available.
+             *
+             * This example is sufficient to show that vision integration is possible, though exact implementation
+             * of how to use vision should be tuned per-robot and to the team's specification.
+             */
+            if (kUseLimelight) {
+                var driveState = m_robotContainer.drivetrain.getState();
+                double headingDeg = driveState.Pose.getRotation().getDegrees();
+                double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
+    
+                LimelightHelpers.SetRobotOrientation("limelight", headingDeg, 0, 0, 0, 0, 0);
+                var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+                if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
+                    m_robotContainer.drivetrain.addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds);
+                }
+            }
+    
+            if (!RobotBase.isReal()) {
+                
             }
         }
-
-        if (!RobotBase.isReal()) {
-            
-        }
-    }
-
-    @Override
-    public void disabledInit() {}
-
-    @Override
-    public void disabledPeriodic() {}
-
-    @Override
-    public void disabledExit() {}
-
-    @Override
-    public void autonomousInit() {
-        // set yaw could cause problem for hyperjank 2 auto (I think)?
-        // m_robotContainer.drivetrain.getPigeon2().setYaw(0);
-
-        // make sure robot doesn't start moving in the opposite direction upon power-on
-        // once auton is finished, power cycle robot and run auton, then redeploy code and run auton again
-        // m_robotContainer.drivetrain.seedFieldCentric();
+    
+        @Override
+        public void disabledInit() {}
+    
+        @Override
+        public void disabledPeriodic() {}
+    
+        @Override
+        public void disabledExit() {}
+    
+        @Override
+        public void autonomousInit() {
+            // set yaw could cause problem for hyperjank 2 auto (I think)?
+            // m_robotContainer.drivetrain.getPigeon2().setYaw(0);
+    
+            // make sure robot doesn't start moving in the opposite direction upon power-on
+            // once auton is finished, power cycle robot and run auton, then redeploy code and run auton again
+            // m_robotContainer.drivetrain.seedFieldCentric();
+            kUseLimelight = false;
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
         if (m_autonomousCommand != null) {
@@ -115,6 +116,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        kUseLimelight = false;
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
         }

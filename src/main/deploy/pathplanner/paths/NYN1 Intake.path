@@ -1,0 +1,68 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.27,
+        "y": 0.6222693452380952
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 8.27,
+        "y": 1.6222693452380952
+      },
+      "isLocked": false,
+      "linkedName": "NYN1 NEUTRAL START"
+    },
+    {
+      "anchor": {
+        "x": 8.283050595238095,
+        "y": 3.0235788690476193
+      },
+      "prevControl": {
+        "x": 8.283050595238095,
+        "y": 2.4950297619047617
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "NYN1 NEUTRAL END"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.37808219178082236,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 6.8,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 1612.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 2.0,
+    "maxAcceleration": 6.8,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 1612.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 90.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 90.0
+  },
+  "useDefaultConstraints": false
+}
