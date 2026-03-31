@@ -38,14 +38,14 @@ public class Recenter extends Command {
     if (!positionCheck()) {
       drivetrain.setControl(
         robotCentric
-          .withRotationalRate(-.2 * LimelightConstants.MaxAngularRate)
+          .withRotationalRate(-.5 * LimelightConstants.MaxAngularRate)
       );
     }
     System.out.println("recentering lmao");
   }
 
   public boolean positionCheck() {
-    double tolerance = 5;
+    double tolerance = 7;
     double error = Math.abs(Math.abs(drivetrain.getPigeon2().getYaw().getValueAsDouble() % 360) - angle);
     if (error < tolerance) {
       return true;

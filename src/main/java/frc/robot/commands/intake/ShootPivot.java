@@ -30,6 +30,7 @@ public class ShootPivot extends Command {
   @Override
   public void initialize() {
     startTime = Timer.getFPGATimestamp();
+    intake.coastMotors();
     intake.runIntake(0);
   }
 
@@ -37,13 +38,14 @@ public class ShootPivot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (SmartDashboard.getNumber("ShooterM RPM", 0) > ShotCalculator.lerpGet(SmartDashboard.getNumber("Last Distance", 0)).rpm) {
-      if (intake.getPosition() > 220) {
-        System.out.println("Intake at setpoint: " + (intake.getPosition() < 200));
+    // if (SmartDashboard.getNumber("ShooterM RPM", 0) > ShotCalculator.lerpGet(SmartDashboard.getNumber("Last Distance", 0)).rpm) {
+    if ((Timer.getFPGATimestamp() - startTime) > 2) {
+      if (intake.getPosition() > 250) {
+        System.out.println("Intake at setpoint: " + (intake.getPosition() < 250));
         intake.stop();
       } else {
-        System.out.println("Intake at setpoint: " + (intake.getPosition() < 200));
-        intake.pivot(.3);
+        System.out.println("Intake at setpoint: " + (intake.getPosition() < 250));
+        intake.pivot(.25);
       }
     }
   }
@@ -51,7 +53,7 @@ public class ShootPivot extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("Intake at setpoint: " + intake.positionCheck(200));
+    System.out.println("Intake at setpoint: " + intake.positionCheck(250));
     System.out.println("Command ended.");
     intake.stop();
   }
