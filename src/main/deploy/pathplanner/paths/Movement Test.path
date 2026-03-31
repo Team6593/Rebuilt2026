@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.6712946428571427,
-        "y": 1.1
+        "x": 4.0,
+        "y": 0.543965773809524
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.6712946428571422,
-        "y": 1.0999999999999999
+        "x": 4.999999999999998,
+        "y": 0.543965773809524
       },
       "isLocked": false,
-      "linkedName": "NYN1 TRENCHRETURN END"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.938839285714286,
-        "y": 0.9811607142857144
+        "x": 5.9991964285714285,
+        "y": 0.543965773809524
       },
       "prevControl": {
-        "x": 5.938839285714286,
-        "y": 0.9811607142857145
+        "x": 4.9991964285714285,
+        "y": 0.543965773809524
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NYN1 BOWTIE START"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

@@ -7,12 +7,6 @@
         {
           "type": "named",
           "data": {
-            "name": "Offset Home"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "Pivot Down"
           }
         },
@@ -60,15 +54,34 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Pivot Down"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "NYN1 SecondCycle"
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "NYN1 Loop"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "NYN1 Loop"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
           }
         },
         {

@@ -17,19 +17,38 @@
     {
       "anchor": {
         "x": 8.283050595238095,
-        "y": 0.9811607142857144
+        "y": 1.1
       },
       "prevControl": {
         "x": 8.283050595238095,
-        "y": 1.8098992016546835
+        "y": 1.929
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "NYN1 INTAKEBACK END"
     }
   ],
-  "rotationTargets": [],
-  "constraintZones": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5101351351351368,
+      "rotationDegrees": 180.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.51,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 0.5,
+        "maxAcceleration": 6.8,
+        "maxAngularVelocity": 0.1,
+        "maxAngularAcceleration": 0.1,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {

@@ -4,24 +4,24 @@
     {
       "anchor": {
         "x": 8.283050595238095,
-        "y": 0.9811607142857144
+        "y": 1.1
       },
       "prevControl": null,
       "nextControl": {
         "x": 7.152967760242652,
-        "y": 0.9811607142857143
+        "y": 1.0999999999999999
       },
       "isLocked": false,
       "linkedName": "NYN1 INTAKEBACK END"
     },
     {
       "anchor": {
-        "x": 3.0823883928571427,
-        "y": 0.9811607142857144
+        "x": 2.6712946428571427,
+        "y": 1.1
       },
       "prevControl": {
-        "x": 5.653488144700766,
-        "y": 0.9811607142857147
+        "x": 5.242394394700767,
+        "y": 1.1000000000000003
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,15 +30,33 @@
   ],
   "rotationTargets": [
     {
+      "waypointRelativePos": 0.1,
+      "rotationDegrees": 180.0
+    },
+    {
       "waypointRelativePos": 0.9,
       "rotationDegrees": 180.0
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.8246575342465757,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 6.8,
+        "maxAngularVelocity": 0.1,
+        "maxAngularAcceleration": 0.1,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.5,
+    "maxVelocity": 2.0,
     "maxAcceleration": 6.8,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 1612.0,
