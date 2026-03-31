@@ -37,6 +37,7 @@ public class ShootPivot extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
+
   public void execute() {
     // if (SmartDashboard.getNumber("ShooterM RPM", 0) > ShotCalculator.lerpGet(SmartDashboard.getNumber("Last Distance", 0)).rpm) {
     if ((Timer.getFPGATimestamp() - startTime) > 2) {
@@ -45,7 +46,7 @@ public class ShootPivot extends Command {
         intake.stop();
       } else {
         System.out.println("Intake at setpoint: " + (intake.getPosition() < 250));
-        intake.pivot(.25);
+        intake.pivot(.3);
       }
     }
   }
