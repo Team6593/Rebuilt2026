@@ -239,14 +239,14 @@ public class RobotContainer {
                     .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * sotmMultiplier * 0)
                     .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier)
             )
-            .alongWith(new ShootAutomatic(shooter, 
-            
-            rollers))
+            .alongWith(new ShootAutomatic(shooter, rollers))
             .alongWith(new ShootPivot(intake, 1))
         ).toggleOnFalse(new PivotToSetpointCommand(intake));
         joystick.axisGreaterThan(3, .3).onTrue(new IntakeOn(intake))
         .multiPress(2, 1).onTrue(new IntakeOff(intake));
         joystick.a().whileFalse(new Recenter(drivetrain, 90));
+        joystick.button(7).onTrue(new OffsetHome(intake));
+        joystick.button(8).onTrue(new OffsetSetpoint(intake));
 
         buttonboard.button(11).onTrue(new StopAll(intake, shooter, rollers));
         buttonboard.button(4).onTrue(new OffsetHome(intake));

@@ -57,10 +57,10 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
         .i(0)
           .feedForward
             .kV(.126);
-    pivot1Config.closedLoop.outputRange(-.15, .15);
-    pivot2Config.closedLoop.outputRange(-.15, .15);
-    pivot1Config.smartCurrentLimit(40);
-    pivot2Config.smartCurrentLimit(40);
+    // pivot1Config.closedLoop.outputRange(-.15, .15);
+    // pivot2Config.closedLoop.outputRange(-.15, .15);
+    pivot1Config.smartCurrentLimit(60);
+    pivot2Config.smartCurrentLimit(60);
     pivotMotor.configure(pivot1Config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     pivot2Motor.configure(pivot2Config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     pivot2Motor.getEncoder().setPosition(-100);
