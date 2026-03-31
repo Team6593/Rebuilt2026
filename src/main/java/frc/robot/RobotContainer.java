@@ -107,6 +107,7 @@ public class RobotContainer {
             .alongWith(new ShootPivot(intake, 1))
             .withTimeout(5)
         );
+        NamedCommands.registerCommand("Trench Recenter", new Recenter(drivetrain, 110));
         NamedCommands.registerCommand("Pivot Down",
             new PivotToSetpointCommand(intake)
             .withTimeout(1));
@@ -238,10 +239,14 @@ public class RobotContainer {
                     .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * sotmMultiplier * 0)
                     .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier)
             )
-            .alongWith(new ShootAutomatic(shooter, rollers))
+            .alongWith(new ShootAutomatic(shooter, 
+            
+            rollers))
             .alongWith(new ShootPivot(intake, 1))
         ).toggleOnFalse(new PivotToSetpointCommand(intake));
-        joystick.axisGreaterThan(3, .3).onTrue(new IntakeOn(intake));
+        joystick.axisGreaterThan(3, .3).onTrue(new IntakeOn(intake))
+        .multiPress(2, 1).onTrue(new IntakeOff(intake));
+        joystick.a().whileFalse(new Recenter(drivetrain, 90));
 
         buttonboard.button(11).onTrue(new StopAll(intake, shooter, rollers));
         buttonboard.button(4).onTrue(new OffsetHome(intake));

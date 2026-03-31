@@ -58,6 +58,24 @@
           "data": {
             "name": "Shoot"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NYN1 SecondCycle"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NYN1 Loop"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NYN1 Bowtie Over Bump"
+          }
         }
       ]
     }

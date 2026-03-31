@@ -3,42 +3,46 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.283050595238095,
+        "x": 6.938839285714286,
         "y": 0.9811607142857144
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.152967760242652,
-        "y": 0.9811607142857143
+        "x": 7.924159226190476,
+        "y": 1.9338541666666673
       },
       "isLocked": false,
-      "linkedName": "NYN1 INTAKEBACK END"
+      "linkedName": "NYN1 BOWTIE START"
     },
     {
       "anchor": {
-        "x": 3.0823883928571427,
-        "y": 0.9811607142857144
+        "x": 6.938839285714286,
+        "y": 2.932224702380953
       },
       "prevControl": {
-        "x": 5.653488144700766,
-        "y": 0.9811607142857147
+        "x": 10.42185584799762,
+        "y": 1.7947250292023373
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NYN1 TRENCHRETURN END"
+      "linkedName": "NYN1 BOWTIE END"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.9,
-      "rotationDegrees": 180.0
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 45.0
+    },
+    {
+      "waypointRelativePos": 0.6497747747747747,
+      "rotationDegrees": 135.0
     }
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.5,
+    "maxVelocity": 5.395,
     "maxAcceleration": 6.8,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 1612.0,
@@ -47,13 +51,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 135.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 90.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

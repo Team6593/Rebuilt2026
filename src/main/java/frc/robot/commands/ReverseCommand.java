@@ -33,7 +33,7 @@ public class ReverseCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intakeSubsystem.runIntake(-.75);
+    intakeSubsystem.runIntake(1);
     rollersSubsystem.set(-.3);
     shooterSubsystem.index(1000);
   }

@@ -13,6 +13,7 @@ import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -140,6 +141,27 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
   public void intake() {
     intakeMotor1.set(IntakeInputs.kIntakeSpeed);
     intakeMotor2.set(IntakeInputs.kIntakeSpeed);
+  }
+
+  /**
+   * Brake, not break.
+   * Unless...
+   */
+  public void brakeMotors() {
+    pivot1Config.idleMode(IdleMode.kBrake);
+    pivot2Config.idleMode(IdleMode.kBrake);
+    pivotMotor.configure(pivot1Config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    pivot2Motor.configure(pivot2Config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
+
+  /**
+   * Gagan I'm not confident in this code.
+   */
+  public void coastMotors() {
+    pivot1Config.idleMode(IdleMode.kCoast);
+    pivot2Config.idleMode(IdleMode.kCoast);
+    pivotMotor.configure(pivot1Config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    pivot2Motor.configure(pivot2Config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 
   public void pidToSetpoint(double setpoint, double p) {

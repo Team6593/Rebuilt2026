@@ -22,7 +22,9 @@ public class IntakeCommand extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    intakeSubsystem.brakeMotors();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -35,6 +37,7 @@ public class IntakeCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
+    intakeSubsystem.coastMotors();
     intakeSubsystem.stop();
   }
 
