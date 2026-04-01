@@ -180,14 +180,40 @@ public class RobotContainer {
         double multiplier = -1;
         double sotmMultiplier = .5;
         double sotmRotMulti = .05;
-        drivetrain.setDefaultCommand(
-            // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate * multiplier) // Drive counterclockwise with negative X (left)
-            )
-        );
+        // drivetrain.setDefaultCommand(
+        //     // Drivetrain will execute this command periodically
+        //     drivetrain.applyRequest(() ->
+        //         drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier) // Drive forward with negative Y (forward)
+        //             .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier) // Drive left with negative X (left)
+        //             .withRotationalRate(-joystick.getRightX() * MaxAngularRate * multiplier) // Drive counterclockwise with negative X (left)
+        //     )
+        // );
+
+    // Do the outward x-formation thing when joystick inputs are zero or near zero
+    drivetrain.setDefaultCommand(
+        drivetrain.applyRequest(() -> {
+            double deadzone = 0.1;
+            // Capture inputs
+            double x = MathUtil.applyDeadband(-joystick.getLeftY(), deadzone) * multiplier;
+            double y = MathUtil.applyDeadband(-joystick.getLeftX(), deadzone) * multiplier;
+            double rot = MathUtil.applyDeadband(-joystick.getRightX(), deadzone) * multiplier;
+
+            if (x == 0 && y == 0 && rot == 0) {
+                return brake;
+            }
+
+            // check if we are "idle"
+            // if (Math.abs(x) < deadzone && Math.abs(y) < deadzone && Math.abs(rot) < deadzone) {
+            //     // Return the X-pattern request if no input is detected
+            //     return brake;
+            // }
+
+            // Otherwise, return the normal drive request
+            return drive.withVelocityX(x * MaxSpeed)
+                .withVelocityY(y * MaxSpeed)
+                .withRotationalRate(rot * MaxAngularRate);
+        })
+    );
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
@@ -232,13 +258,20 @@ public class RobotContainer {
         joystick.povLeft().whileTrue(new pivotCommand(intake, .09));
         joystick.povRight().whileTrue(new pivotCommand(intake, -.09));
         joystick.button(5).onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+
         joystick.axisGreaterThan(2, .3).whileTrue(
-            drivetrain.applyRequest(
-                () -> drive
+            drivetrain.applyRequest( () -> {
+                double rot = MathUtil.applyDeadband(LimelightHelpers.getTX("limelight-two") * LimelightConstants.getAngle((int) LimelightHelpers.getFiducialID("limelight-two")) * .3, 
+                0.1); // CHECK DEADBAND !!!
+
+                if (rot == 0) {
+                    return brake;
+                }
+                return drive
                     .withRotationalRate(LimelightHelpers.getTX("limelight-two") * LimelightConstants.getAngle((int) LimelightHelpers.getFiducialID("limelight-two")) * .3)
-                    .withVelocityX(-joystick.getLeftY() * MaxSpeed * multiplier * sotmMultiplier * 0)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * multiplier * sotmMultiplier)
-            )
+                    .withVelocityX(0)
+                    .withVelocityY(0);
+            })
             .alongWith(new ShootAutomatic(shooter, rollers))
             .alongWith(new ShootPivot(intake, 1))
         ).toggleOnFalse(new PivotToSetpointCommand(intake));
