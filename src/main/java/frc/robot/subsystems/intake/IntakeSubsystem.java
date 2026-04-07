@@ -65,6 +65,7 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
     pivot2Motor.configure(pivot2Config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     pivot2Motor.getEncoder().setPosition(-100);
     Preferences.initDouble(IntakeInputs.kIntakeSpeedKey, IntakeInputs.kIntakeSpeed);
+    brakeMotors();
   }
 
   @Override

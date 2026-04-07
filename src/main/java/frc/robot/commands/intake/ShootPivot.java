@@ -57,6 +57,7 @@ public class ShootPivot extends Command {
     System.out.println("Intake at setpoint: " + intake.positionCheck(200));
     System.out.println("Command ended.");
     intake.stop();
+    intake.brakeMotors();
   }
 
   // Returns true when the command should end.
