@@ -22,6 +22,7 @@ public class PivotToSetpointCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    intake.coastMotors();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -38,6 +39,7 @@ public class PivotToSetpointCommand extends Command {
     System.out.println("Intake at setpoint: " + intake.positionCheck(40));
     System.out.println("Command ended.");
     intake.stop();
+    intake.brakeMotors();
   }
 
   // Returns true when the command should end.

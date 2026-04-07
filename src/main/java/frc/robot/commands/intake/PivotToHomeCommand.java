@@ -23,6 +23,7 @@ public class PivotToHomeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    intake.coastMotors();
   }
 
 
@@ -40,6 +41,7 @@ public class PivotToHomeCommand extends Command {
     System.out.println("Intake at setpoint: " + intake.positionCheck(250));
     System.out.println("Command ended.");
     intake.stop();
+    intake.brakeMotors();
   }
 
   // Returns true when the command should end.
