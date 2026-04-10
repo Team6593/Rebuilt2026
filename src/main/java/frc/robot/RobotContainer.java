@@ -282,6 +282,8 @@ public class RobotContainer {
         joystick.button(8).onTrue(new OffsetSetpoint(intake));
 
         buttonboard.button(11).onTrue(new StopAll(intake, shooter, rollers));
+        buttonboard.button(8).onTrue(limelight.changePipelineCommand("limelight-two", 0));
+        buttonboard.button(9).onTrue(limelight.changePipelineCommand("limelight-two", 1));
         buttonboard.button(4).onTrue(new OffsetHome(intake));
         buttonboard.button(5).onTrue(new OffsetSetpoint(intake));
         buttonboard.button(1).onTrue(new PivotToHomeCommand(intake));
