@@ -24,7 +24,6 @@ public class IntakeOn extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intake.brakeMotors();
     intake.runIntake(-.75);
   }
 }

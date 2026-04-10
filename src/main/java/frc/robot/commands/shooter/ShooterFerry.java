@@ -35,8 +35,8 @@ public class ShooterFerry extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterSubsystem.setMasterRPM(ShotCalculator.lerpGet(SmartDashboard.getNumber("Last Distance", 0)).rpm + 2000, ShotCalculator.lerpGet(SmartDashboard.getNumber("Last Distance", 0)).rpm + 2000);
-    if (shooterSubsystem.getShooterRPM() > ShotCalculator.lerpGet(SmartDashboard.getNumber("Last Distance", 0)).rpm) {
+    shooterSubsystem.setMasterRPM(2500, 2500);
+    if (shooterSubsystem.getShooterRPM() > 2400) {
         rollersSubsystem.set(.25);
         shooterSubsystem.setIndexerRPM(-3700);
     } 

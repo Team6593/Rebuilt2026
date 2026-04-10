@@ -1,0 +1,68 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Pivot Down"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NYN1 DEPOTSIDE P1"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "NYN1 DEPOTSIDE P2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NYN1 DEPOTSIDE P3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NYN1 DEPOTSIDE P4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NYN1 DEPOTSIDE P5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

@@ -30,7 +30,7 @@ public class IntakeCommand extends Command {
   @Override
   public void execute() {
     System.out.println("INTAKING !!!");
-    intakeSubsystem.runIntake(-.75);
+    intakeSubsystem.runIntake(-.5);
   }
 
   // Called once the command ends or is interrupted.

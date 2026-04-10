@@ -29,7 +29,7 @@ public class PivotToSetpointCommand extends Command {
   @Override
   public void execute() {
   
-    intake.pivot(-.19);
+    intake.pivot(-.24);
     System.out.println("Intake at setpoint: " + intake.positionCheck(40));
   }
 
@@ -39,7 +39,6 @@ public class PivotToSetpointCommand extends Command {
     System.out.println("Intake at setpoint: " + intake.positionCheck(40));
     System.out.println("Command ended.");
     intake.stop();
-    intake.brakeMotors();
   }
 
   // Returns true when the command should end.

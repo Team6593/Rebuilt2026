@@ -38,6 +38,7 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
   private SparkAbsoluteEncoder pivot2Encoder = pivot2Motor.getAbsoluteEncoder();
 
   private int stage = 0;
+  private boolean intakeRunning = false;
 
   private ProfiledPIDController pidController = new ProfiledPIDController(0.0175, 0, 0, new TrapezoidProfile.Constraints(6.545, 0));
   // private ProfiledPIDController intakePIDController = new ProfiledPIDController(10, 0, 0, new TrapezoidProfile.Constraints(6000, 10));
@@ -65,7 +66,8 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
     pivot2Motor.configure(pivot2Config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     pivot2Motor.getEncoder().setPosition(-100);
     Preferences.initDouble(IntakeInputs.kIntakeSpeedKey, IntakeInputs.kIntakeSpeed);
-    brakeMotors();
+    coastMotors();
+    // brakeMotors();
   }
 
   @Override
@@ -97,6 +99,7 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
     SmartDashboard.putNumber("Pivot2 RPM", pivot2Motor.getEncoder().getVelocity());
     SmartDashboard.putNumber("Pivot P: ", pidController.getP());
     SmartDashboard.putNumber("Stage", stage);
+    SmartDashboard.putBoolean("Intake Running", intakeRunning);
   }
 
   /**
@@ -133,6 +136,7 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
   public void runIntake(double speed) {
     intakeMotor1.set(speed);
     intakeMotor2.set(speed);
+    intakeRunning = true;
   }
 
   /**
@@ -322,6 +326,7 @@ public class IntakeSubsystem extends SubsystemBase implements SubsystemInterface
     intakeMotor2.stopMotor();
     pivotMotor.stopMotor();
     pivot2Motor.stopMotor();
+    intakeRunning = false;
   }
 
   // Commands

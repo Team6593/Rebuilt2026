@@ -32,7 +32,7 @@ public class PivotToHomeCommand extends Command {
   public void execute() {
     System.out.println("Intake at setpoint: " + intake.positionCheck(250));
     // intake.runIntake(1);
-    intake.pivot(.2);
+    intake.pivot(.25);
   }
 
   // Called once the command ends or is interrupted.
@@ -41,7 +41,6 @@ public class PivotToHomeCommand extends Command {
     System.out.println("Intake at setpoint: " + intake.positionCheck(250));
     System.out.println("Command ended.");
     intake.stop();
-    intake.brakeMotors();
   }
 
   // Returns true when the command should end.
