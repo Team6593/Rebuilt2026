@@ -10,6 +10,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 import frc.robot.generated.TunerConstants;
@@ -117,6 +118,16 @@ public class Limelight extends SubsystemBase {
 
   public double getID() {
     return LimelightHelpers.getFiducialID("limelight-two");
+  }
+
+  public void changePipeline(String limelightName, int pipeline) {
+    LimelightHelpers.setPipelineIndex(limelightName, pipeline);
+  }
+
+  public Command changePipelineCommand(String limelightName, int pipeline) {
+    return this.runOnce(
+      () -> changePipeline(limelightName, pipeline)
+    );
   }
 
 }
