@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Offset Home"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "New Path"

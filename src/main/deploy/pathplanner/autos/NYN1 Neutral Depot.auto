@@ -13,7 +13,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NYN1 DEPOTSIDE P1"
+            "pathName": "NYN1 NEUTRAL DEPOT PART 1"
           }
         },
         {
@@ -23,7 +23,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "NYN1 DEPOTSIDE P2"
+                  "pathName": "NYN1 NEUTRAL DEPOT PART 2"
                 }
               },
               {
@@ -38,19 +38,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NYN1 DEPOTSIDE P3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "NYN1 DEPOTSIDE P4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "NYN1 DEPOTSIDE P5"
+            "pathName": "NYN1 NEUTRAL DEPOT PART 3"
           }
         },
         {

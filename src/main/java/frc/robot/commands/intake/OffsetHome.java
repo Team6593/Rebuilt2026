@@ -37,6 +37,6 @@ public class OffsetHome extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return intakeSubsystem.positionCheck(255);
+    return intakeSubsystem.positionCheck(260);
   }
 }

@@ -3,17 +3,24 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands.intake;
+
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.utils.ShotCalculator;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class PivotToSetpointCommand extends Command {
+public class FullPivot extends Command {
 
   private IntakeSubsystem intake;
+  private double kP;
+  private double startTime;
 
   /** Creates a new PivotToSetpointCommand. */
-  public PivotToSetpointCommand(IntakeSubsystem intake) {
+  public FullPivot(IntakeSubsystem intake, double kP) {
     this.intake = intake;
+    this.kP = kP;
 
     addRequirements(intake);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -22,21 +29,32 @@ public class PivotToSetpointCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    startTime = Timer.getFPGATimestamp();
     intake.coastMotors();
+    intake.runIntake(0);
   }
+
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
+
   public void execute() {
-  
-    intake.pivot(-.24);
-    System.out.println("Intake at setpoint: " + intake.positionCheck(40));
+    // if (SmartDashboard.getNumber("ShooterM RPM", 0) > ShotCalculator.lerpGet(SmartDashboard.getNumber("Last Distance", 0)).rpm) {
+    if ((Timer.getFPGATimestamp() - startTime) > 3) {
+      if (intake.getPosition() > 200) {
+        System.out.println("Intake at setpoint: " + (intake.getPosition() < 230));
+        intake.stop();
+      } else {
+        System.out.println("Intake at setpoint: " + (intake.getPosition() < 230));
+        intake.pivot(.27);
+      }
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("Intake at setpoint: " + intake.positionCheck(40));
+    System.out.println("Intake at setpoint: " + intake.positionCheck(230));
     System.out.println("Command ended.");
     intake.stop();
     intake.brakeMotors();
@@ -45,6 +63,6 @@ public class PivotToSetpointCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return intake.positionCheck(40);
+    return false;
   }
 }

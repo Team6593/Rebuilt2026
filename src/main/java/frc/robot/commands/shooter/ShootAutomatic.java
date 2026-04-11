@@ -37,8 +37,8 @@ public class ShootAutomatic extends Command {
   public void execute() {
     shooterSubsystem.setMasterRPM(ShotCalculator.lerpGet(SmartDashboard.getNumber("Last Distance", 0)).rpm, ShotCalculator.lerpGet(SmartDashboard.getNumber("Last Distance", 0)).rpm);
     if (shooterSubsystem.getShooterRPM() > ShotCalculator.lerpGet(SmartDashboard.getNumber("Last Distance", 0)).rpm) {
-        rollersSubsystem.set(.25);
-        shooterSubsystem.setIndexerRPM(-3700);
+        rollersSubsystem.set(.75);
+        shooterSubsystem.setIndexerRPM(-4250);
     } 
     System.out.println("SHOOTING!!!!!!!!! ~ nafi");
   }

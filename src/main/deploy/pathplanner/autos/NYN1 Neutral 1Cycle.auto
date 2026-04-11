@@ -40,6 +40,12 @@
           "data": {
             "pathName": "NYN1 BumpReturn"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
         }
       ]
     }

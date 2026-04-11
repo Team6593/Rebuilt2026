@@ -53,6 +53,7 @@ import frc.robot.commands.motioncommands.MoveX;
 import frc.robot.commands.motioncommands.MoveY;
 import frc.robot.commands.motioncommands.RotateTo;
 import frc.robot.commands.intake.AutoPivotUp;
+import frc.robot.commands.intake.FullPivot;
 import frc.robot.commands.intake.IncramentalPivot;
 import frc.robot.commands.intake.IntakeCommand;
 import frc.robot.commands.intake.IntakeOff;
@@ -283,7 +284,7 @@ public class RobotContainer {
         joystick.button(7).onTrue(new OffsetHome(intake));
         joystick.button(8).onTrue(new OffsetSetpoint(intake));
 
-        buttonboard.axisGreaterThan(3, .3).whileTrue(
+        buttonboard.axisGreaterThan(2, .3).whileTrue(
             drivetrain.applyRequest( () -> {
                 return drive
                     .withRotationalRate(LimelightHelpers.getTX("limelight-two") * LimelightConstants.getAngle((int) LimelightHelpers.getFiducialID("limelight-two")) * .3)
@@ -292,13 +293,41 @@ public class RobotContainer {
             })
             .alongWith(new ShootAutomatic(shooter, rollers))
             .alongWith(new ShootPivot(intake, 1))
-        ).toggleOnFalse(new PivotToSetpointCommand(intake));        buttonboard.x().onTrue(new StopAll(intake, shooter, rollers));
+        ).toggleOnFalse(new PivotToSetpointCommand(intake));
+        buttonboard.axisGreaterThan(3, .3).whileTrue(
+            drivetrain.applyRequest( () -> {
+                return drive
+                    .withRotationalRate(LimelightHelpers.getTX("limelight-two") * LimelightConstants.getAngle((int) LimelightHelpers.getFiducialID("limelight-two")) * .3)
+                    .withVelocityX(0)
+                    .withVelocityY(0);
+            })
+            .alongWith(new ShootAutomatic(shooter, rollers))
+            .alongWith(new FullPivot(intake, 1))
+        ).toggleOnFalse(new PivotToSetpointCommand(intake));        
         // buttonboard.button(8).onTrue(limelight.changePipelineCommand("limelight-two", 0));
         // buttonboard.button(9).onTrue(limelight.changePipelineCommand("limelight-two", 1));
-        buttonboard.povRight().onTrue(new OffsetHome(intake));
-        buttonboard.povLeft().onTrue(new OffsetSetpoint(intake));
+        buttonboard.button(7).onTrue(new OffsetHome(intake));
+        buttonboard.button(8).onTrue(new OffsetSetpoint(intake));
+        buttonboard.povRight().whileTrue(new pivotCommand(intake, .09));
+        buttonboard.povLeft().whileTrue(new pivotCommand(intake, -.09));
         buttonboard.povUp().onTrue(new PivotToHomeCommand(intake));
         buttonboard.povDown().onTrue(new PivotToSetpointCommand(intake));
+        buttonboard.b().whileTrue(new ReverseCommand(intake, rollers, shooter));
+        buttonboard.x().onTrue(new StopAll(intake, shooter, rollers));
+        buttonboard.y().onTrue(new IntakeOn(intake));
+        buttonboard.a().onTrue(new IntakeOff(intake));
+        // buttonboard.b().whileTrue(
+        //     drivetrain.applyRequest( () -> {
+        //         return drive
+        //             .withRotationalRate(LimelightHelpers.getTX("limelight-two") * LimelightConstants.getAngle((int) LimelightHelpers.getFiducialID("limelight-two")) * .3)
+        //             .withVelocityX(0)
+        //             .withVelocityY(0);
+        //     })
+        //     .alongWith(new ShooterFerry(shooter, rollers))
+        //     .alongWith(new ShootPivot(intake, 1))
+        // ).toggleOnFalse(new PivotToSetpointCommand(intake));
+
+
         // buttonboard.button(3).whileTrue(drivetrain.applyRequest(
         //         () -> drive
         //             .withRotationalRate(LimelightHelpers.getTX("limelight") * -LimelightConstants.kHubAngle * 0.15)

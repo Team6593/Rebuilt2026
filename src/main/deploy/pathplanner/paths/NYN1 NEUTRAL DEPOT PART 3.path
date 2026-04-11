@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.27,
-        "y": 3.0823065476190483
+        "x": 7.819754464285715,
+        "y": 5.203028273809524
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.682541983981842,
-        "y": 3.0823065476190483
+        "x": 8.819754464285715,
+        "y": 5.203028273809524
       },
       "isLocked": false,
-      "linkedName": "NYN1 NEUTRAL END"
+      "linkedName": "NYN1 NEUTRAL DEPOT END"
     },
     {
       "anchor": {
-        "x": 2.429858630952381,
-        "y": 2.4167261904761905
+        "x": 2.8996800595238095,
+        "y": 5.751153273809524
       },
       "prevControl": {
-        "x": 4.1789427179456595,
-        "y": 2.4167261904761905
+        "x": 1.8996800595238095,
+        "y": 5.751153273809524
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,15 +30,15 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.44804088586030677,
-      "rotationDegrees": -135.0
+      "waypointRelativePos": 0.4054054054054051,
+      "rotationDegrees": 135.0
     }
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.395,
+    "maxVelocity": 10.0,
     "maxAcceleration": 6.8,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 1612.0,
@@ -47,13 +47,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -135.0
+    "rotation": 135.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": false
 }
