@@ -177,7 +177,7 @@ public class RobotContainer {
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
-        double multiplier = -1;
+        double multiplier = -.65; //-1
         double sotmMultiplier = .5;
         double sotmRotMulti = .05;
         // drivetrain.setDefaultCommand(
@@ -284,10 +284,10 @@ public class RobotContainer {
         buttonboard.button(11).onTrue(new StopAll(intake, shooter, rollers));
         buttonboard.button(8).onTrue(limelight.changePipelineCommand("limelight-two", 0));
         buttonboard.button(9).onTrue(limelight.changePipelineCommand("limelight-two", 1));
-        buttonboard.button(4).onTrue(new OffsetHome(intake));
-        buttonboard.button(5).onTrue(new OffsetSetpoint(intake));
-        buttonboard.button(1).onTrue(new PivotToHomeCommand(intake));
-        buttonboard.button(2).onTrue(new PivotToSetpointCommand(intake));
+        buttonboard.button(4).onTrue(new OffsetHome(intake)); // xbox y
+        buttonboard.button(5).onTrue(new OffsetSetpoint(intake)); // xbox left upper trigger
+        buttonboard.button(1).onTrue(new PivotToHomeCommand(intake)); // xbox a
+        buttonboard.button(2).onTrue(new PivotToSetpointCommand(intake)); // xbox b
         // buttonboard.button(3).whileTrue(drivetrain.applyRequest(
         //         () -> drive
         //             .withRotationalRate(LimelightHelpers.getTX("limelight") * -LimelightConstants.kHubAngle * 0.15)
