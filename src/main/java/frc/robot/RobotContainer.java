@@ -231,7 +231,7 @@ public class RobotContainer {
 
 
         joystick.x().whileTrue(new ReverseCommand(intake, rollers, shooter));
-        joystick.y().whileTrue(new ShootSequence(shooter, rollers, 3000));
+        joystick.y().whileTrue(new ShootSequence(shooter, rollers, 1875));
         joystick.b().whileTrue(
             drivetrain.applyRequest(
                 () -> drive
