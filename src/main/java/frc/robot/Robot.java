@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import com.ctre.phoenix6.HootAutoReplay;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
@@ -77,8 +78,8 @@ public class Robot extends TimedRobot {
                 double headingDeg = driveState.Pose.getRotation().getDegrees();
                 double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
     
-                LimelightHelpers.SetRobotOrientation("limelight", headingDeg, 0, 0, 0, 0, 0);
-                var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+                LimelightHelpers.SetRobotOrientation("limelight-two", headingDeg, 0, 0, 0, 0, 0);
+                var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-two");
                 if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
                     m_robotContainer.drivetrain.addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds);
                 }
@@ -106,7 +107,7 @@ public class Robot extends TimedRobot {
             // make sure robot doesn't start moving in the opposite direction upon power-on
             // once auton is finished, power cycle robot and run auton, then redeploy code and run auton again
             // m_robotContainer.drivetrain.seedFieldCentric();
-            kUseLimelight = false;
+            kUseLimelight = true;
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
         if (m_autonomousCommand != null) {
