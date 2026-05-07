@@ -177,7 +177,7 @@ public class RobotContainer {
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
-        double multiplier = -.65; //-1
+        double multiplier = -.8; //-1
         double sotmMultiplier = .5;
         double sotmRotMulti = .05;
         // drivetrain.setDefaultCommand(
@@ -192,7 +192,7 @@ public class RobotContainer {
     // Do the outward x-formation thing when joystick inputs are zero or near zero
     drivetrain.setDefaultCommand(
         drivetrain.applyRequest(() -> {
-            double deadzone = 0.1;
+            double deadzone = 0.05;
             // Capture inputs
             double x = MathUtil.applyDeadband(-joystick.getLeftY(), deadzone) * multiplier;
             double y = MathUtil.applyDeadband(-joystick.getLeftX(), deadzone) * multiplier;
@@ -259,6 +259,9 @@ public class RobotContainer {
         joystick.povRight().whileTrue(new pivotCommand(intake, -.09));
         joystick.button(5).onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
+        // keep the intake down and prevent it from budging up when collecting fuel, by running it at a small duty cycle
+        //intake.setDefaultCommand(new pivotCommand(intake, -0.04));
+
         joystick.axisGreaterThan(2, .3).whileTrue(
             drivetrain.applyRequest( () -> {
                 double rot = MathUtil.applyDeadband(LimelightHelpers.getTX("limelight-two") * LimelightConstants.getAngle((int) LimelightHelpers.getFiducialID("limelight-two")) * .3, 
@@ -280,6 +283,7 @@ public class RobotContainer {
         joystick.a().whileFalse(new Recenter(drivetrain, 90));
         joystick.button(7).onTrue(new OffsetHome(intake));
         joystick.button(8).onTrue(new OffsetSetpoint(intake));
+        
 
         buttonboard.button(11).onTrue(new StopAll(intake, shooter, rollers));
         buttonboard.button(8).onTrue(limelight.changePipelineCommand("limelight-two", 0));
